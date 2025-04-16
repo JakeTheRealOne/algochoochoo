@@ -1,7 +1,7 @@
 import java.util.*;
 
 /**
- * Print the shortest path based on assets/GTFS data and certain criteria
+ * Print the shortest path based on GTFS datas and certain criteria
  * 
  * @author Bilal Vandenberge
  */
@@ -12,14 +12,9 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    List<String[]> stops = CSV.parse("../src/main/resources/GTFS/DELIJN/stops.csv");
-    for (String[] stop : stops) {
-        for (String info : stop) {
-            System.out.print(info + " ");
-        }
-        System.out.println();
+    List<Road> roads = Parser.roads("../src/main/resources/GTFS/DELIJN/routes.csv");
+    for (Road road : roads) {
+        System.out.println(road);
     }
   }
 }
-
-// TODO: Decide if we give assets/GTFS or not
