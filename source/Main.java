@@ -1,9 +1,6 @@
-import edu.princeton.cs.algs4.LookupCSV;
-
-public static final String TEST_FILE = "assets/GTFS/DELIJN/routes.csv";
+import java.util.*;
 
 /**
- * Main class of the project
  * Print the shortest path based on assets/GTFS data and certain criteria
  * 
  * @author Bilal Vandenberge
@@ -15,7 +12,13 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    System.out.println(TEST_FILE);
+    List<String[]> stops = CSV.parse("../assets/GTFS/DELIJN/stops.csv");
+    for (String[] stop : stops) {
+        for (String info : stop) {
+            System.out.print(info + " ");
+        }
+        System.out.println();
+    }
   }
 }
 
