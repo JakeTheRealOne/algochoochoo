@@ -12,7 +12,7 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    List<String[]> stops = CSV.parse("../assets/GTFS/DELIJN/stops.csv");
+    List<String[]> stops = CSV.parse("../src/main/resources/GTFS/DELIJN/stops.csv");
     for (String[] stop : stops) {
         for (String info : stop) {
             System.out.print(info + " ");

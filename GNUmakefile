@@ -1,5 +1,5 @@
-SOURCE_DIR := source
-BUILD_DIR := build
+SOURCE_DIR := src/main/java
+BUILD_DIR := target
 
 SOURCES := $(shell find $(SOURCE_DIR) -name "*.java")
 
