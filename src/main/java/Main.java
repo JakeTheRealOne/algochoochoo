@@ -18,8 +18,8 @@ public class Main {
    */
   public static void main(String[] args) {
     // TODO Testing parser:
-    List<Stop> routes = Parser.stops("../src/main/resources/GTFS/DELIJN/stops.csv");
-    for (Stop route : routes) {
+    List<Trip> routes = Parser.trips("../src/main/resources/GTFS/DELIJN/trips.csv");
+    for (Trip route : routes) {
       System.out.println(route);
     }
   }

@@ -33,6 +33,16 @@ public class Parser {
     return generic(path, Route::new);
   }
 
+  /**
+   * Convert the content of a Trips file into a list of Route objects
+   *
+   * @param path Path of the CSV file
+   * @return List of trips
+   */
+  public static List<Trip> trips(String path) {
+    return generic(path, Trip::new);
+  }
+
   // #### Private helpers ####
 
   /**
@@ -116,5 +126,4 @@ public class Parser {
   }
 
   // TODO stop_times: (trip_id,departure_time,stop_id,stop_sequence)
-  // TODO trips:      (trip_id,route_id)
 }
