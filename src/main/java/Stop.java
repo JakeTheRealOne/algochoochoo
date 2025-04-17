@@ -19,14 +19,13 @@ public class Stop {
     }
     id = data[0];
     name = data[1];
-    latitude = Double.parseDouble(data[2]);
-    longitude = Double.parseDouble(data[3]);
+    pos = new EarthPos(data[2], data[3]);
   }
 
   /** Convert a Stop object to string */
   @Override
   public String toString() {
-    return "Stop(" + id + ", '" + name + "', " + latitude + ", " + longitude + ")";
+    return "Stop(" + id + ", '" + name + "', " + pos + ")";
   }
 
   // #### Getters ####
@@ -50,27 +49,17 @@ public class Stop {
   }
 
   /**
-   * Get the latitude of the stop
+   * Get the position of the stop
    *
-   * @return The distance north or south of the equator
+   * @return An earth position
    */
-  public double latitude() {
-    return latitude;
-  }
-
-  /**
-   * Get the longitude of the stop
-   *
-   * @return The distance east or west of the Prime Meridian
-   */
-  public double longitude() {
-    return longitude;
+  public EarthPos pos() {
+    return pos;
   }
 
   // #### Attributes ####
 
   private String id;
   private String name;
-  private double latitude;
-  private double longitude;
+  private EarthPos pos;
 }
