@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.regex.*;
 
 /**
  * Parse a CSV file
@@ -13,20 +14,23 @@ public class Parser {
   public Parser() {}
 
   /**
+   * Convert the content of a Stops file into a list of Stop objects
+   *
+   * @param path Path of the CSV file
+   * @return List of stops
+   */
+  public static List<Stop> stops(String path) {
+    return generic(path, Stop::new);
+  }
+
+  /**
    * Convert the content of a Routes file into a list of Route objects
    *
    * @param path Path of the CSV file
    * @return List of routes
    */
   public static List<Route> routes(String path) {
-    List<Route> output = new ArrayList<>();
-    List<String[]> raw = Parser.regular(path);
-    check_routes_integrity(raw);
-    for (int index = 1; index < raw.size(); ++index) {
-      Route route = new Route(raw.get(index));
-      output.add(route);
-    }
-    return output;
+    return generic(path, Route::new);
   }
 
   // #### Private helpers ####
@@ -43,14 +47,35 @@ public class Parser {
     try (BufferedReader file = new BufferedReader(new FileReader(path))) {
       String line;
       while ((line = file.readLine()) != null) {
-        String[] values = line.split(",");
-        output.add(values);
+        output.add(csv_to_array(line));
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
 
     return output;
+  }
+
+  /**
+   * Convert a CSV row to an array of string
+   * 
+   * @param row CSV row
+   * @return Array of all elements of the CSV row, seperated by a coma
+   */
+  private static String[] csv_to_array(String row) {
+    String regex = "\"([^\"]*)\"|([^\",]+)"; // < Quotes and comas separator
+    List<String> values = new ArrayList<>();
+    Matcher matcher = Pattern.compile(regex).matcher(row);
+
+    // Parse the CSV row
+    while (matcher.find()) {
+      if (matcher.group(1) != null) { // Quoted word found
+        values.add(matcher.group(1));
+      } else if (matcher.group(2) != null) { // Coma found
+        values.add(matcher.group(2));
+      }
+    }
+    return values.toArray(new String[0]);
   }
 
   /** Expected header for routes files */
@@ -71,7 +96,25 @@ public class Parser {
     }
   }
 
-  // stops:      (stop_id,stop_name,stop_lat,stop_lon)
-  // stop_times: (trip_id,departure_time,stop_id,stop_sequence)
-  // trips:      (trip_id,route_id)
+  // TODO add integrity check
+
+  /**
+   * Convert the content of a CSV file to a list of objects
+   *
+   * @param <T> Object type
+   * @param path Path of the CSV file
+   * @param factory Object factory
+   * @return List of objects
+   */
+  public static <T> List<T> generic(String path, CsvFactory<T> factory) {
+    List<T> output = new ArrayList<>();
+    List<String[]> raw = Parser.regular(path);
+    for (int index = 1; index < raw.size(); ++index) {
+      output.add(factory.fromRow(raw.get(index)));
+    }
+    return output;
+  }
+
+  // TODO stop_times: (trip_id,departure_time,stop_id,stop_sequence)
+  // TODO trips:      (trip_id,route_id)
 }

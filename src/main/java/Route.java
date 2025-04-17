@@ -26,7 +26,7 @@ public class Route {
   /** Convert a Route object to string */
   @Override
   public String toString() {
-    return "Route(" + id + ", " + short_name + ", " + long_name + ", " + type + ")";
+    return "Route(" + id + ", '" + short_name + "', '" + long_name + "', " + type + ")";
   }
 
   // #### Getters ####
