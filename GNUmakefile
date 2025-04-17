@@ -15,6 +15,7 @@ $(BUILD_DIR)/.classes: $(SOURCES)
 	@touch $(BUILD_DIR)/.class
 
 doc:
+	@rm -rf $(JAVADOC_DIR)
 	@mkdir -p $(JAVADOC_DIR)
 	javadoc -d doc/javadoc $(SOURCES)
 

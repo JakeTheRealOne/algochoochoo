@@ -13,18 +13,18 @@ public class Parser {
   public Parser() {}
 
   /**
-   * Convert the content of a Roads file into a list of Road objects
+   * Convert the content of a Routes file into a list of Route objects
    *
    * @param path Path of the CSV file
-   * @return List of roads
+   * @return List of routes
    */
-  public static List<Road> roads(String path) {
-    List<Road> output = new ArrayList<>();
+  public static List<Route> routes(String path) {
+    List<Route> output = new ArrayList<>();
     List<String[]> raw = Parser.regular(path);
-    check_roads_integrity(raw);
+    check_routes_integrity(raw);
     for (int index = 1; index < raw.size(); ++index) {
-      Road road = new Road(raw.get(index));
-      output.add(road);
+      Route route = new Route(raw.get(index));
+      output.add(route);
     }
     return output;
   }
@@ -53,25 +53,24 @@ public class Parser {
     return output;
   }
 
-  /** Expected header for roads files */
+  /** Expected header for routes files */
   private static final String[] ROADS_HEADER = {
     "route_id", "route_short_name", "route_long_name", "route_type"
   };
 
   /**
-   * Check if the content of a roads file is valid
+   * Check if the content of a routes file is valid
    *
    * @exception IllegalArgumentException If the content is invalid
    */
-  private static void check_roads_integrity(List<String[]> content) {
+  private static void check_routes_integrity(List<String[]> content) {
     if (content.isEmpty()) {
-      throw new IllegalArgumentException("Roads file cannot be empty");
+      throw new IllegalArgumentException("Routes file cannot be empty");
     } else if (!Arrays.equals(content.get(0), ROADS_HEADER)) {
-      throw new IllegalArgumentException("Invalid roads header");
+      throw new IllegalArgumentException("Invalid routes header");
     }
   }
 
-  // routes:     (route_id,route_short_name,route_long_name,route_type)
   // stops:      (stop_id,stop_name,stop_lat,stop_lon)
   // stop_times: (trip_id,departure_time,stop_id,stop_sequence)
   // trips:      (trip_id,route_id)

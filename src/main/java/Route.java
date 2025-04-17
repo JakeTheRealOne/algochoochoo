@@ -1,38 +1,38 @@
 /**
- * (Literally) A road
+ * (Literally) A route
  *
  * @author Bilal Vandenberge
  */
-public class Road {
+public class Route {
   // #### Public methods ####
 
   /**
-   * Construct a new Road object
+   * Construct a new Route object
    *
    * @exception IllegalArgumentException If the argument is invalid
    * @param data A CSV file row
    */
-  public Road(String[] data) {
+  public Route(String[] data) {
     if (data.length != 4) {
       throw new IllegalArgumentException(
-          "Wrong road entry size (Input: " + data.length + " != Expected: 4)");
+          "Wrong route entry size (Input: " + data.length + " != Expected: 4)");
     }
     id = data[0];
     short_name = data[1];
     long_name = data[2];
-    type = RoadType.valueOf(data[3]);
+    type = RouteType.valueOf(data[3]);
   }
 
-  /** Convert a Road object to string */
+  /** Convert a Route object to string */
   @Override
   public String toString() {
-    return "Road(" + id + ", " + short_name + ", " + long_name + ", " + type + ")";
+    return "Route(" + id + ", " + short_name + ", " + long_name + ", " + type + ")";
   }
 
   // #### Getters ####
 
   /**
-   * Get the id of the road
+   * Get the id of the route
    *
    * @return The id
    */
@@ -41,7 +41,7 @@ public class Road {
   }
 
   /**
-   * Get the short name of the road
+   * Get the short name of the route
    *
    * @return The short name
    */
@@ -50,7 +50,7 @@ public class Road {
   }
 
   /**
-   * Get the long name of the road
+   * Get the long name of the route
    *
    * @return The long name
    */
@@ -59,11 +59,11 @@ public class Road {
   }
 
   /**
-   * Get the type of the road
+   * Get the type of the route
    *
-   * @return The road type
+   * @return The route type
    */
-  public RoadType type() {
+  public RouteType type() {
     return type;
   }
 
@@ -72,5 +72,5 @@ public class Road {
   private String id;
   private String short_name;
   private String long_name;
-  private RoadType type;
+  private RouteType type;
 }
