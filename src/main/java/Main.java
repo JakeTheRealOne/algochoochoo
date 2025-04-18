@@ -14,6 +14,8 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+// TODO: main/resources ???
+
 /**
  * Print the shortest path based on GTFS datas and certain criteria
  *
@@ -31,42 +33,12 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    time_test_skibidi();
+    time_test();
   }
 
   // #### Private helpers ####
 
-  private static void test_a() {
-    // TODO remove
-    // Remplace ce chemin par le dossier que tu veux parcourir
-    Path root = Paths.get("src/main/resources/GTFS/");
-
-    long start = System.currentTimeMillis();
-    try {
-      Files.walk(root)
-          .filter(Files::isRegularFile)
-          .parallel() // lit les fichiers en parallèle
-          .forEach(Main::readFileFast);
-    } catch (IOException e) {
-      System.out.println("AAAAAAAAAAAAaaa");
-    }
-    long end = System.currentTimeMillis();
-
-    System.out.println("Lecture terminée en " + (end - start) + " ms");
-  }
-
-  private static void readFileFast(Path filePath) {
-    System.out.println(filePath);
-    try (BufferedInputStream bis =
-        new BufferedInputStream(new FileInputStream(filePath.toFile()), 8192)) {
-      byte[] buffer = new byte[8192];
-      while (bis.read(buffer) != -1) {
-        // On ne fait rien avec les données pour maximiser la vitesse
-      }
-    } catch (IOException e) {
-      System.err.println("Erreur lors de la lecture de : " + filePath + " -> " + e.getMessage());
-    }
-  }
+  // TODO Add docstrings below
 
   private static void time_test() {
     String dir = "src/main/resources/GTFS/";
@@ -96,57 +68,6 @@ public class Main {
     System.out.println("In " + duration + " seconds");
   }
 
-  private static void time_test_skibidi() {
-    long start = System.nanoTime();
-    test_opencsv();
-    double duration = (double) (System.nanoTime() - start) / 1000000000;
-    System.out.println("OpenCSV in " + duration + " seconds");
-
-    start = System.nanoTime();
-    Parser.stop_times("/home/bvan/Developer/algotrain_preambule/algotrain/src/main/resources/GTFS/DELIJN/stop_times.csv");
-    duration = (double) (System.nanoTime() - start) / 1000000000;
-    System.out.println("univocity in " + duration + " seconds");
-  }
-
-  private static void test_univocity() {
-    String dir = "src/main/resources/GTFS/";
-    String path = "/home/bvan/Developer/algotrain_preambule/algotrain/src/main/resources/GTFS/DELIJN/stop_times.csv";
-    
-    List<StopTime> result = new ArrayList<>();
-
-    CsvParserSettings settings = new CsvParserSettings();
-    settings.setHeaderExtractionEnabled(true); // skip header
-    CsvParser parser = new CsvParser(settings);
-
-    try (Reader reader = Files.newBufferedReader(Path.of(path))) {
-        for (String[] row : parser.iterate(reader)) {
-            result.add(new StopTime(row));
-        }
-    } catch (IOException e) {
-      throw new IllegalArgumentException("An error occured while reading: '" + path + "'");
-    }    
-  }
-
-  private static void test_opencsv() {
-    String dir = "src/main/resources/GTFS/";
-    String path = "/home/bvan/Developer/algotrain_preambule/algotrain/src/main/resources/GTFS/DELIJN/stop_times.csv";
-    
-    List<StopTime> result = new ArrayList<>();
-
-    try (CSVReader reader = new CSVReader(new FileReader(path))) {
-      String[] row;
-      boolean first = true;
-      while ((row = reader.readNext()) != null) {
-          if (first) { first = false; continue; } // Skip header
-            result.add(new StopTime(row));
-      }
-    } catch (CsvException e) {
-      throw new IllegalArgumentException("An error occured while parsing: '" + path + "'");
-    } catch (IOException e) {
-      throw new IllegalArgumentException("An error occured while reading: '" + path + "'");
-    }    
-  }
-
   private static List<Route> all_routes_from(String main_dir) {
     List<Route> output = new ArrayList<>();
 
@@ -159,7 +80,7 @@ public class Main {
     for (File file : files) {
       if (file.isDirectory()) {
         String csv_file = file + "/routes.csv";
-        output.addAll(Parser.routes(csv_file));
+        Parser.routes(csv_file, output);
       }
     }
     return output;
@@ -177,7 +98,7 @@ public class Main {
     for (File file : files) {
       if (file.isDirectory()) {
         String csv_file = file + "/trips.csv";
-        output.addAll(Parser.trips(csv_file));
+        Parser.trips(csv_file, output);
       }
     }
     return output;
@@ -195,7 +116,7 @@ public class Main {
     for (File file : files) {
       if (file.isDirectory()) {
         String csv_file = file + "/stops.csv";
-        output.addAll(Parser.stops(csv_file));
+        Parser.stops(csv_file, output);
       }
     }
     return output;
@@ -213,7 +134,7 @@ public class Main {
     for (File file : files) {
       if (file.isDirectory()) {
         String csv_file = file + "/stop_times.csv";
-        output.addAll(Parser.stop_times(csv_file));
+        Parser.stop_times(csv_file, output);
       }
     }
     return output;

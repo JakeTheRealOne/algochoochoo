@@ -1,4 +1,3 @@
-import java.time.Duration;
 
 /**
  * (Literally) A stop schedule
@@ -85,12 +84,20 @@ public class StopTime {
    *
    * @param dep_str Time (HH:mm:ss)
    */
-  private static long read_time(String dep_str) {
-    String[] dep_parts = dep_str.split(":");
-    int hours = Integer.parseInt(dep_parts[0]);
-    int minutes = Integer.parseInt(dep_parts[1]);
-    int seconds = Integer.parseInt(dep_parts[2]);
-    Duration duration = Duration.parse("PT" + hours + "H" + minutes + "M" + seconds + "S");
-    return duration.getSeconds();
+  private static long read_time(String read_time) {
+    int h = 0, m = 0, s = 0;
+    int i = 0, j = 0;
+
+    while (read_time.charAt(j) != ':') j++;
+    h = Integer.parseInt(read_time.substring(i, j));
+    i = ++j;
+
+    while (read_time.charAt(j) != ':') j++;
+    m = Integer.parseInt(read_time.substring(i, j));
+    i = ++j;
+
+    s = Integer.parseInt(read_time.substring(i));
+
+    return h * 3600L + m * 60L + s;
   }
 }

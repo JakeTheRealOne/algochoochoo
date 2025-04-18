@@ -1,14 +1,11 @@
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.*;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.*;
+import java.util.regex.*;
 
 /**
  * Parse a CSV file
@@ -25,40 +22,42 @@ public class Parser {
    * Convert the content of a stops file into a list of Stop objects
    *
    * @param path Path of the CSV file
-   * @return List of stops
+   * @param list List receiving the output objects
    */
-  public static List<Stop> stops(String path) {
-    return generic(path, Stop::new);
+  public static void stops(String path, List<Stop> list) {
+    generic(path, Stop::new, list);
   }
 
   /**
    * Convert the content of a routes file into a list of Route objects
    *
    * @param path Path of the CSV file
-   * @return List of routes
+   * @param list List receiving the output objects
    */
-  public static List<Route> routes(String path) {
-    return generic(path, Route::new);
+  public static void routes(String path, List<Route> list) {
+    generic(path, Route::new, list);
   }
+
+  // TODO add list and change return in method docstrings
 
   /**
    * Convert the content of a trips file into a list of Trip objects
    *
    * @param path Path of the CSV file
-   * @return List of trips
+   * @param list List receiving the output objects
    */
-  public static List<Trip> trips(String path) {
-    return generic(path, Trip::new);
+  public static void trips(String path, List<Trip> list) {
+    generic(path, Trip::new, list);
   }
 
   /**
    * Convert the content of a stop_times file into a list of StopTime objects
    *
    * @param path Path of the CSV file
-   * @return List of stop times
+   * @param list List receiving the output objects
    */
-  public static List<StopTime> stop_times(String path) {
-    return generic(path, StopTime::new);
+  public static void stop_times(String path, List<StopTime> list) {
+    generic(path, StopTime::new, list);
   }
 
   // #### Private helpers ####
@@ -89,22 +88,20 @@ public class Parser {
    * @param <T> Object type
    * @param path Path of the CSV file
    * @param factory Object factory
+   * @param into List receiving the output objects
    * @return List of objects
    */
-  public static <T> List<T> generic(String path, CsvFactory<T> factory) {
-    List<T> output = new ArrayList<T>();
-
+  private static <T> void generic(String path, CsvFactory<T> factory, List<T> into) {
     CsvParserSettings settings = new CsvParserSettings();
     settings.setHeaderExtractionEnabled(true); // skip header
     CsvParser parser = new CsvParser(settings);
 
     try (Reader reader = Files.newBufferedReader(Path.of(path))) {
-        for (String[] row : parser.iterate(reader)) {
-            output.add(factory.fromRow(row));
-        }
+      for (String[] row : parser.iterate(reader)) {
+        into.add(factory.fromRow(row));
+      }
     } catch (IOException e) {
       throw new IllegalArgumentException("An error occured while reading: '" + path + "'");
-    } 
-    return output;
+    }
   }
 }
