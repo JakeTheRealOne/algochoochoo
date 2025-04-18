@@ -15,7 +15,7 @@ public class Trip {
   public Trip(String[] data) {
     if (data.length != 2) {
       throw new IllegalArgumentException(
-          "Wrong trip entry size (Input: " + data.length + " != Expected: 2), " + data[0] + "");
+          "Wrong trip entry size (Input: " + data.length + " != Expected: 2)");
     }
     id = data[0];
     route_id = data[1];

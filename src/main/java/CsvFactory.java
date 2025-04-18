@@ -8,7 +8,7 @@
 public interface CsvFactory<T> {
   /**
    * Call the constructor of T with a CSV row
-   * 
+   *
    * @param row CSV row
    * @return Object of type T
    */

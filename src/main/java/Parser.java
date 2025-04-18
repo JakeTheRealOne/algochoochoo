@@ -1,6 +1,14 @@
-import java.io.*;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.*;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Parse a CSV file
@@ -10,11 +18,11 @@ import java.util.regex.*;
 public class Parser {
   // #### Public methods ####
 
-  /** Construct a new Parser object */
-  public Parser() {}
+  /** Do not allow Parser instantiation */
+  private Parser() {}
 
   /**
-   * Convert the content of a Stops file into a list of Stop objects
+   * Convert the content of a stops file into a list of Stop objects
    *
    * @param path Path of the CSV file
    * @return List of stops
@@ -24,7 +32,7 @@ public class Parser {
   }
 
   /**
-   * Convert the content of a Routes file into a list of Route objects
+   * Convert the content of a routes file into a list of Route objects
    *
    * @param path Path of the CSV file
    * @return List of routes
@@ -34,7 +42,7 @@ public class Parser {
   }
 
   /**
-   * Convert the content of a Trips file into a list of Route objects
+   * Convert the content of a trips file into a list of Trip objects
    *
    * @param path Path of the CSV file
    * @return List of trips
@@ -43,50 +51,17 @@ public class Parser {
     return generic(path, Trip::new);
   }
 
-  // #### Private helpers ####
-
   /**
-   * Convert the content of a CSV file into a list of string arrays
+   * Convert the content of a stop_times file into a list of StopTime objects
    *
    * @param path Path of the CSV file
-   * @return List of file rows (as an array of strings)
+   * @return List of stop times
    */
-  private static List<String[]> regular(String path) {
-    List<String[]> output = new ArrayList<>();
-
-    try (BufferedReader file = new BufferedReader(new FileReader(path))) {
-      String line;
-      while ((line = file.readLine()) != null) {
-        output.add(csv_to_array(line));
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    return output;
+  public static List<StopTime> stop_times(String path) {
+    return generic(path, StopTime::new);
   }
 
-  /**
-   * Convert a CSV row to an array of string
-   * 
-   * @param row CSV row
-   * @return Array of all elements of the CSV row, seperated by a coma
-   */
-  private static String[] csv_to_array(String row) {
-    String regex = "\"([^\"]*)\"|([^\",]+)"; // < Quotes and comas separator
-    List<String> values = new ArrayList<>();
-    Matcher matcher = Pattern.compile(regex).matcher(row);
-
-    // Parse the CSV row
-    while (matcher.find()) {
-      if (matcher.group(1) != null) { // Quoted word found
-        values.add(matcher.group(1));
-      } else if (matcher.group(2) != null) { // Coma found
-        values.add(matcher.group(2));
-      }
-    }
-    return values.toArray(new String[0]);
-  }
+  // #### Private helpers ####
 
   /** Expected header for routes files */
   private static final String[] ROADS_HEADER = {
@@ -117,13 +92,19 @@ public class Parser {
    * @return List of objects
    */
   public static <T> List<T> generic(String path, CsvFactory<T> factory) {
-    List<T> output = new ArrayList<>();
-    List<String[]> raw = Parser.regular(path);
-    for (int index = 1; index < raw.size(); ++index) {
-      output.add(factory.fromRow(raw.get(index)));
-    }
+    List<T> output = new ArrayList<T>();
+
+    CsvParserSettings settings = new CsvParserSettings();
+    settings.setHeaderExtractionEnabled(true); // skip header
+    CsvParser parser = new CsvParser(settings);
+
+    try (Reader reader = Files.newBufferedReader(Path.of(path))) {
+        for (String[] row : parser.iterate(reader)) {
+            output.add(factory.fromRow(row));
+        }
+    } catch (IOException e) {
+      throw new IllegalArgumentException("An error occured while reading: '" + path + "'");
+    } 
     return output;
   }
-
-  // TODO stop_times: (trip_id,departure_time,stop_id,stop_sequence)
 }

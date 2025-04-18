@@ -15,7 +15,7 @@ public class Stop {
   public Stop(String[] data) {
     if (data.length != 4) {
       throw new IllegalArgumentException(
-          "Wrong stop entry size (Input: " + data.length + " != Expected: 4), " + data[0] + "");
+          "Wrong stop entry size (Input: " + data.length + " != Expected: 4)");
     }
     id = data[0];
     name = data[1];
