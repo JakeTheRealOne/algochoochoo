@@ -1,0 +1,4 @@
+route_id,route_short_name,route_long_name,route_type
+TOC-R0001,A,Toronto - Montreal,TRAIN
+TOC-R0002,B,Ottawa - Montreal,TRAIN
+TOC-R0003,C,Toronto - Ottawa,TRAIN

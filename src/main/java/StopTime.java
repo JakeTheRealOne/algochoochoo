@@ -1,4 +1,3 @@
-
 /**
  * (Literally) A stop schedule
  *
