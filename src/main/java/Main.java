@@ -26,7 +26,7 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    build_graph("src/test/resources/");
+    build_graph("src/main/resources/GTFS/");
   }
 
   // #### Private helpers ####
@@ -34,11 +34,14 @@ public class Main {
   // TODO Add docstrings below
 
   private static void build_graph(String main_dir) {
+    long start = System.nanoTime();
     Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
     populate_lines(main_dir, lines);
-    for (Map.Entry<String, TripLine> entry : lines.entrySet()) {
-      System.out.println(entry.getKey() + " : " + entry.getValue());
-    }
+    double duration = (double) (System.nanoTime() - start) / 1000000000;
+    System.out.println("D: " + duration + "s");
+    // for (Map.Entry<String, TripLine> entry : lines.entrySet()) {
+    //   System.out.println(entry.getKey() + " : " + entry.getValue());
+    // }
   }
 
   private static Map<String, Route> all_routes(String main_dir) {
