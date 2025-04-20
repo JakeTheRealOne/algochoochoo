@@ -18,15 +18,27 @@ public class TripStep {
 
   @Override
   public String toString() {
-    return "Step(" + stop.name() + ", " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60) + ")";
+    return "Step(" + stop.name() + ", " + beautiful_time() + ")";
   }
 
   // #### Getter ####
 
-  // TODO EHEHEH
+  public Stop stop() {
+    return stop;
+  }
+
+  public long time() {
+    return time;
+  }
 
   // #### Attribute ####
 
   Stop stop;
   long time;
+
+  // #### Private helpers ####
+
+  private String beautiful_time() {
+    return String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60);
+  }
 }

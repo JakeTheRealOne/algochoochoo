@@ -26,22 +26,26 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    build_graph("src/main/resources/GTFS/");
+    time_test("src/main/resources/GTFS");
   }
 
   // #### Private helpers ####
 
   // TODO Add docstrings below
 
-  private static void build_graph(String main_dir) {
+  private static void time_test(String main_dir) {
     long start = System.nanoTime();
     Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
     populate_lines(main_dir, lines);
+    Map<String, Node> graph = lines_to_graph(lines);
     double duration = (double) (System.nanoTime() - start) / 1000000000;
     System.out.println("D: " + duration + "s");
-    // for (Map.Entry<String, TripLine> entry : lines.entrySet()) {
-    //   System.out.println(entry.getKey() + " : " + entry.getValue());
-    // }
+  }
+
+  private static void build_graph(String main_dir) {
+    Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
+    populate_lines(main_dir, lines);
+    Map<String, Node> graph = lines_to_graph(lines);
   }
 
   private static Map<String, Route> all_routes(String main_dir) {
@@ -130,46 +134,68 @@ public class Main {
     }
   }
 
+  private static Map<String, Node> lines_to_graph(Map<String, TripLine> lines) {
+    Map<String, Node> output = new HashMap<>();
 
-  private static void time_test() {
-    String dir = "src/test/resources/";
+    for (Map.Entry<String, TripLine> entry : lines.entrySet()) {
+      TripLine line = entry.getValue();
+      if (line.null_steps() > 0) {
+        throw new IllegalArgumentException("Line " + line.id() + " is corrupted");
+      }
+      ArrayList<TripStep> sequence = line.sequence();
+      for (int index = 0; index < sequence.size() - 1; ++index) {
+          TripStep first = sequence.get(index);
+          TripStep second = sequence.get(index + 1);
+          Stop from = first.stop();
+          Stop to = second.stop();
+          // Create the nodes if non-existant
+          Node dest = output.computeIfAbsent(to.id(), k -> new Node(to));
+          output.computeIfAbsent(from.id(), k -> new Node(from)).add(new Edge(dest, first.time(), second.time()));
+      }
+    }
 
-    // long start = System.nanoTime();
-    // List<Route> routes = all_routes_from(dir);
-    // double duration = (double) (System.nanoTime() - start) / 1000000000;
-    // System.out.println("Total number of routes: " + routes.size());
-    // System.out.println("In " + duration + " seconds");
-    // for (Route r : routes) {
-    //   System.out.println(" " + r);
-    // }
-
-    // start = System.nanoTime();
-    // List<Trip> trips = all_trips_from(dir);
-    // duration = (double) (System.nanoTime() - start) / 1000000000;
-    // System.out.println("Total number of trips: " + trips.size());
-    // System.out.println("In " + duration + " seconds");
-    // for (Trip t : trips) {
-    //   System.out.println(" " + t);
-    // }
-
-    // start = System.nanoTime();
-    // List<Stop> stops = all_stops_from(dir);
-    // duration = (double) (System.nanoTime() - start) / 1000000000;
-    // System.out.println("Total number of stops: " + stops.size());
-    // System.out.println("In " + duration + " seconds");
-    // for (Stop s : stops) {
-    //   System.out.println(" " + s);
-    // }
-
-    // start = System.nanoTime();
-    // List<StopTime> stop_times = all_stop_times_from(dir);
-    // duration = (double) (System.nanoTime() - start) / 1000000000;
-    // System.out.println("Total number of stop times: " + stop_times.size());
-    // System.out.println("In " + duration + " seconds");
-    // for (StopTime s : stop_times) {
-    //   System.out.println(" " + s);
-    // }
+    return output;
   }
+
+  // private static void time_test() {
+  //   String dir = "src/test/resources/";
+
+  //   // long start = System.nanoTime();
+  //   // List<Route> routes = all_routes_from(dir);
+  //   // double duration = (double) (System.nanoTime() - start) / 1000000000;
+  //   // System.out.println("Total number of routes: " + routes.size());
+  //   // System.out.println("In " + duration + " seconds");
+  //   // for (Route r : routes) {
+  //   //   System.out.println(" " + r);
+  //   // }
+
+  //   // start = System.nanoTime();
+  //   // List<Trip> trips = all_trips_from(dir);
+  //   // duration = (double) (System.nanoTime() - start) / 1000000000;
+  //   // System.out.println("Total number of trips: " + trips.size());
+  //   // System.out.println("In " + duration + " seconds");
+  //   // for (Trip t : trips) {
+  //   //   System.out.println(" " + t);
+  //   // }
+
+  //   // start = System.nanoTime();
+  //   // List<Stop> stops = all_stops_from(dir);
+  //   // duration = (double) (System.nanoTime() - start) / 1000000000;
+  //   // System.out.println("Total number of stops: " + stops.size());
+  //   // System.out.println("In " + duration + " seconds");
+  //   // for (Stop s : stops) {
+  //   //   System.out.println(" " + s);
+  //   // }
+
+  //   // start = System.nanoTime();
+  //   // List<StopTime> stop_times = all_stop_times_from(dir);
+  //   // duration = (double) (System.nanoTime() - start) / 1000000000;
+  //   // System.out.println("Total number of stop times: " + stop_times.size());
+  //   // System.out.println("In " + duration + " seconds");
+  //   // for (StopTime s : stop_times) {
+  //   //   System.out.println(" " + s);
+  //   // }
+  // }
 
   // private static List<Route> all_routes_from(String main_dir) {
   //   List<Route> output = new ArrayList<>();
