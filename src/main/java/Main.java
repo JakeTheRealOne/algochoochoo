@@ -26,14 +26,14 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    time_test("src/main/resources/GTFS");
+    time_test_array("src/test/resources", "Quebec", "Montreal", 28800); // Partir de Quebec à 8h
   }
 
   // #### Private helpers ####
 
   // TODO Add docstrings below
 
-  private static void time_test(String main_dir) {
+  private static void time_test_graph(String main_dir) {
     long start = System.nanoTime();
     Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
     populate_lines(main_dir, lines);
@@ -46,6 +46,46 @@ public class Main {
     Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
     populate_lines(main_dir, lines);
     Map<String, Node> graph = lines_to_graph(lines);
+  }
+
+  private static void time_test_array(String main_dir, String s, String t, long h) {
+    long start = System.nanoTime();
+    Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
+    populate_lines(main_dir, lines);
+    ArrayList<Connection> array = lines_to_conns(lines);
+    CSA(array, s, t, h);
+    double duration = (double) (System.nanoTime() - start) / 1000000000;
+    System.out.println("D: " + duration + "s");
+    System.out.println("A: " + array.size() + " elements");
+  }
+
+  private static void build_array(String main_dir) {
+    Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
+    populate_lines(main_dir, lines);
+    ArrayList<Connection> array = lines_to_conns(lines);
+  }
+
+  private static void CSA(ArrayList<Connection> conns, String s, String t, long h) {
+    Map<String, Long> best = new HashMap<>();
+    for (Connection conn : conns) {
+      best.put(conn.from().name(), Long.MAX_VALUE);
+      best.put(conn.to().name(), Long.MAX_VALUE);
+    }
+    best.put(s, h);
+
+    for (Connection conn : conns) {
+      System.out.println("From: " + conn.from().name() + ", To: " + conn.to().name());
+      long arrival_from = best.get(conn.from().name());
+      if (arrival_from <= conn.departure_time()) {
+        long current = best.get(conn.to().name());
+        if (conn.arrival_time() < current) {
+          System.out.println("I think yes");
+          best.put(conn.to().name(), conn.arrival_time());
+        }
+      }
+    }
+    long output = best.get(t);
+    System.out.println("Temps d'arrivée: " + String.format("%02d:%02d:%02d", output / 3600, (output % 3600) / 60, output % 60));
   }
 
   private static Map<String, Route> all_routes(String main_dir) {
@@ -153,7 +193,28 @@ public class Main {
           output.computeIfAbsent(from.id(), k -> new Node(from)).add(new Edge(dest, first.time(), second.time()));
       }
     }
+    return output;
+  }
 
+  private static ArrayList<Connection> lines_to_conns(Map<String, TripLine> lines) {
+    ArrayList<Connection> output = new ArrayList<>();
+
+    for (Map.Entry<String, TripLine> entry : lines.entrySet()) {
+      TripLine line = entry.getValue();
+      if (line.null_steps() > 0) {
+        throw new IllegalArgumentException("Line " + line.id() + " is corrupted");
+      }
+      ArrayList<TripStep> sequence = line.sequence();
+      for (int index = 0; index < sequence.size() - 1; ++index) {
+          TripStep first = sequence.get(index);
+          TripStep second = sequence.get(index + 1);
+          Stop from = first.stop();
+          Stop to = second.stop();
+          // Create the nodes if non-existant
+          output.add(new Connection(from, to, first.time(), second.time()));
+      }
+    }
+    output.sort((Comparator.comparingLong(c -> c.departure_time())));
     return output;
   }
 
