@@ -1,24 +1,125 @@
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Parse a CSV file
+ * Parse GTFS files
  *
  * @author Bilal Vandenberge
  */
 public class Parser {
-  // #### Public methods ####
-
   /** Do not allow Parser instantiation */
   private Parser() {}
 
-  public static <T> Iterable<T> iterate(String path, CsvFactory<T> factory) {
+  // #### Public methods ####
+
+  /**
+   * Return the list of trips of a GTFS directory
+   *
+   * @param main_dir The main GTFS directory
+   * @param stops The list of stops
+   * @return The list of populated trips
+   */
+  public static ArrayList<Trip> trips(String main_dir, Map<String, Stop> stops) {
+    ArrayList<Trip> output = new ArrayList<>();
+    Map<String, Trip> map = new LinkedHashMap<>();
+
+    File dir = new File(main_dir);
+    if (!dir.isDirectory()) {
+      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
+    }
+
+    File[] files = dir.listFiles();
+    for (File file : files) {
+      if (!file.isDirectory()) {
+        continue;
+      }
+      String csv_file = file + "/trips.csv";
+      for (RTrip rtrip : iterate(csv_file, RTrip::new)) {
+        Trip trip = new Trip(rtrip);
+        output.add(trip);
+        map.put(trip.id(), trip);
+      }
+    }
+    populate_trips(main_dir, map, stops);
+    for (Trip trip : map.values()) {
+      trip.sort();
+    }
+    return output;
+  }
+
+  /**
+   * Return the map of stops {id, stop} of a GTFS directory
+   *
+   * @param main_dir The main GTFS directory
+   * @return The list of stops
+   */
+  public static Map<String, Stop> stops(String main_dir) {
+    Map<String, Stop> output = new LinkedHashMap<>();
+
+    File dir = new File(main_dir);
+    if (!dir.isDirectory()) {
+      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
+    }
+
+    File[] files = dir.listFiles();
+    for (File file : files) {
+      if (!file.isDirectory()) {
+        continue;
+      }
+      String csv_file = file + "/stops.csv";
+      for (Stop stop : iterate(csv_file, Stop::new)) {
+        output.put(stop.id(), stop);
+      }
+    }
+    return output;
+  }
+
+  // #### Private helpers ####
+
+  /**
+   * Populate the trips of a GTFS directory with stop times
+   *
+   * @param main_dir The main GTFS directory
+   * @param trips The list of trips
+   * @param stops The list of stops
+   */
+  private static void populate_trips(String main_dir, Map<String, Trip> trips, Map<String, Stop> stops) {
+    File dir = new File(main_dir);
+    if (!dir.isDirectory()) {
+      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
+    }
+
+    File[] files = dir.listFiles();
+    for (File file : files) {
+      if (!file.isDirectory()) {
+        continue;
+      }
+      String csv_file = file + "/stop_times.csv";
+      for (RStopTime stop_time : iterate(csv_file, RStopTime::new)) {
+        TripElement element = new TripElement(stop_time, stops);
+        trips.get(stop_time.trip_id()).add(element);
+      }
+    }
+  }
+
+  /**
+   * Iterate trough the rows of a GTFS .csv file
+   *
+   * @param <T> The object type stored in the GTFS file (e.g Stop, Trip)
+   * @param path The path of the CSV file
+   * @param factory The factory of objects
+   * @return An iterable over the objects stored in the file
+   */
+  private static <T> Iterable<T> iterate(String path, CsvFactory<T> factory) {
     return () -> {
       try {
         Reader reader = Files.newBufferedReader(Path.of(path));
@@ -44,82 +145,4 @@ public class Parser {
       }
     };
   }
-
-  // /**
-  //  * Convert the content of a stops file into a list of Stop objects
-  //  *
-  //  * @param path Path of the CSV file
-  //  * @param list List receiving the output objects
-  //  */
-  // public static void stops(String path, List<Stop> list) {
-  //   generic(path, Stop::new, list);
-  // }
-
-  // /**
-  //  * Convert the content of a routes file into a list of Route objects
-  //  *
-  //  * @param path Path of the CSV file
-  //  * @param list List receiving the output objects
-  //  */
-  // public static void routes(String path, List<Route> list) {
-  //   generic(path, Route::new, list);
-  // }
-
-  // // TODO add list and change return in method docstrings
-
-  // /**
-  //  * Convert the content of a trips file into a list of Trip objects
-  //  *
-  //  * @param path Path of the CSV file
-  //  * @param list List receiving the output objects
-  //  */
-  // public static void trips(String path, List<Trip> list) {
-  //   generic(path, Trip::new, list);
-  // }
-
-  // /**
-  //  * Convert the content of a stop_times file into a list of StopTime objects
-  //  *
-  //  * @param path Path of the CSV file
-  //  * @param list List receiving the output objects
-  //  */
-  // public static void stop_times(String path, List<StopTime> list) {
-  //   generic(path, StopTime::new, list);
-  // }
-
-  // #### Private helpers ####
-
-  // /** Expected header for routes files */
-  // private static final String[] ROADS_HEADER = {
-  //   "route_id", "route_short_name", "route_long_name", "route_type"
-  // };
-
-  // /**
-  //  * Check if the content of a routes file is valid
-  //  *
-  //  * @exception IllegalArgumentException If the content is invalid
-  //  */
-  // private static void check_routes_integrity(List<String[]> content) {
-  //   if (content.isEmpty()) {
-  //     throw new IllegalArgumentException("Routes file cannot be empty");
-  //   } else if (!Arrays.equals(content.get(0), ROADS_HEADER)) {
-  //     throw new IllegalArgumentException("Invalid routes header");
-  //   }
-  // }
-
-  // TODO add integrity check
-
-  // private static <T> void generic(String path, CsvFactory<T> factory, List<T> into) {
-  //   CsvParserSettings settings = new CsvParserSettings();
-  //   settings.setHeaderExtractionEnabled(true); // skip header
-  //   CsvParser parser = new CsvParser(settings);
-
-  //   try (Reader reader = Files.newBufferedReader(Path.of(path))) {
-  //     for (String[] row : parser.iterate(reader)) {
-  //       into.add(factory.fromRow(row));
-  //     }
-  //   } catch (IOException e) {
-  //     throw new IllegalArgumentException("An error occured while reading: '" + path + "'");
-  //   }
-  // }
 }

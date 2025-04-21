@@ -28,6 +28,19 @@ public class Stop {
     return "Stop(" + id + ", '" + name + "', " + pos + ")";
   }
 
+@Override
+public boolean equals(Object obj) {
+  if (this == obj) return true;
+  if (obj == null || getClass() != obj.getClass()) return false;
+  Stop other = (Stop) obj;
+  return id.equals(other.id);
+}
+
+@Override
+public int hashCode() {
+  return id.hashCode();
+}
+
   // #### Getters ####
 
   /**
@@ -55,6 +68,24 @@ public class Stop {
    */
   public EarthPos pos() {
     return pos;
+  }
+
+  /**
+   * Get the latitude of the stop
+   *
+   * @return The distance north or south of the equator
+   */
+  public double latitude() {
+    return pos.latitude();
+  }
+
+  /**
+   * Get the longitude of the stop
+   *
+   * @return The distance east or west of the Prime Meridian
+   */
+  public double longitude() {
+    return pos.longitude();
   }
 
   // #### Attributes ####

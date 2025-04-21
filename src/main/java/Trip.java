@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+
 /**
  * (Literally) A trip
  *
@@ -9,22 +12,36 @@ public class Trip {
   /**
    * Construct a new Trip object
    *
-   * @exception IllegalArgumentException If the argument is invalid
-   * @param data A CSV file row
+   * @param raw_trip The raw trip output from the trips.csv file
    */
-  public Trip(String[] data) {
-    if (data.length != 2) {
-      throw new IllegalArgumentException(
-          "Wrong trip entry size (Input: " + data.length + " != Expected: 2)");
-    }
-    id = data[0];
-    route_id = data[1];
+  public Trip(RTrip raw_trip) {
+    id = raw_trip.trip_id();
+    content = new ArrayList<>();
   }
 
   /** Convert a Trip object to string */
   @Override
   public String toString() {
-    return "Trip(" + id + ", " + route_id + ")";
+    return "Trip(" + id + " with " + content.size() + " stops)";
+  }
+
+  /**
+   * Add an element to the trip
+   *
+   * @param element The element to add
+   */
+  public void add(TripElement element) {
+    content.add(element);
+  }
+
+  /**
+   * Sort and return the content of the trip (based on the index of each element)
+   *
+   * @return The sorted content
+   */
+  public ArrayList<TripElement> sort() {
+    content.sort(Comparator.comparingInt(TripElement::index));
+    return content;
   }
 
   // #### Getters ####
@@ -39,16 +56,16 @@ public class Trip {
   }
 
   /**
-   * Get the id of the related route
+   * Get the content of the trip
    *
-   * @return The route id
+   * @return The content
    */
-  public String route_id() {
-    return route_id;
+  public ArrayList<TripElement> content() {
+    return content;
   }
 
   // #### Attributes ####
 
   private String id;
-  private String route_id;
+  private ArrayList<TripElement> content;
 }

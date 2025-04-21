@@ -1,24 +1,23 @@
-import java.io.*;
-import java.io.File;
-import java.nio.file.*;
-import java.util.*;
-
-// #### Univocity test ####
-
-// TODO redo all the fucking imports
-
-// TODO: main/resources ???
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.Map;
+import java.util.Comparator;
+import java.util.ListIterator;
 
 /**
- * Print the shortest path based on GTFS datas and certain criteria
+ * Run the application
  *
  * @author Bilal Vandenberge
  */
 public class Main {
-  // #### Public methods ####
-
   /** Do not allow Main instantiation */
   private Main() {}
+
+  // #### Public methods ####
 
   /**
    * Main entry point to the project
@@ -26,309 +25,241 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    time_test_array("src/test/resources", "Quebec", "Montreal", 28800); // Partir de Quebec à 8h
+    main_runtime_test();
   }
 
   // #### Private helpers ####
 
-  // TODO Add docstrings below
-
-  private static void time_test_graph(String main_dir) {
-    long start = System.nanoTime();
-    Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
-    populate_lines(main_dir, lines);
-    Map<String, Node> graph = lines_to_graph(lines);
-    double duration = (double) (System.nanoTime() - start) / 1000000000;
-    System.out.println("D: " + duration + "s");
+  /**
+   * Build a graph G(V, E) where E is the set of temp. link between two stops and V is the set of
+   * stops
+   * 
+   * @return The list of connections of the graph
+   */
+  private static ArrayList<Connection> build_graph(String main_dir) {
+    Map<String, Stop> stops = Parser.stops(main_dir);
+    System.out.println("Number of stops: " + stops.size());
+    ArrayList<Trip> trips = Parser.trips(main_dir, stops);
+    System.out.println("Number of trips: " + trips.size());
+    ArrayList<Connection> conns = trips_to_conns(trips);
+    System.out.println("Number of conns: " + conns.size());
+    return conns;
   }
 
-  private static void build_graph(String main_dir) {
-    Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
-    populate_lines(main_dir, lines);
-    Map<String, Node> graph = lines_to_graph(lines);
-  }
-
-  private static void time_test_array(String main_dir, String s, String t, long h) {
-    long start = System.nanoTime();
-    Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
-    populate_lines(main_dir, lines);
-    ArrayList<Connection> array = lines_to_conns(lines);
-    CSA(array, s, t, h);
-    double duration = (double) (System.nanoTime() - start) / 1000000000;
-    System.out.println("D: " + duration + "s");
-    System.out.println("A: " + array.size() + " elements");
-  }
-
-  private static void build_array(String main_dir) {
-    Map<String, TripLine> lines = all_lines(main_dir, all_routes(main_dir));
-    populate_lines(main_dir, lines);
-    ArrayList<Connection> array = lines_to_conns(lines);
-  }
-
-  private static void CSA(ArrayList<Connection> conns, String s, String t, long h) {
-    Map<String, Long> best = new HashMap<>();
-    for (Connection conn : conns) {
-      best.put(conn.from().name(), Long.MAX_VALUE);
-      best.put(conn.to().name(), Long.MAX_VALUE);
-    }
-    best.put(s, h);
-
-    for (Connection conn : conns) {
-      System.out.println("From: " + conn.from().name() + ", To: " + conn.to().name());
-      long arrival_from = best.get(conn.from().name());
-      if (arrival_from <= conn.departure_time()) {
-        long current = best.get(conn.to().name());
-        if (conn.arrival_time() < current) {
-          System.out.println("I think yes");
-          best.put(conn.to().name(), conn.arrival_time());
-        }
-      }
-    }
-    long output = best.get(t);
-    System.out.println("Temps d'arrivée: " + String.format("%02d:%02d:%02d", output / 3600, (output % 3600) / 60, output % 60));
-  }
-
-  private static Map<String, Route> all_routes(String main_dir) {
-    Map<String, Route> output = new HashMap<>();
-
-    File dir = new File(main_dir);
-    if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
-    }
-
-    File[] files = dir.listFiles();
-    for (File file : files) {
-      if (!file.isDirectory()) {
-        continue;
-      }
-      String csv_file = file + "/routes.csv";
-      for (Route route : Parser.iterate(csv_file, Route::new)) {
-        output.put(route.id(), route);
-      }
-    }
-    return output;
-  }
-
-  private static Map<String, TripLine> all_lines(String main_dir, Map<String, Route> routes) {
-    Map<String, TripLine> output = new HashMap<>();
-
-    File dir = new File(main_dir);
-    if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
-    }
-
-    File[] files = dir.listFiles();
-    for (File file : files) {
-      if (!file.isDirectory()) {
-        continue;
-      }
-      String csv_file = file + "/trips.csv";
-      for (Trip trip : Parser.iterate(csv_file, Trip::new)) {
-        output.put(trip.id(), new TripLine(trip, routes));
-      }
-    }
-    return output;
-  }
-
-  private static Map<String, Stop> all_stops(String main_dir) {
-    Map<String, Stop> output = new HashMap<>();
-
-    File dir = new File(main_dir);
-    if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
-    }
-
-    File[] files = dir.listFiles();
-    for (File file : files) {
-      if (!file.isDirectory()) {
-        continue;
-      }
-      String csv_file = file + "/stops.csv";
-      for (Stop stop : Parser.iterate(csv_file, Stop::new)) {
-        output.put(stop.id(), stop);
-      }
-    }
-    return output;
-  }
-
-  private static void populate_lines(String main_dir, Map<String, TripLine> lines) {
-    Map<String, Stop> stops = all_stops(main_dir);
-    File dir = new File(main_dir);
-    if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
-    }
-
-    File[] files = dir.listFiles();
-    for (File file : files) {
-      if (!file.isDirectory()) {
-        continue;
-      }
-      String csv_file = file + "/stop_times.csv";
-      for (StopTime time : Parser.iterate(csv_file, StopTime::new)) {
-        TripLine line = lines.get(time.trip_id());
-        if (line == null) {
-          throw new IllegalArgumentException("Unknown trip id: '" + time.trip_id() + "'");
-        }
-        line.add(time, stops);
-      }
-    }
-  }
-
-  private static Map<String, Node> lines_to_graph(Map<String, TripLine> lines) {
-    Map<String, Node> output = new HashMap<>();
-
-    for (Map.Entry<String, TripLine> entry : lines.entrySet()) {
-      TripLine line = entry.getValue();
-      if (line.null_steps() > 0) {
-        throw new IllegalArgumentException("Line " + line.id() + " is corrupted");
-      }
-      ArrayList<TripStep> sequence = line.sequence();
-      for (int index = 0; index < sequence.size() - 1; ++index) {
-          TripStep first = sequence.get(index);
-          TripStep second = sequence.get(index + 1);
-          Stop from = first.stop();
-          Stop to = second.stop();
-          // Create the nodes if non-existant
-          Node dest = output.computeIfAbsent(to.id(), k -> new Node(to));
-          output.computeIfAbsent(from.id(), k -> new Node(from)).add(new Edge(dest, first.time(), second.time()));
-      }
-    }
-    return output;
-  }
-
-  private static ArrayList<Connection> lines_to_conns(Map<String, TripLine> lines) {
+  /**
+   * Convert a list of trips to a list of connections
+   * 
+   * @param trips The list of trips
+   * @return The list of connections
+   */
+  private static ArrayList<Connection> trips_to_conns(ArrayList<Trip> trips) {
     ArrayList<Connection> output = new ArrayList<>();
-
-    for (Map.Entry<String, TripLine> entry : lines.entrySet()) {
-      TripLine line = entry.getValue();
-      if (line.null_steps() > 0) {
-        throw new IllegalArgumentException("Line " + line.id() + " is corrupted");
-      }
-      ArrayList<TripStep> sequence = line.sequence();
-      for (int index = 0; index < sequence.size() - 1; ++index) {
-          TripStep first = sequence.get(index);
-          TripStep second = sequence.get(index + 1);
-          Stop from = first.stop();
-          Stop to = second.stop();
-          // Create the nodes if non-existant
-          output.add(new Connection(from, to, first.time(), second.time()));
+    for (Trip trip : trips) {
+      ArrayList<TripElement> seq = trip.content();
+      int n = seq.size();
+      for (int i = 0; i < n - 1; ++i) {
+        Connection conn = new Connection(seq.get(i), seq.get(i + 1), trip.id());
+        output.add(conn);
       }
     }
-    output.sort((Comparator.comparingLong(c -> c.departure_time())));
+    output.sort(Comparator.comparingInt(Connection::departure_time));
     return output;
   }
 
-  // private static void time_test() {
-  //   String dir = "src/test/resources/";
+  private static ArrayList<Connection> CSA(String s, String t, int h, ArrayList<Connection> conns) {
+    Map<String, Integer> earliest = new LinkedHashMap<>();
+    Map<String, Connection> predecessor = new LinkedHashMap<>();
 
-  //   // long start = System.nanoTime();
-  //   // List<Route> routes = all_routes_from(dir);
-  //   // double duration = (double) (System.nanoTime() - start) / 1000000000;
-  //   // System.out.println("Total number of routes: " + routes.size());
-  //   // System.out.println("In " + duration + " seconds");
-  //   // for (Route r : routes) {
-  //   //   System.out.println(" " + r);
-  //   // }
+    for (Connection conn : conns) {
+      earliest.put(conn.from().id(), Integer.MAX_VALUE);
+      earliest.put(conn.to().id(), Integer.MAX_VALUE);
+    }
+    earliest.put(s, h);
 
-  //   // start = System.nanoTime();
-  //   // List<Trip> trips = all_trips_from(dir);
-  //   // duration = (double) (System.nanoTime() - start) / 1000000000;
-  //   // System.out.println("Total number of trips: " + trips.size());
-  //   // System.out.println("In " + duration + " seconds");
-  //   // for (Trip t : trips) {
-  //   //   System.out.println(" " + t);
-  //   // }
+    for (Connection conn : conns) {
+      if (!earliest.containsKey(conn.from().id())) continue;
+      if (!(conn.departure_time() < earliest.get(conn.from().id()))) {
+        if (conn.arrival_time() < earliest.get(conn.to().id())) {
+          earliest.put(conn.to().id(), conn.arrival_time());
+          predecessor.put(conn.to().id(), conn);
+        }
+      }
+    }
 
-  //   // start = System.nanoTime();
-  //   // List<Stop> stops = all_stops_from(dir);
-  //   // duration = (double) (System.nanoTime() - start) / 1000000000;
-  //   // System.out.println("Total number of stops: " + stops.size());
-  //   // System.out.println("In " + duration + " seconds");
-  //   // for (Stop s : stops) {
-  //   //   System.out.println(" " + s);
-  //   // }
 
-  //   // start = System.nanoTime();
-  //   // List<StopTime> stop_times = all_stop_times_from(dir);
-  //   // duration = (double) (System.nanoTime() - start) / 1000000000;
-  //   // System.out.println("Total number of stop times: " + stop_times.size());
-  //   // System.out.println("In " + duration + " seconds");
-  //   // for (StopTime s : stop_times) {
-  //   //   System.out.println(" " + s);
-  //   // }
-  // }
+    ArrayList<Connection> output = new ArrayList<>();
+    if (!predecessor.containsKey(t)) {
+        return output; 
+    }
+    String current = t;
+    while (!current.equals(s)) {
+        Connection conn = predecessor.get(current);
+        output.add(conn);
+        current = conn.from().id();
+    }
+    Collections.reverse(output);
+    return output;
+  }
 
-  // private static List<Route> all_routes_from(String main_dir) {
-  //   List<Route> output = new ArrayList<>();
+  private static void print_result(ArrayList<Connection> path) {
+    System.out.println("--- RESULTS ---");
 
-  //   File dir = new File(main_dir);
-  //   if (!dir.isDirectory()) {
-  //     throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
-  //   }
+    int i = 0;
+    int n = path.size();
 
-  //   File[] files = dir.listFiles();
-  //   for (File file : files) {
-  //     if (file.isDirectory()) {
-  //       String csv_file = file + "/routes.csv";
-  //       Parser.routes(csv_file, output);
-  //     }
-  //   }
-  //   return output;
-  // }
+    while (i < n) {
+      String trip_id = path.get(i).trip_id();
+      int time = path.get(i).departure_time();
+      System.out.print("Prendre le TRANSPORT depuis " + path.get(i).from().name() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+      
+      int j = i;
+      while (j < n && path.get(j).trip_id().equals(trip_id)) {
+        ++j;
+      }
+      time = path.get(j-1).arrival_time();
+      System.out.println(" puis descendre à " + path.get(j-1).to().name() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+      i = j;
+    }
+    System.out.println("--- ------- ---");
+  }
 
-  // private static List<Trip> all_trips_from(String main_dir) {
-  //   List<Trip> output = new ArrayList<>();
+  // #### Speed tests ####
 
-  //   File dir = new File(main_dir);
-  //   if (!dir.isDirectory()) {
-  //     throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
-  //   }
+  /** Compare the time to iterate through an ArrayList and a Map */
+  private static void dict_vs_list() {
+    final int SIZE = 20_000_000;
+    List<Integer> list = new ArrayList<>(SIZE);
+    Map<String, Integer> map = new HashMap<>(SIZE);
+    Map<String, Integer> lmap = new LinkedHashMap<>(SIZE);
+    DictoList<Integer> dict = new DictoList<>(SIZE);
+    // for (int i = 0; i < SIZE; i++) {
+    //   list.add(i);
+    //   map.put(i, i);
+    //   dict.put(String.valueOf(i), i);
+    // }
+    String[] keys = new String[SIZE];
+    for (int i = 0; i < SIZE; i++) {
+      keys[i] = String.valueOf(i);
+    }
 
-  //   File[] files = dir.listFiles();
-  //   for (File file : files) {
-  //     if (file.isDirectory()) {
-  //       String csv_file = file + "/trips.csv";
-  //       Parser.trips(csv_file, output);
-  //     }
-  //   }
-  //   return output;
-  // }
+    long start = System.nanoTime();
+    for (int i = 0; i < SIZE; i++) {
+      list.add(i);
+    }
+    long end = System.nanoTime();
+    System.out.println("ArrayList creation time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    for (int i = 0; i < SIZE; i++) {
+      map.put(keys[i], i);
+    }
+    end = System.nanoTime();
+    System.out.println("HashMap creation time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    for (int i = 0; i < SIZE; i++) {
+      lmap.put(keys[i], i);
+    }
+    end = System.nanoTime();
+    System.out.println("LinkedHashMap creation time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    for (int i = 0; i < SIZE; i++) {
+      dict.put(keys[i], i);
+    }
+    end = System.nanoTime();
+    System.out.println("DictoList creation time: " + (end - start) / 1_000_000 + " ms");
 
-  // private static List<Stop> all_stops_from(String main_dir) {
-  //   List<Stop> output = new ArrayList<>();
+    System.out.println("---");
 
-  //   File dir = new File(main_dir);
-  //   if (!dir.isDirectory()) {
-  //     throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
-  //   }
+    start = System.nanoTime();
+    long sum_list = 0;
+    for (int value : list) {
+      sum_list += value;
+    }
+    end = System.nanoTime();
+    System.out.println("ArrayList iteration time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    long sum_map = 0;
+    for (Integer value : map.values()) {
+      sum_map += value;
+    }
+    end = System.nanoTime();
+    System.out.println("HashMap iteration time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    long sum_lmap = 0;
+    for (Integer value : lmap.values()) {
+      sum_lmap += value;
+    }
+    end = System.nanoTime();
+    System.out.println("Linked HashMap iteration time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    long sum_dict = 0;
+    for (Integer entry : dict) {
+      sum_dict += entry;
+    }
+    end = System.nanoTime();
+    System.out.println("DictoList iteration time: " + (end - start) / 1_000_000 + " ms");
 
-  //   File[] files = dir.listFiles();
-  //   for (File file : files) {
-  //     if (file.isDirectory()) {
-  //       String csv_file = file + "/stops.csv";
-  //       Parser.stops(csv_file, output);
-  //     }
-  //   }
-  //   return output;
-  // }
+    System.out.println("---");
 
-  // private static List<StopTime> all_stop_times_from(String main_dir) {
-  //   List<StopTime> output = new ArrayList<>();
+    start = System.nanoTime();
+    for (String key : keys) {
+      sum_map += map.get(key);
+    }
+    end = System.nanoTime();
+    System.out.println("HashMap access time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    for (String key : keys) {
+      sum_lmap += lmap.get(key);
+    }
+    end = System.nanoTime();
+    System.out.println("Linked HashMap access time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    for (String key : keys) {
+      sum_dict += dict.get(key);
+    }
+    end = System.nanoTime();
+    System.out.println("DictoList access time: " + (end - start) / 1_000_000 + " ms");
+    System.out.println("---");
+    System.out.println("Sum (ArrayList): " + sum_list);
+    System.out.println("Sum (HashMap): " + sum_map);
+    System.out.println("Sum (LinkedHashMap): " + sum_lmap);
+    System.out.println("Sum (DictoList): " + sum_dict);
+  }
 
-  //   File dir = new File(main_dir);
-  //   if (!dir.isDirectory()) {
-  //     throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
-  //   }
+  /** Compare the time of sorting while adding element and sorting after adding element */
+  private static void sort_while_or_after() {
+    final int SIZE = 10_000_000;
+    List<Integer> list = new ArrayList<>(SIZE);
+    TreeSet<Integer> sorted = new TreeSet<>();
 
-  //   File[] files = dir.listFiles();
-  //   for (File file : files) {
-  //     if (file.isDirectory()) {
-  //       String csv_file = file + "/stop_times.csv";
-  //       Parser.stop_times(csv_file, output);
-  //     }
-  //   }
-  //   return output;
-  // }
+    List<Integer> data = new ArrayList<>(SIZE);
+    for (int i = 0; i < SIZE; i++) {
+      data.add(i);
+    }
+    Collections.shuffle(data);
+
+    long start = System.nanoTime();
+    for (int i = 0; i < SIZE; i++) {
+      list.add(data.get(i));
+    }
+    Collections.sort(list);
+    long end = System.nanoTime();
+    System.out.println("ArrayList creation time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+    for (int i = 0; i < SIZE; i++) {
+      sorted.add(data.get(i));
+    }
+    end = System.nanoTime();
+    System.out.println("TreeSet creation time: " + (end - start) / 1_000_000 + " ms");
+  }
+
+  private static void main_runtime_test() {
+    long start = System.nanoTime();
+    ArrayList<Connection> conns = build_graph("src/main/resources/GTFS");
+    print_result(CSA("STIB-8733", "STIB-8162", 5*3600 + 35*60 + 40, conns));
+    print_result(CSA("SNCB-8007817", "STIB-8162", 5*3600 + 35*60 + 40, conns));
+    print_result(CSA("DELIJN-320843", "TEC-Baegd741", 5*3600 + 35*60 + 40, conns));
+    long end = System.nanoTime();
+    System.out.println("Main execution time: " + (end - start) / 1_000_000 + " ms");
+    start = System.nanoTime();
+  }
 }
-
-// TODO change the docstring of the Main class
