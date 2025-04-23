@@ -1,9 +1,9 @@
 stop_id,stop_name,stop_lat,stop_lon
-TOC-S0001,Quebec,1.0,1.0
+TOC-S0001,Québec,1.0,1.0
 TOC-S0002,Toronto,2.0,2.0
 TOC-S0003,Ottawa Nord,0.0,2.0
 TOC-S0004,Ottawa Sud,0.01,2.0
-TOC-S0005,Montreal,1.0,5.0
+TOC-S0005,Montréal,1.0,5.0
 TOC-S0006,Trois-Rivières,2.0,3.0
 TOC-S0007,Halifax,2.0,4.0
 TOC-S0008,Calgary,0.0,3.0

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * (Literally) A stop
  *
@@ -28,18 +30,14 @@ public class Stop {
     return "Stop(" + id + ", '" + name + "', " + pos + ")";
   }
 
-@Override
-public boolean equals(Object obj) {
-  if (this == obj) return true;
-  if (obj == null || getClass() != obj.getClass()) return false;
-  Stop other = (Stop) obj;
-  return id.equals(other.id);
-}
-
-@Override
-public int hashCode() {
-  return id.hashCode();
-}
+  /**
+   * Set the list of neighbors
+   * 
+   * @param n The new list of neighbors
+   */
+  public void setNeighbors(ArrayList<Neighbor> n) {
+    neighbors = n;
+  }
 
   // #### Getters ####
 
@@ -88,9 +86,19 @@ public int hashCode() {
     return pos.longitude();
   }
 
+  /**
+   * Get the close neighbors of the stop
+   *
+   * @return The list of neighbors
+   */
+  public ArrayList<Neighbor> neighbors() {
+    return neighbors;
+  }
+
   // #### Attributes ####
 
   private String id;
   private String name;
   private EarthPos pos;
+  private ArrayList<Neighbor> neighbors;
 }

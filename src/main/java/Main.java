@@ -43,6 +43,9 @@ public class Main {
     System.out.println("Number of trips: " + trips.size());
     ArrayList<Connection> conns = trips_to_conns(trips);
     System.out.println("Number of conns: " + conns.size());
+    BallTree bt = new BallTree(stops.values());
+    bt.update_footpaths(stops.values());
+
     return conns;
   }
 
@@ -66,6 +69,7 @@ public class Main {
     return output;
   }
 
+  // TODO: Rajouter des docstrings
   private static ArrayList<Connection> CSA(String s, String t, int h, ArrayList<Connection> conns) {
     Map<String, Integer> earliest = new LinkedHashMap<>();
     Map<String, Connection> predecessor = new LinkedHashMap<>();
@@ -82,6 +86,14 @@ public class Main {
         if (conn.arrival_time() < earliest.get(conn.to().id())) {
           earliest.put(conn.to().id(), conn.arrival_time());
           predecessor.put(conn.to().id(), conn);
+
+          for (Neighbor foot : conn.to().neighbors()) {
+            int arrivalByFoot = conn.arrival_time() + foot.duration();
+            if (arrivalByFoot < earliest.getOrDefault(foot.stop().id(), Integer.MAX_VALUE)) {
+              earliest.put(foot.stop().id(), arrivalByFoot);
+              predecessor.put(foot.stop().id(), new Connection(conn.to(), foot.stop(), conn.arrival_time(), foot.duration()));
+            }
+          }
         }
       }
     }
@@ -110,7 +122,9 @@ public class Main {
     while (i < n) {
       String trip_id = path.get(i).trip_id();
       int time = path.get(i).departure_time();
-      System.out.print("Prendre le TRANSPORT depuis " + path.get(i).from().name() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+      boolean walk = path.get(i).is_footpath();
+
+      System.out.print((walk ? "Marcher de " : "Prendre le TRANSPORT depuis ") + path.get(i).from().name() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
       
       int j = i;
       while (j < n && path.get(j).trip_id().equals(trip_id)) {

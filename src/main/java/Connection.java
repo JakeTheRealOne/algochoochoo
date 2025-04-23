@@ -6,18 +6,34 @@
 public class Connection {
   // #### Public methods ####
 
+  // TODO Change trip string to trip Trip
+
   /**
    * Construct a new Connection object
    * 
    * @param first The first element
    * @param second The second element
+   * @param trip The id of the trip owning the connection
    */
   public Connection(TripElement first, TripElement second, String trip) {
     from = first.stop();
     to = second.stop();
     trip_id = trip;
+    walking = false;
     departure_time = first.departure_time();
     arrival_time = second.departure_time();
+    if (arrival_time < departure_time) {
+      throw new IllegalArgumentException("Arrival time: " + beautiful_time(false) + " < Departure time: " + beautiful_time(true));
+    }
+  }
+
+  public Connection(Stop first, Stop second, int dep, int dur) {
+    from = first;
+    to = second;
+    trip_id = "WALK-0001";
+    walking = true;
+    departure_time = dep;
+    arrival_time = dep + dur;
     if (arrival_time < departure_time) {
       throw new IllegalArgumentException("Arrival time: " + beautiful_time(false) + " < Departure time: " + beautiful_time(true));
     }
@@ -77,6 +93,15 @@ public class Connection {
     return arrival_time;
   }
 
+  /**
+   * Get if the connection is a transfer
+   * 
+   * @return If the connection is a footpath
+   */
+  public boolean is_footpath() {
+    return walking;
+  }
+
   // #### Attributes ####
 
   Stop from;
@@ -84,6 +109,7 @@ public class Connection {
   String trip_id;
   int departure_time;
   int arrival_time;
+  boolean walking;
 
   // #### Private helpers ####
 
