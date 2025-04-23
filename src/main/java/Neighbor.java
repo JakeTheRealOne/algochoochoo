@@ -1,6 +1,6 @@
 /**
  * (Literally) A neighbor within walking distance
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class Neighbor {
@@ -8,7 +8,7 @@ public class Neighbor {
 
   /**
    * Construct a new Neighbor object
-   * 
+   *
    * @param to The neighbor
    * @param distance The distance to the neighbor
    */
@@ -27,7 +27,7 @@ public class Neighbor {
 
   /**
    * Get the neighbor
-   * 
+   *
    * @return The neighbor
    */
   public Stop stop() {
@@ -36,7 +36,7 @@ public class Neighbor {
 
   /**
    * Get the duration (walk time) to the neighbor
-   * 
+   *
    * @return The duration (in seconds)
    */
   public int duration() {
@@ -46,20 +46,21 @@ public class Neighbor {
   // #### Private helpers ####
 
   /**
-   * Estimate and return the walk time
-   * 
+   * Estimate and return the walk time in seconds (optimized for large datasets)
+   *
    * @param dist The distance (in meter)
+   * @return The estimated walk time in seconds
    */
   private static int compute_walk_time(int dist) {
-    double vitesse = 83.33;
-    double margeFixe = 1.5;
-    double correction = dist > 1000 ? 1.15 : 1.25;
-    
-    return (int) (((dist / vitesse) * correction + margeFixe) * 60);
+    final int speed = 8333; // 5 km/h is base walk speed
+    final int margin = 90; // 1min30 for transfer
+    final int adjust = 125; // city density adjustement
+
+    int time = (dist * adjust) / speed;
+    return time + margin;
   }
 
   // #### Attributes ####
   private Stop stop;
   private int dur;
 }
-

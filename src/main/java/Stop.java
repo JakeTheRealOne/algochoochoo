@@ -32,7 +32,7 @@ public class Stop {
 
   /**
    * Set the list of neighbors
-   * 
+   *
    * @param n The new list of neighbors
    */
   public void setNeighbors(ArrayList<Neighbor> n) {

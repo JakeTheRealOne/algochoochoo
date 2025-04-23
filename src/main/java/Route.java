@@ -21,12 +21,22 @@ public class Route {
     short_name = data[1];
     long_name = data[2];
     type = RouteType.valueOf(data[3]);
+    agency = "None";
   }
 
   /** Convert a Route object to string */
   @Override
   public String toString() {
     return "Route(" + id + ", '" + short_name + "', '" + long_name + "', " + type + ")";
+  }
+
+  /**
+   * Set the agency of the route
+   *
+   * @param ag The new agency name
+   */
+  public void setAgency(String ag) {
+    agency = ag;
   }
 
   // #### Getters ####
@@ -67,10 +77,20 @@ public class Route {
     return type;
   }
 
+  /**
+   * Get the agency owning the route (STIB, ...)
+   *
+   * @return The route agency
+   */
+  public String agency() {
+    return agency;
+  }
+
   // #### Attributes ####
 
   private String id;
   private String short_name;
   private String long_name;
+  private String agency;
   private RouteType type;
 }

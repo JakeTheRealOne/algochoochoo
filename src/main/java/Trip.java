@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
 
 /**
  * (Literally) A trip
@@ -9,13 +10,21 @@ import java.util.Comparator;
 public class Trip {
   // #### Public methods ####
 
+  // TODO: for each map.get, check if null
+
   /**
    * Construct a new Trip object
    *
+   * @exception IllegalArgumentException If the route id doesn't match
    * @param raw_trip The raw trip output from the trips.csv file
+   * @param routes The routes of the GTFS datas
    */
-  public Trip(RTrip raw_trip) {
+  public Trip(RTrip raw_trip, Map<String, Route> routes) {
     id = raw_trip.trip_id();
+    route = routes.get(raw_trip.route_id());
+    if (route == null) {
+      throw new IllegalArgumentException("Unknown route: '" + raw_trip.route_id() + "'");
+    }
     content = new ArrayList<>();
   }
 
@@ -56,6 +65,15 @@ public class Trip {
   }
 
   /**
+   * Get the route followed by the trip
+   *
+   * @return The route
+   */
+  public Route route() {
+    return route;
+  }
+
+  /**
    * Get the content of the trip
    *
    * @return The content
@@ -67,5 +85,6 @@ public class Trip {
   // #### Attributes ####
 
   private String id;
+  private Route route;
   private ArrayList<TripElement> content;
 }

@@ -37,6 +37,7 @@ public class Parser {
       throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
     }
 
+    Map<String, Route> routes = routes(main_dir);
     File[] files = dir.listFiles();
     for (File file : files) {
       if (!file.isDirectory()) {
@@ -44,7 +45,7 @@ public class Parser {
       }
       String csv_file = file + "/trips.csv";
       for (RTrip rtrip : iterate(csv_file, RTrip::new)) {
-        Trip trip = new Trip(rtrip);
+        Trip trip = new Trip(rtrip, routes);
         output.add(trip);
         map.put(trip.id(), trip);
       }
@@ -52,6 +53,34 @@ public class Parser {
     populate_trips(main_dir, map, stops);
     for (Trip trip : map.values()) {
       trip.sort();
+    }
+    return output;
+  }
+
+  /**
+   * Return the map {id, route} of routes of a GTFS directory
+   *
+   * @param main_dir The main GTFS directory
+   * @return The map of routes
+   */
+  public static Map<String, Route> routes(String main_dir) {
+    Map<String, Route> output = new LinkedHashMap<>();
+
+    File dir = new File(main_dir);
+    if (!dir.isDirectory()) {
+      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
+    }
+
+    File[] files = dir.listFiles();
+    for (File file : files) {
+      if (!file.isDirectory()) {
+        continue;
+      }
+      String csv_file = file + "/routes.csv";
+      for (Route route : iterate(csv_file, Route::new)) {
+        route.setAgency(file.getName());
+        output.put(route.id(), route);
+      }
     }
     return output;
   }
@@ -92,7 +121,8 @@ public class Parser {
    * @param trips The list of trips
    * @param stops The list of stops
    */
-  private static void populate_trips(String main_dir, Map<String, Trip> trips, Map<String, Stop> stops) {
+  private static void populate_trips(
+      String main_dir, Map<String, Trip> trips, Map<String, Stop> stops) {
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
       throw new IllegalArgumentException("'" + main_dir + "' is not a directory");

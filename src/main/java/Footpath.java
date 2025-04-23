@@ -1,6 +1,6 @@
 /**
  * (Literally) A footpath
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class Footpath {
@@ -8,7 +8,7 @@ public class Footpath {
 
   /**
    * Construct a new Footpath object
-   * 
+   *
    * @param first The first stop of the path
    * @param second The second stop of the path
    * @param dur The duration of the footpath
@@ -32,7 +32,7 @@ public class Footpath {
 
   /**
    * Get the first node of the path
-   * 
+   *
    * @return The first node of the path
    */
   public Stop from() {
@@ -41,7 +41,7 @@ public class Footpath {
 
   /**
    * Get the second node of the path
-   * 
+   *
    * @return The second node of the path
    */
   public Stop to() {
@@ -50,13 +50,12 @@ public class Footpath {
 
   /**
    * Get the duration of the path
-   * 
+   *
    * @return The duration of the path
    */
   public int duration() {
     return duration;
   }
-
 
   // #### Attributes ####
 

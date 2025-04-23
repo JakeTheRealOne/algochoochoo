@@ -10,32 +10,34 @@ public class Connection {
 
   /**
    * Construct a new Connection object
-   * 
+   *
    * @param first The first element
    * @param second The second element
-   * @param trip The id of the trip owning the connection
+   * @param trip_ The id of the trip owning the connection
    */
-  public Connection(TripElement first, TripElement second, String trip) {
+  public Connection(TripElement first, TripElement second, Trip trip_) {
     from = first.stop();
     to = second.stop();
-    trip_id = trip;
+    trip = trip_;
     walking = false;
     departure_time = first.departure_time();
     arrival_time = second.departure_time();
     if (arrival_time < departure_time) {
-      throw new IllegalArgumentException("Arrival time: " + beautiful_time(false) + " < Departure time: " + beautiful_time(true));
+      throw new IllegalArgumentException(
+          "Arrival time: " + beautiful_time(false) + " < Departure time: " + beautiful_time(true));
     }
   }
 
   public Connection(Stop first, Stop second, int dep, int dur) {
     from = first;
     to = second;
-    trip_id = "WALK-0001";
+    trip = null;
     walking = true;
     departure_time = dep;
     arrival_time = dep + dur;
     if (arrival_time < departure_time) {
-      throw new IllegalArgumentException("Arrival time: " + beautiful_time(false) + " < Departure time: " + beautiful_time(true));
+      throw new IllegalArgumentException(
+          "Arrival time: " + beautiful_time(false) + " < Departure time: " + beautiful_time(true));
     }
   }
 
@@ -45,12 +47,23 @@ public class Connection {
     return "Conn(from " + from + ", to " + to + ")";
   }
 
+  /**
+   * Get the english directive corresponding to the route type
+   *
+   * @return The directive
+   */
+  public String directive() {
+    Route route = (trip == null) ? null : trip.route();
+    return route == null
+        ? "Walking"
+        : "Taking " + route.agency() + " " + route.type() + " " + route.short_name();
+  }
 
   // #### Getters ####
 
   /**
    * Get the source stop of the connection
-   * 
+   *
    * @return The source stop
    */
   public Stop from() {
@@ -59,7 +72,7 @@ public class Connection {
 
   /**
    * Get the target stop of the connection
-   * 
+   *
    * @return The target stop
    */
   public Stop to() {
@@ -67,17 +80,17 @@ public class Connection {
   }
 
   /**
-   * Get the trip id of the connection
-   * 
-   * @return The trip id
+   * Get the trip of the connection
+   *
+   * @return The trip or null if it's a footpath
    */
-  public String trip_id() {
-    return trip_id;
+  public Trip trip() {
+    return trip;
   }
 
   /**
    * Get the departure time from the source stop
-   * 
+   *
    * @return The departure time
    */
   public int departure_time() {
@@ -86,7 +99,7 @@ public class Connection {
 
   /**
    * Get the arrival time to the target stop
-   * 
+   *
    * @return The arrival time
    */
   public int arrival_time() {
@@ -95,7 +108,7 @@ public class Connection {
 
   /**
    * Get if the connection is a transfer
-   * 
+   *
    * @return If the connection is a footpath
    */
   public boolean is_footpath() {
@@ -106,7 +119,7 @@ public class Connection {
 
   Stop from;
   Stop to;
-  String trip_id;
+  Trip trip;
   int departure_time;
   int arrival_time;
   boolean walking;
