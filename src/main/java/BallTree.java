@@ -28,7 +28,7 @@ public class BallTree {
     public void update_footpaths(Collection<Stop> stops) {
       int footpaths = 0;
       for (Stop stop : stops) {
-        ArrayList<Neighbor> neighbors = get(stop, 0.5);
+        ArrayList<Neighbor> neighbors = get(stop, 0.1);
         stop.setNeighbors(neighbors);
         footpaths += neighbors.size();
       }

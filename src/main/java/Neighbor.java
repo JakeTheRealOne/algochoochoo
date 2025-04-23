@@ -51,7 +51,11 @@ public class Neighbor {
    * @param dist The distance (in meter)
    */
   private static int compute_walk_time(int dist) {
-    return (dist * 17) / 1000;
+    double vitesse = 83.33;
+    double margeFixe = 1.5;
+    double correction = dist > 1000 ? 1.15 : 1.25;
+    
+    return (int) (((dist / vitesse) * correction + margeFixe) * 60);
   }
 
   // #### Attributes ####

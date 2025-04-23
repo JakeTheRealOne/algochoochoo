@@ -124,6 +124,7 @@ public class Main {
       int time = path.get(i).departure_time();
       boolean walk = path.get(i).is_footpath();
 
+      // System.out.print((walk ? "Marcher de " : "Prendre le TRANSPORT depuis ") + path.get(i).from().id() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
       System.out.print((walk ? "Marcher de " : "Prendre le TRANSPORT depuis ") + path.get(i).from().name() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
       
       int j = i;
@@ -131,7 +132,8 @@ public class Main {
         ++j;
       }
       time = path.get(j-1).arrival_time();
-      System.out.println(" puis descendre à " + path.get(j-1).to().name() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+      // System.out.println((walk ? " jusque " : " puis descendre à ") + path.get(j-1).to().id() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+      System.out.println((walk ? " jusque " : " puis descendre à ") + path.get(j-1).to().name() + " à " + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
       i = j;
     }
     System.out.println("--- ------- ---");
@@ -142,9 +144,10 @@ public class Main {
   private static void main_runtime_test() {
     long start = System.nanoTime();
     ArrayList<Connection> conns = build_graph("src/main/resources/GTFS");
-    print_result(CSA("STIB-8733", "STIB-8162", 5*3600 + 35*60 + 40, conns));
-    print_result(CSA("SNCB-8007817", "STIB-8162", 5*3600 + 35*60 + 40, conns));
-    print_result(CSA("DELIJN-320843", "TEC-Baegd741", 5*3600 + 35*60 + 40, conns));
+    // Map<
+    print_result(CSA("STIB-8733", "STIB-8162", 5*3600 + 35*60 + 40, conns)); // DE Gare de l'Ouest À Stockel
+    print_result(CSA("DELIJN-153267", "SNCB-8872009", 7*3600 + 7*60 + 7, conns)); // DE Anvers sud À Charleroi Central
+    print_result(CSA("DELIJN-504014", "SNCB-8866654", 10*3600 + 30*60, conns));
     long end = System.nanoTime();
     System.out.println("Main execution time: " + (end - start) / 1_000_000 + " ms");
     start = System.nanoTime();
