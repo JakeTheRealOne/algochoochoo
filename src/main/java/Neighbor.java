@@ -52,11 +52,10 @@ public class Neighbor {
    * @return The estimated walk time in seconds
    */
   private static int compute_walk_time(int dist) {
-    final int speed = 8333; // 5 km/h is base walk speed
+    final double speed = 0.72; // 5 km/h is base walk speed
     final int margin = 90; // 1min30 for transfer
-    final int adjust = 125; // city density adjustement
 
-    int time = (dist * adjust) / speed;
+    int time = (int) (dist * speed);
     return time + margin;
   }
 

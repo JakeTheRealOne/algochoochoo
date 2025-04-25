@@ -21,9 +21,9 @@ public class Main2 {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    // run("Aumale", "Delta", 8*3600 + 0*60, new AlgoSettings());
-    // run("Aumale", "Fraiteur", 8*3600 + 0*60, new AlgoSettings());
-    run("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60, new AlgoSettings());
+    // run("Aumale", "Delta", 7*3600 + 0*60, new AlgoSettings());
+    run("Aumale", "Fraiteur", 8*3600 + 0*60, new AlgoSettings());
+    // run("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60, new AlgoSettings());
   }
 
   /**
@@ -56,7 +56,7 @@ public class Main2 {
         targets.add(stop.id());
       }
     }
-    ArrayList<Connection> result = CSA(s, sources, t, targets, h, conns, set);
+    ArrayList<Connection> result = CSA(s, sources, t, targets, h, conns, set, stops);
     print_result(result);
   }
 
@@ -132,7 +132,7 @@ public class Main2 {
    * @return The list of connection to takes to arrive at destination as fast as possible
    */
   private static ArrayList<Connection> CSA(String source_name,
-      ArrayList<String> sources, String target_name, ArrayList<String> targets, int h, ArrayList<Connection> conns, AlgoSettings set) {
+      ArrayList<String> sources, String target_name, ArrayList<String> targets, int h, ArrayList<Connection> conns, AlgoSettings set, Map<String, Stop> stops) {
     if (sources.isEmpty() || targets.isEmpty()) {
       throw new IllegalArgumentException(
           "At least one source and one target is required (s: "
@@ -151,6 +151,14 @@ public class Main2 {
     }
     for (String s : sources) {
       earliest.put(s, h);
+      for (Neighbor neighbor : stops.get(s).neighbors()) {
+        if (earliest.getOrDefault(neighbor.stop().id(), Integer.MAX_VALUE) > h + neighbor.duration()) {
+          earliest.put(neighbor.stop().id(), h + neighbor.duration());
+          predecessor.put(
+            neighbor.stop().id(),
+            new Connection(stops.get(s), neighbor.stop(), h, neighbor.duration()));
+        }
+      }
     }
 
     for (Connection conn : conns) {
@@ -200,14 +208,28 @@ public class Main2 {
     // TODO: we actually don't need target_name
     while (conn != null) {
       output.add(conn);
-      conn = predecessor.get(conn.from().id());
-      // TODO: do we need this:
-      if (conn == null || conn.from().name().toLowerCase() == source_name) {
+      if (conn.from().name().toLowerCase().equals(source_name)) {
         break;
       }
+      conn = predecessor.get(conn.from().id());
     }
     Collections.reverse(output);
     return output;
+  }
+
+  private static int distance(Stop s1, Stop s2) { // TODO remove
+    double lat1 = Math.toRadians(s1.latitude());
+    double lon1 = Math.toRadians(s1.longitude());
+    double lat2 = Math.toRadians(s2.latitude());
+    double lon2 = Math.toRadians(s2.longitude());
+    double dLat = lat2 - lat1;
+    double dLon = lon2 - lon1;
+    double a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2)
+            + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    final double R = 6371000;
+    return (int) (R * c);
   }
 
   private static void print_result(ArrayList<Connection> path) {
@@ -215,6 +237,14 @@ public class Main2 {
 
     int i = 0;
     int n = path.size();
+
+    for (int j = 0; j < n; ++ j) {
+      System.out.println(path.get(j).from());
+      int dist = distance(path.get(j).from(), path.get(j).to());
+      System.out.println("Walk distance: " + dist);
+      Neighbor fake = new Neighbor(path.get(j).to(), dist);
+      System.out.println("Walk duration: " + fake.duration());
+    }
 
     while (i < n) {
       Trip trip = path.get(i).trip();
