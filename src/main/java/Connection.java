@@ -28,6 +28,14 @@ public class Connection {
     }
   }
 
+  /**
+   * Construct a new Connection object for a footpath
+   *
+   * @param first The source stop of the footpath
+   * @param second The target stop of the footpath
+   * @param dep The departure time of the pedestrian
+   * @param dur The average duration to walk to destination
+   */
   public Connection(Stop first, Stop second, int dep, int dur) {
     from = first;
     to = second;

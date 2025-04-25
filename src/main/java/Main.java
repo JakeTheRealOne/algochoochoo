@@ -21,24 +21,26 @@ public class Main {
    * @param args Command line arguments
    */
   public static void main(String[] args) {
-    run("Aumale", "Fraiteur", 8*3600 + 0*60, false);
+    run("Aumale", "Delta", 8*3600 + 0*60, new AlgoSettings());
+    // run("Aumale", "Fraiteur", 8*3600 + 0*60, new AlgoSettings());
+    // run("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60, new AlgoSettings());
   }
 
   /**
    * Run the pathfinding algorithm and print the result
-   * 
+   *
    * @param s The source stop (name)
    * @param t The target stop (name)
    * @param h The source departure time
-   * @param strict If the source & target name search should be strict or not
+   * @param strict If the source and target name search should be strict or not
    */
-  public static void run(String s, String t, int h, boolean strict) {
+  public static void run(String s, String t, int h, AlgoSettings set) {
     final String main_dir = "src/main/resources/GTFS";
-    Map<String, Stop> stops = Parser.stops(main_dir);
-    ArrayList<Trip> trips = Parser.trips(main_dir, stops);
-    ArrayList<Connection> conns = trips_to_conns(trips);
-    BallTree bt = new BallTree(stops.values());
-    bt.update_footpaths(stops.values());
+    final Map<String, Stop> stops = Parser.stops(main_dir);
+    final ArrayList<Trip> trips = Parser.trips(main_dir, stops);
+    final ArrayList<Connection> conns = trips_to_conns(trips);
+    final BallTree bt = new BallTree(stops.values());
+    bt.update_footpaths(stops.values(), set); // TODO: final
 
     ArrayList<String> sources = new ArrayList<>();
     ArrayList<String> targets = new ArrayList<>();
@@ -47,14 +49,15 @@ public class Main {
 
     for (Stop stop : stops.values()) {
       String name = stop.name().toLowerCase();
-      if (equal(s, name, strict)) {
+      if (equal(s, name, set.strict_search)) {
         sources.add(stop.id());
       }
-      if (equal(t, name, strict)) {
+      if (equal(t, name, set.strict_search)) {
         targets.add(stop.id());
       }
     }
-    ArrayList<Connection> result = CSA(s, sources, t, targets, h, conns);
+    System.out.println("parsing done");
+    ArrayList<Connection> result = CSA(s, sources, targets, h, conns, set);
     print_result(result);
   }
 
@@ -62,7 +65,7 @@ public class Main {
 
   /**
    * Check if the candidate is (partially) equal to the sample
-   * 
+   *
    * @param candidate The candidate string
    * @param sample The sample string
    * @param strict If the equality is only partial
@@ -75,24 +78,21 @@ public class Main {
     }
   }
 
-  /**
-   * Build a graph G(V, E) where E is the set of temp. link between two stops and V is the set of
-   * stops
-   *
-   * @return The list of connections of the graph
-   */
-  private static ArrayList<Connection> build_graph(String main_dir) {
-    Map<String, Stop> stops = Parser.stops(main_dir);
-    // System.out.println("Number of stops: " + stops.size());
-    ArrayList<Trip> trips = Parser.trips(main_dir, stops);
-    // System.out.println("Number of trips: " + trips.size());
-    ArrayList<Connection> conns = trips_to_conns(trips);
-    // System.out.println("Number of conns: " + conns.size());
-    BallTree bt = new BallTree(stops.values());
-    bt.update_footpaths(stops.values());
+  // /**
+  //  * Build a graph G(V, E) where E is the set of temp. link between two stops and V is the set of
+  //  * stops
+  //  *
+  //  * @return The list of connections of the graph
+  //  */
+  // private static ArrayList<Connection> build_graph(String main_dir) {
+  //   Map<String, Stop> stops = Parser.stops(main_dir);
+  //   ArrayList<Trip> trips = Parser.trips(main_dir, stops);
+  //   ArrayList<Connection> conns = trips_to_conns(trips);
+  //   BallTree bt = new BallTree(stops.values());
+  //   bt.update_footpaths(stops.values());
 
-    return conns;
-  }
+  //   return conns;
+  // }
 
   /**
    * Convert a list of trips to a list of connections
@@ -120,17 +120,21 @@ public class Main {
    * @implNote This algorithm takes mutliple source and target nodes, since two differents stops can
    *     have the same names. It returns the best result in all the results for each targets and
    *     sources
-   * @param sources The list of source nodes (stop ids)
    * @param source The common name for all sources
+   * @param sources The list of source nodes (stop ids)
    * @param targets The list of targets nodes (stop id)
-   * @param target The common name for all targets
    * @param h The source departure time (in seconds)
    * @param conns The connections between the stops
    * @exception IllegalArgumentException If targets or sources are empty
    * @return The list of connection to takes to arrive at destination as fast as possible
    */
-  private static ArrayList<Connection> CSA(String source_name,
-      ArrayList<String> sources, String target_name, ArrayList<String> targets, int h, ArrayList<Connection> conns) {
+  private static ArrayList<Connection> CSA(
+      String source_name,
+      ArrayList<String> sources,
+      ArrayList<String> targets,
+      int h,
+      ArrayList<Connection> conns,
+      AlgoSettings set) {
     if (sources.isEmpty() || targets.isEmpty()) {
       throw new IllegalArgumentException(
           "At least one source and one target is required (s: "
@@ -149,22 +153,39 @@ public class Main {
     }
     for (String s : sources) {
       earliest.put(s, h);
+      // for (Neighbor foot : s.neighbors()) {
+      //   int arrival_time = h + foot.duration();
+      //   if (arrival_time < earliest.getOrDefault(foot.stop().id(), Integer.MAX_VALUE)) {
+      //     earliest.put(foot.stop().id(), arrival_time);
+      //     predecessor.put(
+      //         foot.stop().id(),
+      //         new Connection(s, foot.stop(), h, foot.duration()));
+      //   }
+      // }
     }
 
     for (Connection conn : conns) {
       if (!earliest.containsKey(conn.from().id())) continue;
-      if (!(conn.departure_time() < earliest.get(conn.from().id()))) {
+      // TODO: ahead time seulement si on transfer entre deux trips
+      int ahead = 0;
+      Connection p = predecessor.getOrDefault(conn.from().id(), null);
+      if (p != null) {
+        if (p.trip() != conn.trip()) {
+          ahead = set.min_ahead_time;
+        }
+      }
+      if (conn.departure_time() > earliest.get(conn.from().id())) {
         if (conn.arrival_time() < earliest.get(conn.to().id())) {
           earliest.put(conn.to().id(), conn.arrival_time());
           predecessor.put(conn.to().id(), conn);
 
           for (Neighbor foot : conn.to().neighbors()) {
-            int arrivalByFoot = conn.arrival_time() + foot.duration();
-            if (arrivalByFoot < earliest.getOrDefault(foot.stop().id(), Integer.MAX_VALUE)) {
-              earliest.put(foot.stop().id(), arrivalByFoot);
+            int arrival_time = conn.arrival_time() + foot.duration();
+            if (arrival_time < earliest.getOrDefault(foot.stop().id(), Integer.MAX_VALUE)) {
+              earliest.put(foot.stop().id(), arrival_time);
               predecessor.put(
-                  foot.stop().id(),
-                  new Connection(conn.to(), foot.stop(), conn.arrival_time(), foot.duration()));
+                foot.stop().id(),
+                new Connection(conn.to(), foot.stop(), conn.arrival_time(), foot.duration()));
             }
           }
         }
@@ -238,24 +259,24 @@ public class Main {
   // #### Speed tests ####
 
   private static void main_runtime_test() {
-  //   long start = System.nanoTime();
-  //   ArrayList<Connection> conns = build_graph("src/main/resources/GTFS");
-  //   // Map<
-  //   print_result(
-  //       CSA(
-  //           "STIB-8733",
-  //           "STIB-8162",
-  //           5 * 3600 + 35 * 60 + 40,
-  //           conns)); // DE Gare de l'Ouest À Stockel
-  //   print_result(
-  //       CSA(
-  //           "DELIJN-153267",
-  //           "SNCB-8872009",
-  //           7 * 3600 + 7 * 60 + 7,
-  //           conns)); // DE Anvers sud À Charleroi Central
-  //   print_result(CSA("DELIJN-504014", "SNCB-8866654", 10 * 3600 + 30 * 60, conns));
-  //   long end = System.nanoTime();
-  //   // System.out.println("Main execution time: " + (end - start) / 1_000_000 + " ms");
-  //   start = System.nanoTime();
+    //   long start = System.nanoTime();
+    //   ArrayList<Connection> conns = build_graph("src/main/resources/GTFS");
+    //   // Map<
+    //   print_result(
+    //       CSA(
+    //           "STIB-8733",
+    //           "STIB-8162",
+    //           5 * 3600 + 35 * 60 + 40,
+    //           conns)); // DE Gare de l'Ouest À Stockel
+    //   print_result(
+    //       CSA(
+    //           "DELIJN-153267",
+    //           "SNCB-8872009",
+    //           7 * 3600 + 7 * 60 + 7,
+    //           conns)); // DE Anvers sud À Charleroi Central
+    //   print_result(CSA("DELIJN-504014", "SNCB-8866654", 10 * 3600 + 30 * 60, conns));
+    //   long end = System.nanoTime();
+    //   // System.out.println("Main execution time: " + (end - start) / 1_000_000 + " ms");
+    //   start = System.nanoTime();
   }
 }

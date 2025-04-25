@@ -3,34 +3,23 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A simple BallTree implementation for geographic Stops using Haversine distance. Optimized pivot
- * selection for large datasets (~67k stops) via two-sweep farthest-point heuristic.
+ * A data structure that allows fast neighbor search based on geographic coordinates
  *
- * @author ChatGPT
+ * @author Bilal Vandenberge
  */
 public class BallTree {
-  private static final int LEAF_SIZE = 10;
-  private final Node root;
+  // #### Public methods ####
 
-  // public static void main(String[] args) {
-  //   Map<String, Stop> stops = Parser.stops("src/main/resources/GTFS");
-  //   BallTree bt = new BallTree(stops.values());
-
-  //   Stop test_stop = stops.get("STIB-8162");
-  //   System.out.println(test_stop);
-  //   ArrayList<Neighbor> nears = bt.get(test_stop, 0.5);
-  //   for (Neighbor stop : nears)
-  //   {System.out.println("!" + stop);}
-  // }
-
-  public void update_footpaths(Collection<Stop> stops) {
-    // int footpaths = 0;
+  /**
+   * Update the footpaths in the stops neighbor list with all the stops in a 500m radius
+   *
+   * @param stops The list of stops from GTFS
+   */
+  public void update_footpaths(Collection<Stop> stops, AlgoSettings set) {
     for (Stop stop : stops) {
-      ArrayList<Neighbor> neighbors = get(stop, 0.5);
+      ArrayList<Neighbor> neighbors = get(stop, set.footpath_radius);
       stop.setNeighbors(neighbors);
-      // footpaths += neighbors.size();
     }
-    // System.out.println("Number of footpaths: " + footpaths);
   }
 
   /**
@@ -43,23 +32,24 @@ public class BallTree {
     if (stops == null || stops.isEmpty()) {
       throw new IllegalArgumentException("Stop collection must be non-null and non-empty");
     }
-    // Copy to a list for indexing and recursion
     List<Stop> stopList = new ArrayList<>(stops);
     this.root = buildTree(stopList);
   }
 
   /**
-   * Returns all stops within the given radius (in kilometers) of the source stop.
+   * Returns all stops within the given radius of the source stop.
    *
    * @param source the query stop
-   * @param radius search radius in kilometers
+   * @param radius search radius (in meters)
    * @return list of stops within radius
    */
-  public ArrayList<Neighbor> get(Stop source, double radius) {
+  public ArrayList<Neighbor> get(Stop source, int radius) {
     ArrayList<Neighbor> result = new ArrayList<>();
     search(root, source, radius, result);
     return result;
   }
+
+  // #### Private helpers ####
 
   // Recursively builds the BallTree
   private Node buildTree(List<Stop> stops) {
@@ -101,8 +91,8 @@ public class BallTree {
   }
 
   // Searches the tree for stops within radius of source
-  private void search(Node node, Stop source, double radius, ArrayList<Neighbor> result) {
-    double distToCenter = distance(source, node.center);
+  private void search(Node node, Stop source, int radius, ArrayList<Neighbor> result) {
+    int distToCenter = distance(source, node.center);
     if (distToCenter > radius + node.radius) {
       return; // prune this branch
     }
@@ -111,9 +101,9 @@ public class BallTree {
         if (s == source) {
           continue;
         }
-        double dist = distance(source, s);
+        int dist = distance(source, s);
         if (dist <= radius) {
-          result.add(new Neighbor(s, (int) (dist * 1000)));
+          result.add(new Neighbor(s, dist));
         }
       }
     } else {
@@ -126,10 +116,10 @@ public class BallTree {
   private Stop[] findFarthestPair(List<Stop> stops) {
     Stop p1 = stops.get(0);
     Stop far = p1;
-    double maxDist = -1;
+    int maxDist = -1;
     // First sweep: farthest from initial p1
     for (Stop s : stops) {
-      double d = distance(p1, s);
+      int d = distance(p1, s);
       if (d > maxDist) {
         maxDist = d;
         far = s;
@@ -140,7 +130,7 @@ public class BallTree {
     Stop p1New = far;
     maxDist = -1;
     for (Stop s : stops) {
-      double d = distance(p1New, s);
+      int d = distance(p1New, s);
       if (d > maxDist) {
         maxDist = d;
         p2 = s;
@@ -164,17 +154,17 @@ public class BallTree {
   }
 
   // Computes max distance from center to any stop in list
-  private double maxDistance(Stop center, List<Stop> stops) {
-    double max = 0;
+  private int maxDistance(Stop center, List<Stop> stops) {
+    int max = 0;
     for (Stop s : stops) {
-      double d = distance(center, s);
+      int d = distance(center, s);
       if (d > max) max = d;
     }
     return max;
   }
 
   // Haversine distance (in kilometers) between two stops
-  private double distance(Stop s1, Stop s2) {
+  private int distance(Stop s1, Stop s2) {
     double lat1 = Math.toRadians(s1.latitude());
     double lon1 = Math.toRadians(s1.longitude());
     double lat2 = Math.toRadians(s2.latitude());
@@ -185,16 +175,21 @@ public class BallTree {
         Math.sin(dLat / 2) * Math.sin(dLat / 2)
             + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
     double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    double R = 6371; // Earth radius in km
-    return R * c;
+    final double R = 6371000;
+    return (int) (R * c);
   }
 
   // Tree node
   private static class Node {
     Stop center;
-    double radius;
+    int radius;
     Node left, right;
     List<Stop> points;
     boolean isLeaf;
   }
+
+  // #### Attributes ####
+
+  private static final int LEAF_SIZE = 10;
+  private final Node root;
 }

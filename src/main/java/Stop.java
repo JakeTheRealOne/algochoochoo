@@ -22,6 +22,7 @@ public class Stop {
     id = data[0];
     name = data[1];
     pos = new EarthPos(data[2], data[3]);
+    neighbors = new ArrayList<Neighbor>();
   }
 
   /** Convert a Stop object to string */
