@@ -55,9 +55,15 @@ public class Neighbor {
     final double speed = 0.72; // 5 km/h is base walk speed
     final int margin = 90; // 1min30 for transfer
 
-    int time = (int) (dist * speed);
+    int time = (int) (compute_walk_dist(dist) * speed);
     return time + margin;
   }
+
+  private static int compute_walk_dist(int dist) {
+    final double coef = Math.sqrt(2);
+    return (int) Math.abs(dist * coef);
+  }
+
 
   // #### Attributes ####
   private Stop stop;

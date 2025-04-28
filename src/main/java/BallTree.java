@@ -148,7 +148,6 @@ public class BallTree {
     }
     double avgLat = sumLat / stops.size();
     double avgLon = sumLon / stops.size();
-    EarthPos pos = new EarthPos(Double.toString(avgLat), Double.toString(avgLon));
     return new Stop(
         new String[] {"", "centroid", Double.toString(avgLat), Double.toString(avgLon)});
   }
