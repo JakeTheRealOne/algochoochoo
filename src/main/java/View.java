@@ -25,7 +25,7 @@ public class View {
       System.out.print(path.get(i).directive());
       print_connection(path.get(i), true);
       print_connection(path.get(j - 1), false);
-      i = j;
+      i = j - 1;
     }
   }
 
@@ -42,7 +42,7 @@ public class View {
       for (j = i; j < n && path.get(j).trip() == trip; ++j)
         ;
       print_line(path.get(i), path.get(j - 1), j - i);
-      i = j;
+      i = j - 1;
     }
   }
 
@@ -86,7 +86,6 @@ public class View {
    */
   private static void print_line(Connection beg, Connection end, int n) {
     boolean foot = beg.is_footpath();
-    System.out.println("$");
     if (foot) {
       System.out.print("Walking " + TIP);
       System.out.print(FOOT + FOOT + FOOT);

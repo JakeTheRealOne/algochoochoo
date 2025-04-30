@@ -14,11 +14,11 @@ public class Algorithm {
     List<Connection> path1 = algo.CSA("AUMALE", "FRAITEUR", 8 * 3600 + 0 * 60);
     List<Connection> path2 = algo.CSA("Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     List<Connection> path3 = algo.CSA("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
-    View.print(path1);
+    View.show(path1);
     System.out.println();
-    View.print(path2);
+    View.show(path2);
     System.out.println();
-    View.print(path3);
+    View.show(path3);
     System.out.println();
   }
 
