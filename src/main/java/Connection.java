@@ -11,9 +11,9 @@ public class Connection {
   /**
    * Construct a new Connection object
    *
-   * @param first The first element
+   * @param first  The first element
    * @param second The second element
-   * @param trip_ The id of the trip owning the connection
+   * @param trip_  The id of the trip owning the connection
    */
   public Connection(TripElement first, TripElement second, Trip trip_) {
     from = first.stop();
@@ -31,10 +31,10 @@ public class Connection {
   /**
    * Construct a new Connection object for a footpath
    *
-   * @param first The source stop of the footpath
+   * @param first  The source stop of the footpath
    * @param second The target stop of the footpath
-   * @param dep The departure time of the pedestrian
-   * @param dur The average duration to walk to destination
+   * @param dep    The departure time of the pedestrian
+   * @param dur    The average duration to walk to destination
    */
   public Connection(Stop first, Stop second, int dep, int dur) {
     from = first;
@@ -65,6 +65,20 @@ public class Connection {
     return route == null
         ? "Walking"
         : "Taking " + route.agency() + " " + route.type() + " " + route.short_name();
+  }
+
+  /**
+   * Get the name of the trip
+   *
+   * @return The trip name
+   */
+  public String trip_name() {
+    if (trip == null) {
+      return "";
+    } else {
+      Route route = trip.route();
+      return route.agency() + " " + route.type() + " " + route.short_name();
+    }
   }
 
   // #### Getters ####

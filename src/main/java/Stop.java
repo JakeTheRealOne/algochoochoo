@@ -101,5 +101,8 @@ public class Stop {
   private String id;
   private String name;
   private EarthPos pos;
+
   private ArrayList<Neighbor> neighbors;
+  private int earliest = Integer.MAX_VALUE;
+  private Connection predecessor;
 }

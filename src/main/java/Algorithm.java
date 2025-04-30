@@ -11,8 +11,15 @@ public class Algorithm {
   public static void main(String[] args) {
     Graph graph = new Graph("src/main/resources/GTFS");
     Algorithm algo = new Algorithm(graph, new AlgoSettings());
-    List<Connection> path = algo.CSA("AUMALE", "FRAITEUR", 8 * 3600 + 0 * 60);
-    View.print(path);
+    List<Connection> path1 = algo.CSA("AUMALE", "FRAITEUR", 8 * 3600 + 0 * 60);
+    List<Connection> path2 = algo.CSA("Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
+    List<Connection> path3 = algo.CSA("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
+    View.print(path1);
+    System.out.println();
+    View.print(path2);
+    System.out.println();
+    View.print(path3);
+    System.out.println();
   }
 
   public Algorithm(Graph G, AlgoSettings set) {
@@ -95,10 +102,9 @@ public class Algorithm {
     }
 
     Connection conn = predecessor.get(best_target);
-    // TODO: we actually don't need target_name
     while (conn != null) {
       output.add(conn);
-      if (conn.from().name().toLowerCase().equals(s)) {
+      if (equal(s, conn.from().name())) {
         break;
       }
       conn = predecessor.get(conn.from().id());
