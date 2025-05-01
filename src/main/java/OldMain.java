@@ -179,7 +179,7 @@ public class OldMain {
           earliest.put(conn.to().id(), conn.arrival_time());
           predecessor.put(conn.to().id(), conn);
 
-          for (Neighbor foot : conn.to().neighbors()) {
+          for (Transfer foot : conn.to().neighbors()) {
             int arrival_time = conn.arrival_time() + foot.duration();
             if (arrival_time < earliest.getOrDefault(foot.stop().id(), Integer.MAX_VALUE)) {
               earliest.put(foot.stop().id(), arrival_time);

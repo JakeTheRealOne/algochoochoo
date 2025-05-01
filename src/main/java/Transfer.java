@@ -3,7 +3,7 @@
  *
  * @author Bilal Vandenberge
  */
-public class Neighbor {
+public class Transfer {
   // #### Public methods ####
 
   /**
@@ -12,7 +12,7 @@ public class Neighbor {
    * @param to The neighbor
    * @param distance The distance to the neighbor
    */
-  public Neighbor(Stop to, int distance) {
+  public Transfer(Stop to, int distance) {
     stop = to;
     dur = compute_walk_time(distance);
   }

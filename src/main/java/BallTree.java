@@ -17,8 +17,8 @@ public class BallTree {
    */
   public void update_footpaths(Collection<Stop> stops, AlgoSettings set) {
     for (Stop stop : stops) {
-      ArrayList<Neighbor> neighbors = get(stop, set.footpath_radius);
-      stop.setNeighbors(neighbors);
+      ArrayList<Transfer> neighbors = get(stop, set.footpath_radius);
+      stop.set_transfers(neighbors);
     }
   }
 
@@ -43,8 +43,8 @@ public class BallTree {
    * @param radius search radius (in meters)
    * @return list of stops within radius
    */
-  public ArrayList<Neighbor> get(Stop source, int radius) {
-    ArrayList<Neighbor> result = new ArrayList<>();
+  public ArrayList<Transfer> get(Stop source, int radius) {
+    ArrayList<Transfer> result = new ArrayList<>();
     search(root, source, radius, result);
     return result;
   }
@@ -91,7 +91,7 @@ public class BallTree {
   }
 
   // Searches the tree for stops within radius of source
-  private void search(Node node, Stop source, int radius, ArrayList<Neighbor> result) {
+  private void search(Node node, Stop source, int radius, ArrayList<Transfer> result) {
     int distToCenter = distance(source, node.center);
     if (distToCenter > radius + node.radius) {
       return; // prune this branch
@@ -103,7 +103,7 @@ public class BallTree {
         }
         int dist = distance(source, s);
         if (dist <= radius) {
-          result.add(new Neighbor(s, dist));
+          result.add(new Transfer(s, dist));
         }
       }
     } else {

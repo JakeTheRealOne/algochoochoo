@@ -6,8 +6,17 @@ import java.util.Map;
 
 /**
  * Execute algorithms on a graph
+ * 
+ * @author Bilal Vandenberge
  */
 public class Algorithm {
+  // #### Public methods ####
+
+  /**
+   * Run unit tests
+   * 
+   * @param args Irrelevant here
+   */
   public static void main(String[] args) {
     Graph graph = new Graph("src/main/resources/GTFS");
     Algorithm algo = new Algorithm(graph, new AlgoSettings());
@@ -22,6 +31,12 @@ public class Algorithm {
     System.out.println();
   }
 
+  /**
+   * Construct a new Algorithm object
+   * 
+   * @param G   The graph of the algorithm
+   * @param set The algorithm settings
+   */
   public Algorithm(Graph G, AlgoSettings set) {
     graph = G;
     settings = set;
@@ -39,27 +54,30 @@ public class Algorithm {
   public List<Connection> CSA(String s, String t, int h) {
     init(s, t, h);
 
-    Map<String, Integer> earliest = new LinkedHashMap<>();
     Map<String, Connection> predecessor = new LinkedHashMap<>();
 
-    for (Connection conn : graph.edges()) {
-      earliest.put(conn.from().id(), Integer.MAX_VALUE);
-      earliest.put(conn.to().id(), Integer.MAX_VALUE);
+    for (Stop stop : graph.vertices()) {
+      stop.init_for_algo();
     }
+
     for (String source : sources) {
-      earliest.put(source, h);
-      for (Neighbor neighbor : graph.get_stop(source).neighbors()) {
-        if (earliest.getOrDefault(neighbor.stop().id(), Integer.MAX_VALUE) > h + neighbor.duration()) {
-          earliest.put(neighbor.stop().id(), h + neighbor.duration());
+      Stop stop = graph.get_stop(source);
+      stop.cost().set_duration(h);
+      for (Transfer transfer : stop.transfers()) {
+        Stop near = transfer.stop();
+        int candidate = h + transfer.duration();
+        if (near.cost().duration() > candidate) {
+          near.cost().set_duration(candidate);
           predecessor.put(
-            neighbor.stop().id(),
-            new Connection(graph.get_stop(source), neighbor.stop(), h, neighbor.duration()));
+              transfer.stop().id(),
+              new Connection(graph.get_stop(source), transfer.stop(), h, transfer.duration()));
         }
       }
     }
 
     for (Connection conn : graph.edges()) {
-      if (!earliest.containsKey(conn.from().id())) continue;
+      Stop from = conn.from();
+      Stop to = conn.to();
       int ahead = 0;
       Connection p = predecessor.getOrDefault(conn.from().id(), null);
       if (p != null) {
@@ -67,15 +85,16 @@ public class Algorithm {
           ahead = settings.min_ahead_time;
         }
       }
-      if (!(conn.departure_time() - ahead < earliest.get(conn.from().id()))) {
-        if (conn.arrival_time() < earliest.get(conn.to().id())) {
-          earliest.put(conn.to().id(), conn.arrival_time());
+      if (!(conn.departure_time() - ahead < from.cost().duration())) {
+        if (conn.arrival_time() < to.cost().duration()) {
+          to.cost().set_duration(conn.arrival_time());
           predecessor.put(conn.to().id(), conn);
 
-          for (Neighbor foot : conn.to().neighbors()) {
-            int arrivalByFoot = conn.arrival_time() + foot.duration();
-            if (arrivalByFoot < earliest.getOrDefault(foot.stop().id(), Integer.MAX_VALUE)) {
-              earliest.put(foot.stop().id(), arrivalByFoot);
+          for (Transfer foot : conn.to().transfers()) {
+            Stop near = foot.stop();
+            int candidate = conn.arrival_time() + foot.duration();
+            if (candidate < near.cost().duration()) {
+              near.cost().set_duration(candidate);
               predecessor.put(
                   foot.stop().id(),
                   new Connection(conn.to(), foot.stop(), conn.arrival_time(), foot.duration()));
@@ -87,21 +106,20 @@ public class Algorithm {
 
     List<Connection> output = new ArrayList<>();
     int best_result = Integer.MAX_VALUE;
-    String best_target = "None";
+    Stop best_target = null;
     for (String target : targets) {
-      Integer res = earliest.get(target);
-      if (res == null) {
-        continue;
-      } else if (res < best_result) {
+      Stop stop = graph.get_stop(target);
+      int res = stop.cost().duration();
+      if (res < best_result) {
         best_result = res;
-        best_target = target;
+        best_target = stop;
       }
     }
-    if (best_result == Integer.MAX_VALUE) {
+    if (best_target == null) {
       return output;
     }
 
-    Connection conn = predecessor.get(best_target);
+    Connection conn = predecessor.get(best_target.id());
     while (conn != null) {
       output.add(conn);
       if (equal(s, conn.from().name())) {
@@ -115,6 +133,13 @@ public class Algorithm {
 
   // #### Private helpers ####
 
+  /**
+   * Initialize the attributes to execute an algorithm
+   * 
+   * @param s_ The name of the source stop
+   * @param t  The name of the target stop
+   * @param h_ The departure time at the source stop
+   */
   private void init(String s_, String t, int h_) {
     h = h_;
     s = s_;

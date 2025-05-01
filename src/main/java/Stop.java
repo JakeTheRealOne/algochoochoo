@@ -22,7 +22,7 @@ public class Stop {
     id = data[0];
     name = data[1];
     pos = new EarthPos(data[2], data[3]);
-    neighbors = new ArrayList<Neighbor>();
+    transfers = new ArrayList<Transfer>();
   }
 
   /** Convert a Stop object to string */
@@ -32,12 +32,20 @@ public class Stop {
   }
 
   /**
-   * Set the list of neighbors
+   * Set the list of transfers
    *
-   * @param n The new list of neighbors
+   * @param n The new list of transfers
    */
-  public void setNeighbors(ArrayList<Neighbor> n) {
-    neighbors = n;
+  public void set_transfers(ArrayList<Transfer> t) {
+    transfers = t;
+  }
+
+  /**
+   * Reinitialize the attributes for a new algorithm execution
+   */
+  public void init_for_algo() {
+    predecessor = null;
+    best = new PathCost(Integer.MAX_VALUE);
   }
 
   // #### Getters ####
@@ -88,12 +96,50 @@ public class Stop {
   }
 
   /**
-   * Get the close neighbors of the stop
+   * Get the transfers of the stop
    *
-   * @return The list of neighbors
+   * @return The list of transfers
    */
-  public ArrayList<Neighbor> neighbors() {
-    return neighbors;
+  public ArrayList<Transfer> transfers() {
+    return transfers;
+  }
+
+  /**
+   * Get the best cost to get to the stop
+   * 
+   * @return The best cost
+   */
+  public PathCost cost() {
+    return best;
+  }
+
+  /**
+   * Get the predecessor of the stop
+   * 
+   * @return The predecessor of the stop
+   */
+  public Connection predecessor() {
+    return predecessor;
+  }
+
+  // #### Setters ####
+
+  /**
+   * Set the best cost to get to the stop
+   * 
+   * @param cost The new cost
+   */
+  public void set_cost(PathCost cost) {
+    best = cost;
+  }
+
+  /**
+   * Set the predecessor of the stop
+   * 
+   * @param pred The new predecessor
+   */
+  public void set_predecessor(Connection pred) {
+    predecessor = pred;
   }
 
   // #### Attributes ####
@@ -102,7 +148,7 @@ public class Stop {
   private String name;
   private EarthPos pos;
 
-  private ArrayList<Neighbor> neighbors;
-  private int earliest = Integer.MAX_VALUE;
+  private ArrayList<Transfer> transfers;
+  private PathCost best;
   private Connection predecessor;
 }
