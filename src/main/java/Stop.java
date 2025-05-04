@@ -40,12 +40,24 @@ public class Stop {
     transfers = t;
   }
 
-  /**
-   * Reinitialize the attributes for a new algorithm execution
-   */
+  /** Reinitialize the attributes for a new algorithm execution */
   public void init_for_algo() {
     predecessor = null;
     best = new PathCost(Integer.MAX_VALUE);
+  }
+
+  /** Relaxe near stops with transfers */
+  public void relaxe_transfers() {
+    int h = best.duration();
+    for (Transfer transfer : transfers) {
+      Stop near = transfer.stop();
+      int candidate = h + transfer.duration();
+      if (near.cost().duration() > candidate) {
+        near.cost().set_duration(candidate);
+        Connection conn = new Connection(this, transfer.stop(), h, transfer.duration());
+        near.set_predecessor(conn);
+      }
+    }
   }
 
   // #### Getters ####
@@ -106,7 +118,7 @@ public class Stop {
 
   /**
    * Get the best cost to get to the stop
-   * 
+   *
    * @return The best cost
    */
   public PathCost cost() {
@@ -115,7 +127,7 @@ public class Stop {
 
   /**
    * Get the predecessor of the stop
-   * 
+   *
    * @return The predecessor of the stop
    */
   public Connection predecessor() {
@@ -126,7 +138,7 @@ public class Stop {
 
   /**
    * Set the best cost to get to the stop
-   * 
+   *
    * @param cost The new cost
    */
   public void set_cost(PathCost cost) {
@@ -135,7 +147,7 @@ public class Stop {
 
   /**
    * Set the predecessor of the stop
-   * 
+   *
    * @param pred The new predecessor
    */
   public void set_predecessor(Connection pred) {

@@ -64,7 +64,6 @@ public class Transfer {
     return (int) Math.abs(dist * coef);
   }
 
-
   // #### Attributes ####
   private Stop stop;
   private int dur;

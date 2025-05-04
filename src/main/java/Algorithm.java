@@ -1,16 +1,13 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 // TEST: TODO Remove
 import java.util.random.*;
 
 /**
  * Execute algorithms on a graph
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class Algorithm {
@@ -18,7 +15,7 @@ public class Algorithm {
 
   /**
    * Run unit tests
-   * 
+   *
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
@@ -29,8 +26,9 @@ public class Algorithm {
     AlgoSettings set = new AlgoSettings();
     Graph graph = new Graph("src/main/resources/GTFS", set);
     Algorithm algo = new Algorithm(graph, set);
-    List<Connection> path1 = algo.CSA("AUMALE", "HERRMANN-DEBROUX", 8 * 3600 + 0 * 60);
-    // List<Connection> path2 = algo.CSA("Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
+    List<Connection> path1 = algo.CSA("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
+    // List<Connection> path2 = algo.CSA("Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 *
+    // 3600 + 14 * 60 + 14);
     List<Connection> path3 = algo.CSA("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
     View.print(path1);
     System.out.println();
@@ -62,7 +60,8 @@ public class Algorithm {
         System.out.println("ITS OVER " + path_safe.size() + " " + path_unsafe.size());
         // for (int e = 0; e < path_safe.size(); e++) {
         //   if (!Objects.equals(path_safe.get(e), path_unsafe.get(e))) {
-        //     System.out.println("Difference at index " + e + ": " + path_safe.get(e) + " vs " + path_unsafe.get(e));
+        //     System.out.println("Difference at index " + e + ": " + path_safe.get(e) + " vs " +
+        // path_unsafe.get(e));
         //     break;
         //   }
         // }
@@ -79,8 +78,8 @@ public class Algorithm {
 
   /**
    * Construct a new Algorithm object
-   * 
-   * @param G   The graph of the algorithm
+   *
+   * @param G The graph of the algorithm
    * @param set The algorithm settings
    */
   public Algorithm(Graph G, AlgoSettings set) {
@@ -92,7 +91,7 @@ public class Algorithm {
 
   /**
    * Execute the Connexion scanning algorithm
-   * 
+   *
    * @param s The source node
    * @param t The target node
    * @param h The source time
@@ -107,15 +106,7 @@ public class Algorithm {
     for (String source : sources) {
       Stop stop = graph.get_stop(source);
       stop.cost().set_duration(h);
-      for (Transfer transfer : stop.transfers()) {
-        Stop near = transfer.stop();
-        int candidate = h + transfer.duration();
-        if (near.cost().duration() > candidate) {
-          near.cost().set_duration(candidate);
-          near.set_predecessor(
-              new Connection(graph.get_stop(source), transfer.stop(), h, transfer.duration()));
-        }
-      }
+      stop.relaxe_transfers();
     }
 
     for (Connection conn : graph.edges()) {
@@ -176,9 +167,9 @@ public class Algorithm {
 
   /**
    * Initialize the attributes to execute an algorithm
-   * 
+   *
    * @param s_ The name of the source stop
-   * @param t  The name of the target stop
+   * @param t The name of the target stop
    * @param h_ The departure time at the source stop
    */
   private void init(String s_, String t, int h_) {

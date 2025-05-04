@@ -1,5 +1,3 @@
-
-
 /**
  * (Literally) An earth position
  *

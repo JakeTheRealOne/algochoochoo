@@ -9,9 +9,9 @@ public class Connection {
   /**
    * Construct a new Connection object
    *
-   * @param first  The first element
+   * @param first The first element
    * @param second The second element
-   * @param trip_  The id of the trip owning the connection
+   * @param trip_ The id of the trip owning the connection
    */
   public Connection(TripElement first, TripElement second, Trip trip_) {
     from = first.stop();
@@ -29,10 +29,10 @@ public class Connection {
   /**
    * Construct a new Connection object for a footpath
    *
-   * @param first  The source stop of the footpath
+   * @param first The source stop of the footpath
    * @param second The target stop of the footpath
-   * @param dep    The departure time of the pedestrian
-   * @param dur    The average duration to walk to destination
+   * @param dep The departure time of the pedestrian
+   * @param dur The average duration to walk to destination
    */
   public Connection(Stop first, Stop second, int dep, int dur) {
     from = first;
@@ -56,12 +56,11 @@ public class Connection {
   /** Return if the two connection contents are identical */
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (!(o instanceof Connection))
-      return false;
+    if (this == o) return true;
+    if (!(o instanceof Connection)) return false;
     Connection other = (Connection) o;
-    return (from.equals(other.from()) && to.equals(other.to())
+    return (from.equals(other.from())
+        && to.equals(other.to())
         && departure_time == other.departure_time()
         && arrival_time == other.arrival_time()
         && walking == other.is_footpath()

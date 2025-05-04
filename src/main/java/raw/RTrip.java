@@ -1,4 +1,5 @@
 package raw;
+
 /**
  * A raw trip from GTFS trips.csv file
  *

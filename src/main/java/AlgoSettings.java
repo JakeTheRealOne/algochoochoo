@@ -1,6 +1,6 @@
 /**
  * Store settings for algorithm
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class AlgoSettings {

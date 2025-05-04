@@ -79,7 +79,8 @@
 //   }
 
 //   // /**
-//   //  * Build a graph G(V, E) where E is the set of temp. link between two stops and V is the set of
+//   //  * Build a graph G(V, E) where E is the set of temp. link between two stops and V is the set
+// of
 //   //  * stops
 //   //  *
 //   //  * @return The list of connections of the graph
@@ -117,7 +118,8 @@
 //   /**
 //    * Operate a connection scanning algorithm to get the fastest path from sources to targets
 //    *
-//    * @implNote This algorithm takes mutliple source and target nodes, since two differents stops can
+//    * @implNote This algorithm takes mutliple source and target nodes, since two differents stops
+// can
 //    *     have the same names. It returns the best result in all the results for each targets and
 //    *     sources
 //    * @param source The common name for all sources

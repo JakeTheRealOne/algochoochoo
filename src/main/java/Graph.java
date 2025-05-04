@@ -1,12 +1,11 @@
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * (Litteraly) A graph
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class Graph {
@@ -14,7 +13,7 @@ public class Graph {
 
   /**
    * Construct a new Graph object
-   * 
+   *
    * @param E The edges list
    * @param V The vertices map
    */
@@ -25,9 +24,9 @@ public class Graph {
 
   /**
    * Construct a new Graph object from GTFS datas
-   * 
+   *
    * @param path The path of the main GTFS directory
-   * @param set  The settings for graph construction
+   * @param set The settings for graph construction
    */
   public Graph(String path, AlgoSettings set) {
     settings = set;
@@ -40,7 +39,7 @@ public class Graph {
 
   /**
    * Get a stop by its id
-   * 
+   *
    * @return A stop
    */
   public Stop get_stop(String id) {
@@ -49,7 +48,7 @@ public class Graph {
 
   /**
    * Iterate over the edges of the graph
-   * 
+   *
    * @return An iterable
    */
   public Iterable<Connection> edges() {
@@ -58,7 +57,7 @@ public class Graph {
 
   /**
    * Iterate over the vertices of the graph
-   * 
+   *
    * @return An iterable
    */
   public Iterable<Stop> vertices() {
@@ -67,7 +66,7 @@ public class Graph {
 
   /**
    * Get the settings used to build the graph
-   * 
+   *
    * @return The AlgoSettings object associated to the graph
    */
   public AlgoSettings settings() {

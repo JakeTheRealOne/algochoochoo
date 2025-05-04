@@ -1,10 +1,10 @@
-import java.util.List;
 import java.awt.Color;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Handle the project view
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class View {
@@ -12,7 +12,7 @@ public class View {
 
   /**
    * Print a result
-   * 
+   *
    * @param path The path to print
    */
   public static void print(List<Connection> path) {
@@ -31,7 +31,7 @@ public class View {
 
   /**
    * Show a result
-   * 
+   *
    * @param path The path to print
    */
   public static void show(List<Connection> path) {
@@ -50,13 +50,13 @@ public class View {
 
   /**
    * Print a connection
-   * 
+   *
    * @param conn The connection
    * @param from If we will print the first stop of the connection (!to)
    */
   private static void print_connection(Connection conn, boolean from) {
     // if ((from) && conn.is_footpath()) {
-      // System.out.println(conn);
+    // System.out.println(conn);
     // }
     Stop stop = from ? conn.from() : conn.to();
     String keyword = from ? " from " : " to ";
@@ -67,7 +67,7 @@ public class View {
 
   /**
    * Convert a duration to HH:MM:SS time
-   * 
+   *
    * @param dur The duration (in seconds)
    * @return The string representing the time
    */
@@ -82,10 +82,10 @@ public class View {
 
   /**
    * Print a trip
-   * 
+   *
    * @param beg The beginning of the trip
    * @param end The end of the trip
-   * @param n   The trip length
+   * @param n The trip length
    */
   private static void print_line(Connection beg, Connection end, int n) {
     boolean foot = beg.is_footpath();
