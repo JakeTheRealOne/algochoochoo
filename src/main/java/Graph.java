@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +13,9 @@ public class Graph {
   /**
    * Construct a new Graph object
    *
-   * @param E The edges list
    * @param V The vertices map
    */
-  public Graph(List<Connection> E, Map<String, Stop> V) {
-    edges = E;
+  public Graph(Map<String, Stop> V) {
     vertices = V;
   }
 
@@ -32,7 +29,7 @@ public class Graph {
     settings = set;
     vertices = Parser.stops(path);
     ArrayList<Trip> trips = Parser.trips(path, vertices);
-    edges = from_trips(trips);
+    from_trips(trips);
     transfers = new BallTree(vertices.values());
     transfers.update_footpaths(vertices.values(), new AlgoSettings());
   }
@@ -44,15 +41,6 @@ public class Graph {
    */
   public Stop get_stop(String id) {
     return vertices.get(id);
-  }
-
-  /**
-   * Iterate over the edges of the graph
-   *
-   * @return An iterable
-   */
-  public Iterable<Connection> edges() {
-    return edges;
   }
 
   /**
@@ -76,29 +64,16 @@ public class Graph {
   // #### Private helpers ####
 
   /**
-   * Convert a list of trips to a list of connections
+   * Update stops and add edges from GTFS trips
    *
    * @param trips The list of trips
    * @return The list of connections
    */
-  private ArrayList<Connection> from_trips(ArrayList<Trip> trips) {
-    ArrayList<Connection> output = new ArrayList<>();
-    for (Trip trip : trips) {
-      ArrayList<TripElement> seq = trip.content();
-      int n = seq.size();
-      for (int i = 0; i < n - 1; ++i) {
-        Connection conn = new Connection(seq.get(i), seq.get(i + 1), trip);
-        output.add(conn);
-      }
-    }
-    output.sort(Comparator.comparingInt(Connection::departure_time));
-    return output;
-  }
+  private void from_trips(ArrayList<Trip> trips) {}
 
   // #### Attributes ####
 
   private AlgoSettings settings;
   private BallTree transfers;
-  private List<Connection> edges;
   private Map<String, Stop> vertices;
 }

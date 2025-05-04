@@ -15,7 +15,7 @@ public class View {
    *
    * @param path The path to print
    */
-  public static void print(List<Connection> path) {
+  public static void print(List<Edge> path) {
     int n = path.size();
     int j;
     for (int i = 0; i < n; ++i) {
@@ -34,7 +34,7 @@ public class View {
    *
    * @param path The path to print
    */
-  public static void show(List<Connection> path) {
+  public static void show(List<Edge> path) {
     int n = path.size();
     int j;
     for (int i = 0; i < n; ++i) {
@@ -54,7 +54,7 @@ public class View {
    * @param conn The connection
    * @param from If we will print the first stop of the connection (!to)
    */
-  private static void print_connection(Connection conn, boolean from) {
+  private static void print_connection(Edge conn, boolean from) {
     // if ((from) && conn.is_footpath()) {
     // System.out.println(conn);
     // }
@@ -87,15 +87,15 @@ public class View {
    * @param end The end of the trip
    * @param n The trip length
    */
-  private static void print_line(Connection beg, Connection end, int n) {
-    boolean foot = beg.is_footpath();
-    if (foot) {
-      System.out.print("Walking " + TIP);
-      System.out.print(FOOT + FOOT + FOOT);
-      System.out.println(TIP);
-      print_trip(beg, end);
-      return;
-    }
+  private static void print_line(Edge beg, Edge end, int n) {
+    // boolean foot = beg.is_footpath();
+    // if (foot) {
+    //   System.out.print("Walking " + TIP);
+    //   System.out.print(FOOT + FOOT + FOOT);
+    //   System.out.println(TIP);
+    //   print_trip(beg, end);
+    //   return;
+    // }
 
     Color color = trip_to_color(beg.trip());
     enable_color(color);
@@ -108,7 +108,7 @@ public class View {
     disable_color();
   }
 
-  private static void print_trip(Connection beg, Connection end) {
+  private static void print_trip(Edge beg, Edge end) {
     print_connection(beg, true);
     print_connection(end, false);
     System.out.println();

@@ -3,21 +3,20 @@
  *
  * @author Bilal Vandenberge
  */
-public class Connection {
+public class Edge {
   // #### Public methods ####
 
   /**
-   * Construct a new Connection object
+   * Construct a new Edge object
    *
    * @param first The first element
    * @param second The second element
    * @param trip_ The id of the trip owning the connection
    */
-  public Connection(TripElement first, TripElement second, Trip trip_) {
+  public Edge(TripElement first, TripElement second, Trip trip_) {
     from = first.stop();
     to = second.stop();
     trip = trip_;
-    walking = false;
     departure_time = first.departure_time();
     arrival_time = second.departure_time();
     if (arrival_time < departure_time) {
@@ -26,45 +25,32 @@ public class Connection {
     }
   }
 
-  /**
-   * Construct a new Connection object for a footpath
-   *
-   * @param first The source stop of the footpath
-   * @param second The target stop of the footpath
-   * @param dep The departure time of the pedestrian
-   * @param dur The average duration to walk to destination
-   */
-  public Connection(Stop first, Stop second, int dep, int dur) {
-    from = first;
-    to = second;
-    trip = null;
-    walking = true;
-    departure_time = dep;
-    arrival_time = dep + dur;
-    if (arrival_time < departure_time) {
-      throw new IllegalArgumentException(
-          "Arrival time: " + beautiful_time(false) + " < Departure time: " + beautiful_time(true));
-    }
-  }
+  // /**
+  //  * Construct a new Edge object for a footpath
+  //  *
+  //  * @param first The source stop of the footpath
+  //  * @param second The target stop of the footpath
+  //  * @param dep The departure time of the pedestrian
+  //  * @param dur The average duration to walk to destination
+  //  */
+  // public Edge(Stop first, Stop second, int dep, int dur) {
+  //   from = first;
+  //   to = second;
+  //   trip = null;
+  //   walking = true;
+  //   departure_time = dep;
+  //   arrival_time = dep + dur;
+  //   if (arrival_time < departure_time) {
+  //     throw new IllegalArgumentException(
+  //         "Arrival time: " + beautiful_time(false) + " < Departure time: " +
+  // beautiful_time(true));
+  //   }
+  // }
 
-  /** Convert a Connection object to string */
+  /** Convert a Edge object to string */
   @Override
   public String toString() {
-    return "Conn(from " + from + ", to " + to + ")";
-  }
-
-  /** Return if the two connection contents are identical */
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Connection)) return false;
-    Connection other = (Connection) o;
-    return (from.equals(other.from())
-        && to.equals(other.to())
-        && departure_time == other.departure_time()
-        && arrival_time == other.arrival_time()
-        && walking == other.is_footpath()
-        && ((trip == null && other.trip() == null) || trip.equals(other.trip())));
+    return "Edge(from " + from + ", to " + to + ")";
   }
 
   /**
@@ -116,7 +102,7 @@ public class Connection {
   /**
    * Get the trip of the connection
    *
-   * @return The trip or null if it's a footpath
+   * @return The trip
    */
   public Trip trip() {
     return trip;
@@ -140,14 +126,14 @@ public class Connection {
     return arrival_time;
   }
 
-  /**
-   * Get if the connection is a transfer
-   *
-   * @return If the connection is a footpath
-   */
-  public boolean is_footpath() {
-    return walking;
-  }
+  // /**
+  //  * Get if the connection is a transfer
+  //  *
+  //  * @return If the connection is a footpath
+  //  */
+  // public boolean is_footpath() {
+  //   return walking;
+  // }
 
   // #### Attributes ####
 
@@ -156,7 +142,8 @@ public class Connection {
   Trip trip;
   int departure_time;
   int arrival_time;
-  boolean walking;
+
+  // boolean walking;
 
   // #### Private helpers ####
 

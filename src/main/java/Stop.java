@@ -40,44 +40,48 @@ public class Stop {
     transfers = t;
   }
 
-  /** Reinitialize the attributes for a new algorithm execution */
-  public void init_for_algo() {
-    predecessor = null;
-    best = new PathCost(Integer.MAX_VALUE);
-  }
+  /*---------------------------
+        DEPRECATED (CSA)
+  ---------------------------*/
 
-  /** Relaxe near stops with transfers */
-  public void relaxe_transfers() {
-    int h = best.duration();
-    for (Transfer transfer : transfers) {
-      Stop near = transfer.stop();
-      int candidate = h + transfer.duration();
-      if (near.cost().duration() > candidate) {
-        near.cost().set_duration(candidate);
-        Connection conn = new Connection(this, transfer.stop(), h, transfer.duration());
-        near.set_predecessor(conn);
-      }
-    }
-  }
+  // /** Reinitialize the attributes for a new algorithm execution */
+  // public void init_for_algo() {
+  //   predecessor = null;
+  //   best = new PathCost(Integer.MAX_VALUE);
+  // }
 
-  /**
-   * Check if a connection leading to this stop is earlier than current earliest connection
-   *
-   * @param conn The connection
-   */
-  public void evaluate(Connection conn) {
-    if (conn.to() != this) return;
+  // /** Relaxe near stops with transfers */
+  // public void relaxe_transfers() {
+  //   int h = best.duration();
+  //   for (Transfer transfer : transfers) {
+  //     Stop near = transfer.stop();
+  //     int candidate = h + transfer.duration();
+  //     if (near.cost().duration() > candidate) {
+  //       near.cost().set_duration(candidate);
+  //       Connection conn = new Connection(this, transfer.stop(), h, transfer.duration());
+  //       near.set_predecessor(conn);
+  //     }
+  //   }
+  // }
 
-    Stop from = conn.from();
-    Stop to = conn.to();
-    boolean isLegal = conn.departure_time() >= from.cost().duration();
-    boolean isBest = conn.arrival_time() < best.duration();
-    if (isLegal && isBest) {
-      best.set_duration(conn.arrival_time());
-      set_predecessor(conn);
-      relaxe_transfers();
-    }
-  }
+  // /**
+  //  * Check if a connection leading to this stop is earlier than current earliest connection
+  //  *
+  //  * @param conn The connection
+  //  */
+  // public void evaluate(Connection conn) {
+  //   if (conn.to() != this) return;
+
+  //   Stop from = conn.from();
+  //   Stop to = conn.to();
+  //   boolean isLegal = conn.departure_time() >= from.cost().duration();
+  //   boolean isBest = conn.arrival_time() < best.duration();
+  //   if (isLegal && isBest) {
+  //     best.set_duration(conn.arrival_time());
+  //     set_predecessor(conn);
+  //     relaxe_transfers();
+  //   }
+  // }
 
   // #### Getters ####
 
@@ -127,7 +131,7 @@ public class Stop {
   }
 
   /**
-   * Get the transfers of the stop
+   * Get the transfers of the stop (footpaths)
    *
    * @return The list of transfers
    */
@@ -135,43 +139,52 @@ public class Stop {
     return transfers;
   }
 
-  /**
-   * Get the best cost to get to the stop
-   *
-   * @return The best cost
+  /** 
+   * Get the neighbors of the stop (does not include foot paths
+   * 
+   * @return The list of neighbors
    */
-  public PathCost cost() {
-    return best;
+  public ArrayList<Edge> neighbors() {
+    return out_edges;
   }
 
-  /**
-   * Get the predecessor of the stop
-   *
-   * @return The predecessor of the stop
-   */
-  public Connection predecessor() {
-    return predecessor;
-  }
+  // /**
+  //  * Get the best cost to get to the stop
+  //  *
+  //  * @return The best cost
+  //  */
+  // public PathCost cost() {
+  //   return best;
+  // }
+
+  // /**
+  //  * Get the predecessor of the stop
+  //  *
+  //  * @return The predecessor of the stop
+  //  */
+  // public Connection predecessor() {
+  //   return predecessor;
+  // }
 
   // #### Setters ####
 
-  /**
-   * Set the best cost to get to the stop
-   *
-   * @param cost The new cost
-   */
-  public void set_cost(PathCost cost) {
-    best = cost;
-  }
+  // /**
+  //  * Set the best cost to get to the stop
+  //  *
+  //  * @param cost The new cost
+  //  */
+  // public void set_cost(PathCost cost) {
+  //   best = cost;
+  // }
 
-  /**
-   * Set the predecessor of the stop
-   *
-   * @param pred The new predecessor
-   */
-  public void set_predecessor(Connection pred) {
-    predecessor = pred;
-  }
+  // /**
+  //  * Set the predecessor of the stop
+  //  *
+  //  * @param pred The new predecessor
+  //  */
+  // public void set_predecessor(Connection pred) {
+  //   predecessor = pred;
+  // }
 
   // #### Attributes ####
 
@@ -180,6 +193,7 @@ public class Stop {
   private EarthPos pos;
 
   private ArrayList<Transfer> transfers;
-  private PathCost best;
-  private Connection predecessor;
+  private ArrayList<Edge> out_edges;
+  // private PathCost best;
+  // private Connection predecessor;
 }
