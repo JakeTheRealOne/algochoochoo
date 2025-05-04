@@ -60,6 +60,25 @@ public class Stop {
     }
   }
 
+  /**
+   * Check if a connection leading to this stop is earlier than current earliest connection
+   * 
+   * @param conn The connection
+   */
+  public void evaluate(Connection conn) {
+    if (conn.to() != this) return;
+
+    Stop from = conn.from();
+    Stop to = conn.to();
+    boolean isLegal = conn.departure_time() >= from.cost().duration();
+    boolean isBest = conn.arrival_time() < best.duration();
+    if (isLegal && isBest) {
+      best.set_duration(conn.arrival_time());
+      set_predecessor(conn);
+      relaxe_transfers();
+    }
+  }
+
   // #### Getters ####
 
   /**

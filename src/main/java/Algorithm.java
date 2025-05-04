@@ -110,30 +110,7 @@ public class Algorithm {
     }
 
     for (Connection conn : graph.edges()) {
-      Stop from = conn.from();
-      Stop to = conn.to();
-      int ahead = 0;
-      Connection p = from.predecessor();
-      if (p != null && p.trip() != null && conn.trip() != null) {
-        if (p.trip() != conn.trip()) {
-          ahead = settings.min_ahead_time;
-        }
-      }
-      if (!(conn.departure_time() - ahead < from.cost().duration())) {
-        if (conn.arrival_time() < to.cost().duration()) {
-          to.cost().set_duration(conn.arrival_time());
-          to.set_predecessor(conn);
-          for (Transfer foot : conn.to().transfers()) {
-            Stop near = foot.stop();
-            int candidate = conn.arrival_time() + foot.duration();
-            if (candidate < near.cost().duration()) {
-              near.cost().set_duration(candidate);
-              near.set_predecessor(
-                  new Connection(conn.to(), foot.stop(), conn.arrival_time(), foot.duration()));
-            }
-          }
-        }
-      }
+      conn.to().evaluate(conn);
     }
 
     List<Connection> output = new ArrayList<>();
