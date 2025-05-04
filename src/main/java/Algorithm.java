@@ -3,6 +3,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+// TEST: TODO Remove
+import java.util.random.*;
 
 /**
  * Execute algorithms on a graph
@@ -18,17 +22,59 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    Graph graph = new Graph("src/main/resources/GTFS");
-    Algorithm algo = new Algorithm(graph, new AlgoSettings());
-    List<Connection> path1 = algo.CSA("AUMALE", "FRAITEUR", 8 * 3600 + 0 * 60);
-    List<Connection> path2 = algo.CSA("Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
+    run_test_1();
+  }
+
+  public static void run_test_1() {
+    AlgoSettings set = new AlgoSettings();
+    Graph graph = new Graph("src/main/resources/GTFS", set);
+    Algorithm algo = new Algorithm(graph, set);
+    List<Connection> path1 = algo.CSA("AUMALE", "HERRMANN-DEBROUX", 8 * 3600 + 0 * 60);
+    // List<Connection> path2 = algo.CSA("Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     List<Connection> path3 = algo.CSA("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
-    View.show(path1);
+    View.print(path1);
     System.out.println();
-    View.show(path2);
-    System.out.println();
-    View.show(path3);
-    System.out.println();
+    // View.print(path2);
+    // System.out.println();
+    View.print(path3);
+    // System.out.println();
+  }
+
+  public static void run_test_2() {
+    AlgoSettings set = new AlgoSettings();
+    Graph graph = new Graph("src/main/resources/GTFS", new AlgoSettings());
+    Graph graph2 = new Graph("src/main/resources/GTFS", set);
+    Algorithm algo = new Algorithm(graph, new AlgoSettings());
+    Algorithm algo2 = new Algorithm(graph2, set);
+    Random rand = new Random();
+    int min = 3 * 3600;
+    int max = 18 * 3600;
+    List<Stop> stop_set = new ArrayList<>(Parser.stops("src/main/resources/GTFS").values());
+    while (true) {
+      int i = rand.nextInt(stop_set.size());
+      int j = rand.nextInt(stop_set.size());
+      String s = stop_set.get(i).name();
+      String t = stop_set.get(j).name();
+      int h = rand.nextInt(max - min + 1) + min;
+      List<Connection> path_safe = algo.CSA(s, t, h);
+      List<Connection> path_unsafe = algo2.CSA(s, t, h);
+      if (path_safe.getLast().arrival_time() != path_unsafe.getLast().arrival_time()) {
+        System.out.println("ITS OVER " + path_safe.size() + " " + path_unsafe.size());
+        // for (int e = 0; e < path_safe.size(); e++) {
+        //   if (!Objects.equals(path_safe.get(e), path_unsafe.get(e))) {
+        //     System.out.println("Difference at index " + e + ": " + path_safe.get(e) + " vs " + path_unsafe.get(e));
+        //     break;
+        //   }
+        // }
+        View.print(path_safe);
+        System.out.println();
+        View.print(path_unsafe);
+      } else {
+        System.out.println("v");
+      }
+      System.out.println();
+      System.out.println();
+    }
   }
 
   /**
@@ -54,8 +100,6 @@ public class Algorithm {
   public List<Connection> CSA(String s, String t, int h) {
     init(s, t, h);
 
-    Map<String, Connection> predecessor = new LinkedHashMap<>();
-
     for (Stop stop : graph.vertices()) {
       stop.init_for_algo();
     }
@@ -68,8 +112,7 @@ public class Algorithm {
         int candidate = h + transfer.duration();
         if (near.cost().duration() > candidate) {
           near.cost().set_duration(candidate);
-          predecessor.put(
-              transfer.stop().id(),
+          near.set_predecessor(
               new Connection(graph.get_stop(source), transfer.stop(), h, transfer.duration()));
         }
       }
@@ -79,8 +122,8 @@ public class Algorithm {
       Stop from = conn.from();
       Stop to = conn.to();
       int ahead = 0;
-      Connection p = predecessor.getOrDefault(conn.from().id(), null);
-      if (p != null) {
+      Connection p = from.predecessor();
+      if (p != null && p.trip() != null && conn.trip() != null) {
         if (p.trip() != conn.trip()) {
           ahead = settings.min_ahead_time;
         }
@@ -88,15 +131,13 @@ public class Algorithm {
       if (!(conn.departure_time() - ahead < from.cost().duration())) {
         if (conn.arrival_time() < to.cost().duration()) {
           to.cost().set_duration(conn.arrival_time());
-          predecessor.put(conn.to().id(), conn);
-
+          to.set_predecessor(conn);
           for (Transfer foot : conn.to().transfers()) {
             Stop near = foot.stop();
             int candidate = conn.arrival_time() + foot.duration();
             if (candidate < near.cost().duration()) {
               near.cost().set_duration(candidate);
-              predecessor.put(
-                  foot.stop().id(),
+              near.set_predecessor(
                   new Connection(conn.to(), foot.stop(), conn.arrival_time(), foot.duration()));
             }
           }
@@ -119,13 +160,13 @@ public class Algorithm {
       return output;
     }
 
-    Connection conn = predecessor.get(best_target.id());
+    Connection conn = best_target.predecessor();
     while (conn != null) {
       output.add(conn);
       if (equal(s, conn.from().name())) {
         break;
       }
-      conn = predecessor.get(conn.from().id());
+      conn = conn.from().predecessor();
     }
     Collections.reverse(output);
     return output;

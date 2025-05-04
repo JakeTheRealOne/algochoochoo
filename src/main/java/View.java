@@ -55,6 +55,9 @@ public class View {
    * @param from If we will print the first stop of the connection (!to)
    */
   private static void print_connection(Connection conn, boolean from) {
+    // if ((from) && conn.is_footpath()) {
+      // System.out.println(conn);
+    // }
     Stop stop = from ? conn.from() : conn.to();
     String keyword = from ? " from " : " to ";
     String endl = from ? "" : "\n";

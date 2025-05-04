@@ -12,6 +12,7 @@ public class PathCost {
    * @param dur The duration of the path
    */
   PathCost(int dur) {
+    legs = 0;
     duration = dur;
   }
 
@@ -38,4 +39,5 @@ public class PathCost {
   // #### Attributes ####
 
   private int duration;
+  private int legs;
 }

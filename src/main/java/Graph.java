@@ -27,13 +27,14 @@ public class Graph {
    * Construct a new Graph object from GTFS datas
    * 
    * @param path The path of the main GTFS directory
+   * @param set  The settings for graph construction
    */
-  public Graph(String path) {
+  public Graph(String path, AlgoSettings set) {
+    settings = set;
     vertices = Parser.stops(path);
     ArrayList<Trip> trips = Parser.trips(path, vertices);
     edges = from_trips(trips);
     transfers = new BallTree(vertices.values());
-    // TODO: link algosettings here
     transfers.update_footpaths(vertices.values(), new AlgoSettings());
   }
 
@@ -45,7 +46,7 @@ public class Graph {
   public Stop get_stop(String id) {
     return vertices.get(id);
   }
-  
+
   /**
    * Iterate over the edges of the graph
    * 
@@ -64,6 +65,15 @@ public class Graph {
     return vertices.values();
   }
 
+  /**
+   * Get the settings used to build the graph
+   * 
+   * @return The AlgoSettings object associated to the graph
+   */
+  public AlgoSettings settings() {
+    return settings;
+  }
+
   // #### Private helpers ####
 
   /**
@@ -72,7 +82,7 @@ public class Graph {
    * @param trips The list of trips
    * @return The list of connections
    */
-  private static ArrayList<Connection> from_trips(ArrayList<Trip> trips) {
+  private ArrayList<Connection> from_trips(ArrayList<Trip> trips) {
     ArrayList<Connection> output = new ArrayList<>();
     for (Trip trip : trips) {
       ArrayList<TripElement> seq = trip.content();
@@ -88,6 +98,7 @@ public class Graph {
 
   // #### Attributes ####
 
+  private AlgoSettings settings;
   private BallTree transfers;
   private List<Connection> edges;
   private Map<String, Stop> vertices;

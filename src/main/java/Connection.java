@@ -6,8 +6,6 @@
 public class Connection {
   // #### Public methods ####
 
-  // TODO Change trip string to trip Trip
-
   /**
    * Construct a new Connection object
    *
@@ -53,6 +51,21 @@ public class Connection {
   @Override
   public String toString() {
     return "Conn(from " + from + ", to " + to + ")";
+  }
+
+  /** Return if the two connection contents are identical */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof Connection))
+      return false;
+    Connection other = (Connection) o;
+    return (from.equals(other.from()) && to.equals(other.to())
+        && departure_time == other.departure_time()
+        && arrival_time == other.arrival_time()
+        && walking == other.is_footpath()
+        && ((trip == null && other.trip() == null) || trip.equals(other.trip())));
   }
 
   /**
