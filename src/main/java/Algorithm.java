@@ -113,31 +113,7 @@ public class Algorithm {
       conn.to().evaluate(conn);
     }
 
-    List<Connection> output = new ArrayList<>();
-    int best_result = Integer.MAX_VALUE;
-    Stop best_target = null;
-    for (String target : targets) {
-      Stop stop = graph.get_stop(target);
-      int res = stop.cost().duration();
-      if (res < best_result) {
-        best_result = res;
-        best_target = stop;
-      }
-    }
-    if (best_target == null) {
-      return output;
-    }
-
-    Connection conn = best_target.predecessor();
-    while (conn != null) {
-      output.add(conn);
-      if (equal(s, conn.from().name())) {
-        break;
-      }
-      conn = conn.from().predecessor();
-    }
-    Collections.reverse(output);
-    return output;
+    return build_solution();
   }
 
   // #### Private helpers ####
@@ -171,6 +147,48 @@ public class Algorithm {
               + targets.size()
               + ")");
     }
+  }
+
+  /**
+   * Build the solution (path) after a CSA algorithm
+   *
+   * @return The best path considering current algorithm settings
+   */
+  private List<Connection> build_solution() {
+    List<Connection> output = new ArrayList<>();
+    Stop best_target = get_best_target();
+    if (best_target == null) return output;
+
+    Connection conn = best_target.predecessor();
+    while (conn != null) {
+      output.add(conn);
+      if (equal(s, conn.from().name())) {
+        break;
+      }
+      conn = conn.from().predecessor();
+    }
+
+    Collections.reverse(output);
+    return output;
+  }
+
+  /**
+   * Get the target accessed the earliest after a CSA algorithm
+   * 
+   * @return The best target
+   */
+  private Stop get_best_target() {
+    int earliest = Integer.MAX_VALUE;
+    Stop output = null;
+    for (String target : targets) {
+      Stop stop = graph.get_stop(target);
+      int current = stop.cost().duration();
+      if (current < earliest) {
+        earliest = current;
+        output = stop;
+      }
+    }
+    return output;
   }
 
   private boolean equal(String candidate, String sample) {

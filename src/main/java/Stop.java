@@ -62,7 +62,7 @@ public class Stop {
 
   /**
    * Check if a connection leading to this stop is earlier than current earliest connection
-   * 
+   *
    * @param conn The connection
    */
   public void evaluate(Connection conn) {
