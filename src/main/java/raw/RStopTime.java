@@ -16,8 +16,8 @@ public class RStopTime {
    */
   public RStopTime(String[] data) {
     if (data.length != 4) {
-      throw new IllegalArgumentException(
-          "Wrong stop time entry size (Input: " + data.length + " != Expected: 4)");
+      throw new IllegalArgumentException("Wrong stop time entry size (Input: "
+          + data.length + " != Expected: 4)");
     }
     trip_id = data[0];
     departure_time = read_time(data[1]);

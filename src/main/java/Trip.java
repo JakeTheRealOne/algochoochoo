@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import raw.RTrip;
 
@@ -24,7 +25,8 @@ public class Trip {
     id = raw_trip.trip_id();
     route = routes.get(raw_trip.route_id());
     if (route == null) {
-      throw new IllegalArgumentException("Unknown route: '" + raw_trip.route_id() + "'");
+      throw new IllegalArgumentException(
+          "Unknown route: '" + raw_trip.route_id() + "'");
     }
     content = new ArrayList<>();
   }
@@ -45,11 +47,12 @@ public class Trip {
   }
 
   /**
-   * Sort and return the content of the trip (based on the index of each element)
+   * Sort and return the content of the trip (based on the index of each
+   * element)
    *
    * @return The sorted content
    */
-  public ArrayList<TripElement> sort() {
+  public List<TripElement> sort() {
     content.sort(Comparator.comparingInt(TripElement::index));
     return content;
   }
@@ -79,7 +82,7 @@ public class Trip {
    *
    * @return The content
    */
-  public ArrayList<TripElement> content() {
+  public List<TripElement> content() {
     return content;
   }
 
@@ -87,5 +90,5 @@ public class Trip {
 
   private String id;
   private Route route;
-  private ArrayList<TripElement> content;
+  private List<TripElement> content;
 }

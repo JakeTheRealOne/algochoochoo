@@ -14,8 +14,8 @@ public class Route {
    */
   public Route(String[] data) {
     if (data.length != 4) {
-      throw new IllegalArgumentException(
-          "Wrong route entry size (Input: " + data.length + " != Expected: 4)");
+      throw new IllegalArgumentException("Wrong route entry size (Input: "
+          + data.length + " != Expected: 4)");
     }
     id = data[0];
     short_name = data[1];
@@ -27,7 +27,8 @@ public class Route {
   /** Convert a Route object to string */
   @Override
   public String toString() {
-    return "Route(" + id + ", '" + short_name + "', '" + long_name + "', " + type + ")";
+    return "Route(" + id + ", '" + short_name + "', '" + long_name + "', "
+        + type + ")";
   }
 
   /**

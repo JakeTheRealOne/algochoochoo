@@ -3,7 +3,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A data structure that allows fast neighbor search based on geographic coordinates
+ * A data structure that allows fast neighbor search based on geographic
+ * coordinates
  *
  * @author Bilal Vandenberge
  */
@@ -11,15 +12,16 @@ public class BallTree {
   // #### Public methods ####
 
   /**
-   * Update the footpaths in the stops neighbor list with all the stops in a 500m radius
+   * Update the footpaths in the stops neighbor list with all the stops in a
+   * 500m radius
    *
    * @param stops The list of stops from GTFS
    */
   public void update_footpaths(Collection<Stop> stops, AlgoSettings set) {
-    for (Stop stop : stops) {
-      ArrayList<Transfer> neighbors = get(stop, set.footpath_radius);
-      stop.set_transfers(neighbors);
-    }
+    // for (Stop stop : stops) {
+    //   List<Edge> neighbors = radius_search(stop, set.footpath_radius);
+    //   stop.set_transfers(neighbors);
+    // } DANGER TODO REMOVE
   }
 
   /**
@@ -30,7 +32,8 @@ public class BallTree {
    */
   public BallTree(Collection<Stop> stops) {
     if (stops == null || stops.isEmpty()) {
-      throw new IllegalArgumentException("Stop collection must be non-null and non-empty");
+      throw new IllegalArgumentException(
+          "Stop collection must be non-null and non-empty");
     }
     List<Stop> stopList = new ArrayList<>(stops);
     this.root = buildTree(stopList);
@@ -43,10 +46,10 @@ public class BallTree {
    * @param radius search radius (in meters)
    * @return list of stops within radius
    */
-  public ArrayList<Transfer> get(Stop source, int radius) {
-    ArrayList<Transfer> result = new ArrayList<>();
-    search(root, source, radius, result);
-    return result;
+  public List<Edge> radius_search(Stop source, int radius) {
+    List<Edge> output = new ArrayList<>();
+    search(root, source, radius, output);
+    return output;
   }
 
   // #### Private helpers ####
@@ -70,8 +73,10 @@ public class BallTree {
     List<Stop> leftList = new ArrayList<>();
     List<Stop> rightList = new ArrayList<>();
     for (Stop s : stops) {
-      if (distance(s, p1) < distance(s, p2)) leftList.add(s);
-      else rightList.add(s);
+      if (distance(s, p1) < distance(s, p2))
+        leftList.add(s);
+      else
+        rightList.add(s);
     }
     // Fallback to leaf if imbalance
     if (leftList.isEmpty() || rightList.isEmpty()) {
@@ -91,7 +96,7 @@ public class BallTree {
   }
 
   // Searches the tree for stops within radius of source
-  private void search(Node node, Stop source, int radius, ArrayList<Transfer> result) {
+  private void search(Node node, Stop source, int radius, List<Edge> result) {
     int distToCenter = distance(source, node.center);
     if (distToCenter > radius + node.radius) {
       return; // prune this branch
@@ -103,7 +108,7 @@ public class BallTree {
         }
         int dist = distance(source, s);
         if (dist <= radius) {
-          result.add(new Transfer(s, dist));
+          result.add(new Edge(s, dist));
         }
       }
     } else {
@@ -148,8 +153,8 @@ public class BallTree {
     }
     double avgLat = sumLat / stops.size();
     double avgLon = sumLon / stops.size();
-    return new Stop(
-        new String[] {"", "centroid", Double.toString(avgLat), Double.toString(avgLon)});
+    return new Stop(new String[] {
+        "", "centroid", Double.toString(avgLat), Double.toString(avgLon)});
   }
 
   // Computes max distance from center to any stop in list
@@ -157,10 +162,13 @@ public class BallTree {
     int max = 0;
     for (Stop s : stops) {
       int d = distance(center, s);
-      if (d > max) max = d;
+      if (d > max)
+        max = d;
     }
     return max;
   }
+
+  // TODO clean up this mess
 
   // Haversine distance (in kilometers) between two stops
   private int distance(Stop s1, Stop s2) {
@@ -170,9 +178,9 @@ public class BallTree {
     double lon2 = Math.toRadians(s2.longitude());
     double dLat = lat2 - lat1;
     double dLon = lon2 - lon1;
-    double a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2)
-            + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+        + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2)
+            * Math.sin(dLon / 2);
     double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     final double R = 6371000;
     return (int) (R * c);

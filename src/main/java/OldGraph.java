@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -7,25 +6,25 @@ import java.util.Map;
  *
  * @author Bilal Vandenberge
  */
-public class Graph {
+public class OldGraph {
   // #### Public methods ####
 
   /**
-   * Construct a new Graph object
+   * Construct a new OldGraph object
    *
    * @param V The vertices map
    */
-  public Graph(Map<String, Stop> V) {
+  public OldGraph(Map<String, Stop> V) {
     vertices = V;
   }
 
   /**
-   * Construct a new Graph object from GTFS datas
+   * Construct a new OldGraph object from GTFS datas
    *
    * @param path The path of the main GTFS directory
    * @param set The settings for graph construction
    */
-  public Graph(String path, AlgoSettings set) {
+  public OldGraph(String path, AlgoSettings set) {
     settings = set;
     vertices = Parser.stops(path);
     ArrayList<Trip> trips = Parser.trips(path, vertices);

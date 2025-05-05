@@ -12,6 +12,8 @@ public class AlgoSettings {
   /** The maximum walking distance for each transfer (meters) */
   int footpath_radius = 500;
 
-  /** The safety margin to avoid the transport leaving without us (in seconds) */
+  /**
+   * The safety margin to avoid the transport leaving without us (in seconds)
+   */
   int min_ahead_time = 0 * 60;
 }

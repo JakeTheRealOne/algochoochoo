@@ -27,13 +27,15 @@ public class Parser {
    * @param stops The list of stops
    * @return The list of populated trips
    */
-  public static ArrayList<Trip> trips(String main_dir, Map<String, Stop> stops) {
+  public static ArrayList<Trip> trips(
+      String main_dir, Map<String, Stop> stops) {
     ArrayList<Trip> output = new ArrayList<>();
     Map<String, Trip> map = new LinkedHashMap<>();
 
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
+      throw new IllegalArgumentException(
+          "'" + main_dir + "' is not a directory");
     }
 
     Map<String, Route> routes = routes(main_dir);
@@ -67,7 +69,8 @@ public class Parser {
 
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
+      throw new IllegalArgumentException(
+          "'" + main_dir + "' is not a directory");
     }
 
     File[] files = dir.listFiles();
@@ -95,7 +98,8 @@ public class Parser {
 
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
+      throw new IllegalArgumentException(
+          "'" + main_dir + "' is not a directory");
     }
 
     File[] files = dir.listFiles();
@@ -124,7 +128,8 @@ public class Parser {
       String main_dir, Map<String, Trip> trips, Map<String, Stop> stops) {
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("'" + main_dir + "' is not a directory");
+      throw new IllegalArgumentException(
+          "'" + main_dir + "' is not a directory");
     }
 
     File[] files = dir.listFiles();
@@ -170,7 +175,8 @@ public class Parser {
           }
         };
       } catch (IOException e) {
-        throw new IllegalArgumentException("An error occurred while reading: '" + path + "'");
+        throw new IllegalArgumentException(
+            "An error occurred while reading: '" + path + "'");
       }
     };
   }

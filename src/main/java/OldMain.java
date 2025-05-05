@@ -23,7 +23,8 @@
 //   public static void main(String[] args) {
 //     run("Aumale", "Delta", 8*3600 + 0*60, new AlgoSettings());
 //     // run("Aumale", "Fraiteur", 8*3600 + 0*60, new AlgoSettings());
-//     // run("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60, new AlgoSettings());
+//     // run("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60, new
+//     AlgoSettings());
 //   }
 
 //   /**
@@ -32,7 +33,8 @@
 //    * @param s The source stop (name)
 //    * @param t The target stop (name)
 //    * @param h The source departure time
-//    * @param strict If the source and target name search should be strict or not
+//    * @param strict If the source and target name search should be strict or
+//    not
 //    */
 //   public static void run(String s, String t, int h, AlgoSettings set) {
 //     final String main_dir = "src/main/resources/GTFS";
@@ -70,7 +72,8 @@
 //    * @param sample The sample string
 //    * @param strict If the equality is only partial
 //    */
-//   private static boolean equal(String candidate, String sample, boolean strict) {
+//   private static boolean equal(String candidate, String sample, boolean
+//   strict) {
 //     if (strict) {
 //       return candidate.equals(sample);
 //     } else {
@@ -79,7 +82,8 @@
 //   }
 
 //   // /**
-//   //  * Build a graph G(V, E) where E is the set of temp. link between two stops and V is the set
+//   //  * Build a graph G(V, E) where E is the set of temp. link between two
+//   stops and V is the set
 // of
 //   //  * stops
 //   //  *
@@ -101,7 +105,8 @@
 //    * @param trips The list of trips
 //    * @return The list of connections
 //    */
-//   private static ArrayList<Connection> trips_to_conns(ArrayList<Trip> trips) {
+//   private static ArrayList<Connection> trips_to_conns(ArrayList<Trip> trips)
+//   {
 //     ArrayList<Connection> output = new ArrayList<>();
 //     for (Trip trip : trips) {
 //       ArrayList<TripElement> seq = trip.content();
@@ -116,11 +121,14 @@
 //   }
 
 //   /**
-//    * Operate a connection scanning algorithm to get the fastest path from sources to targets
+//    * Operate a connection scanning algorithm to get the fastest path from
+//    sources to targets
 //    *
-//    * @implNote This algorithm takes mutliple source and target nodes, since two differents stops
+//    * @implNote This algorithm takes mutliple source and target nodes, since
+//    two differents stops
 // can
-//    *     have the same names. It returns the best result in all the results for each targets and
+//    *     have the same names. It returns the best result in all the results
+//    for each targets and
 //    *     sources
 //    * @param source The common name for all sources
 //    * @param sources The list of source nodes (stop ids)
@@ -128,7 +136,8 @@
 //    * @param h The source departure time (in seconds)
 //    * @param conns The connections between the stops
 //    * @exception IllegalArgumentException If targets or sources are empty
-//    * @return The list of connection to takes to arrive at destination as fast as possible
+//    * @return The list of connection to takes to arrive at destination as
+//    fast as possible
 //    */
 //   private static ArrayList<Connection> CSA(
 //       String source_name,
@@ -157,7 +166,8 @@
 //       earliest.put(s, h);
 //       // for (Neighbor foot : s.neighbors()) {
 //       //   int arrival_time = h + foot.duration();
-//       //   if (arrival_time < earliest.getOrDefault(foot.stop().id(), Integer.MAX_VALUE)) {
+//       //   if (arrival_time < earliest.getOrDefault(foot.stop().id(),
+//       Integer.MAX_VALUE)) {
 //       //     earliest.put(foot.stop().id(), arrival_time);
 //       //     predecessor.put(
 //       //         foot.stop().id(),
@@ -183,11 +193,13 @@
 
 //           for (Transfer foot : conn.to().neighbors()) {
 //             int arrival_time = conn.arrival_time() + foot.duration();
-//             if (arrival_time < earliest.getOrDefault(foot.stop().id(), Integer.MAX_VALUE)) {
+//             if (arrival_time < earliest.getOrDefault(foot.stop().id(),
+//             Integer.MAX_VALUE)) {
 //               earliest.put(foot.stop().id(), arrival_time);
 //               predecessor.put(
 //                 foot.stop().id(),
-//                 new Connection(conn.to(), foot.stop(), conn.arrival_time(), foot.duration()));
+//                 new Connection(conn.to(), foot.stop(), conn.arrival_time(),
+//                 foot.duration()));
 //             }
 //           }
 //         }
@@ -225,7 +237,8 @@
 //   }
 
 //   private static void print_result(ArrayList<Connection> path) {
-//     System.out.println("──────────────────────── RESULTS ────────────────────────");
+//     System.out.println("──────────────────────── RESULTS
+//     ────────────────────────");
 
 //     int i = 0;
 //     int n = path.size();
@@ -240,7 +253,8 @@
 //               + " from "
 //               + path.get(i).from().name()
 //               + " ("
-//               + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60)
+//               + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) /
+//               60, time % 60)
 //               + ")");
 
 //       int j = i;
@@ -252,7 +266,8 @@
 //           " to "
 //               + path.get(j - 1).to().name()
 //               + " ("
-//               + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60)
+//               + String.format("%02d:%02d:%02d", time / 3600, (time % 3600) /
+//               60, time % 60)
 //               + ")");
 //       i = j;
 //     }
@@ -262,7 +277,8 @@
 
 //   private static void main_runtime_test() {
 //     //   long start = System.nanoTime();
-//     //   ArrayList<Connection> conns = build_graph("src/main/resources/GTFS");
+//     //   ArrayList<Connection> conns =
+//     build_graph("src/main/resources/GTFS");
 //     //   // Map<
 //     //   print_result(
 //     //       CSA(
@@ -276,9 +292,11 @@
 //     //           "SNCB-8872009",
 //     //           7 * 3600 + 7 * 60 + 7,
 //     //           conns)); // DE Anvers sud À Charleroi Central
-//     //   print_result(CSA("DELIJN-504014", "SNCB-8866654", 10 * 3600 + 30 * 60, conns));
+//     //   print_result(CSA("DELIJN-504014", "SNCB-8866654", 10 * 3600 + 30 *
+//     60, conns));
 //     //   long end = System.nanoTime();
-//     //   // System.out.println("Main execution time: " + (end - start) / 1_000_000 + " ms");
+//     //   // System.out.println("Main execution time: " + (end - start) /
+//     1_000_000 + " ms");
 //     //   start = System.nanoTime();
 //   }
 // }

@@ -16,13 +16,15 @@ public class EarthPos {
     try {
       latitude = Double.parseDouble(lat_str);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("Invalid latitude: '" + lat_str + "'");
+      throw new IllegalArgumentException(
+          "Invalid latitude: '" + lat_str + "'");
     }
 
     try {
       longitude = Double.parseDouble(long_str);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("Invalid number format: '" + long_str + "'");
+      throw new IllegalArgumentException(
+          "Invalid number format: '" + long_str + "'");
     }
   }
 

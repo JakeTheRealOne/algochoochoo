@@ -20,15 +20,25 @@ public class Algorithm {
     run_test_1();
   }
 
+  public static void run_test_3() {
+    AlgoSettings set = new AlgoSettings();
+    Graph graph = new Graph("src/test/resources", set);
+    Algorithm algo = new Algorithm(graph);
+    System.out.println(graph);
+  }
+
   public static void run_test_1() {
     AlgoSettings set = new AlgoSettings();
     Graph graph = new Graph("src/main/resources/GTFS", set);
     Algorithm algo = new Algorithm(graph);
-    List<Edge> path1 = algo.dijkstra("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
-    List<Edge> path2 =
-        algo.dijkstra(
-            "Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
-    List<Edge> path3 = algo.dijkstra("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
+    List<Edge> path1 =
+        algo.dijkstra("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
+    List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
+        "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
+    List<Edge> path3 = algo.dijkstra(
+        "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
+    System.out.println(graph);
+    System.out.println();
     View.print(path1);
     System.out.println();
     View.print(path2);
@@ -51,13 +61,16 @@ public class Algorithm {
 
   // public static void run_test_1() {
   //   AlgoSettings set = new AlgoSettings();
-  //   Graph graph = new Graph("src/main/resources/GTFS", set);
+  //   OldGraph graph = new OldGraph("src/main/resources/GTFS", set);
   //   Algorithm algo = new Algorithm(graph, set);
-  //   List<Connection> path1 = algo.CSA("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
-  //   // List<Connection> path2 = algo.CSA("Antwerpen Centraal Station", "CHIMAY Petit Virelles",
+  //   List<Connection> path1 = algo.CSA("AUMALE", "HERRMANN-DEBROUX", 7 * 3600
+  //   + 0 * 60);
+  //   // List<Connection> path2 = algo.CSA("Antwerpen Centraal Station",
+  //   "CHIMAY Petit Virelles",
   // 14 *
   //   // 3600 + 14 * 60 + 14);
-  //   List<Connection> path3 = algo.CSA("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 *
+  //   List<Connection> path3 = algo.CSA("Alveringem Nieuwe Herberg",
+  //   "Aubange", 10 * 3600 + 30 *
   // 60);
   //   View.print(path1);
   //   System.out.println();
@@ -69,15 +82,15 @@ public class Algorithm {
 
   // public static void run_test_2() {
   //   AlgoSettings set = new AlgoSettings();
-  //   Graph graph = new Graph("src/main/resources/GTFS", new AlgoSettings());
-  //   Graph graph2 = new Graph("src/main/resources/GTFS", set);
-  //   Algorithm algo = new Algorithm(graph, new AlgoSettings());
-  //   Algorithm algo2 = new Algorithm(graph2, set);
-  //   Random rand = new Random();
-  //   int min = 3 * 3600;
+  //   OldGraph graph = new OldGraph("src/main/resources/GTFS", new
+  //   AlgoSettings()); OldGraph graph2 = new
+  //   OldGraph("src/main/resources/GTFS", set); Algorithm algo = new
+  //   Algorithm(graph, new AlgoSettings()); Algorithm algo2 = new
+  //   Algorithm(graph2, set); Random rand = new Random(); int min = 3 * 3600;
   //   int max = 18 * 3600;
-  //   List<Stop> stop_set = new ArrayList<>(Parser.stops("src/main/resources/GTFS").values());
-  //   while (true) {
+  //   List<Stop> stop_set = new
+  //   ArrayList<>(Parser.stops("src/main/resources/GTFS").values()); while
+  //   (true) {
   //     int i = rand.nextInt(stop_set.size());
   //     int j = rand.nextInt(stop_set.size());
   //     String s = stop_set.get(i).name();
@@ -85,11 +98,14 @@ public class Algorithm {
   //     int h = rand.nextInt(max - min + 1) + min;
   //     List<Connection> path_safe = algo.CSA(s, t, h);
   //     List<Connection> path_unsafe = algo2.CSA(s, t, h);
-  //     if (path_safe.getLast().arrival_time() != path_unsafe.getLast().arrival_time()) {
-  //       System.out.println("ITS OVER " + path_safe.size() + " " + path_unsafe.size());
+  //     if (path_safe.getLast().arrival_time() !=
+  //     path_unsafe.getLast().arrival_time()) {
+  //       System.out.println("ITS OVER " + path_safe.size() + " " +
+  //       path_unsafe.size());
   //       // for (int e = 0; e < path_safe.size(); e++) {
   //       //   if (!Objects.equals(path_safe.get(e), path_unsafe.get(e))) {
-  //       //     System.out.println("Difference at index " + e + ": " + path_safe.get(e) + " vs " +
+  //       //     System.out.println("Difference at index " + e + ": " +
+  //       path_safe.get(e) + " vs " +
   //       // path_unsafe.get(e));
   //       //     break;
   //       //   }
@@ -152,7 +168,8 @@ public class Algorithm {
     s = s_;
     sources.clear();
     targets.clear();
-    for (Stop stop : graph.vertices()) {
+    for (Node node : graph.vertices()) {
+      Stop stop = node.stop();
       String name = stop.name();
       if (equal(s, name)) {
         sources.add(stop.id());
@@ -164,10 +181,7 @@ public class Algorithm {
     if (sources.isEmpty() || targets.isEmpty()) {
       throw new IllegalArgumentException(
           "At least one source and one target is required (number of sources: "
-              + sources.size()
-              + ", number of targets: "
-              + targets.size()
-              + ")");
+          + sources.size() + ", number of targets: " + targets.size() + ")");
     }
   }
 
