@@ -19,7 +19,34 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    run_test_1();
+    runtime_test();
+  }
+
+  public static void runtime_test() {
+    long start = System.nanoTime();
+    AlgoSettings set = new AlgoSettings();
+    Graph graph = new Graph("src/main/resources/GTFS", set);
+    Algorithm algo = new Algorithm(graph);
+    long end = System.nanoTime();
+    long duration = end - start;
+    System.out.println("[Dijkstra] : Construction en " + duration / 1000000000f + " secondes");
+
+    start = System.nanoTime();
+    List<Edge> path1 = algo.dijkstra("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
+    end = System.nanoTime();
+    duration = end - start;
+    System.out.println("[Dijkstra] : Requete #1   en " + duration / 1000000000f + " secondes");
+    start = System.nanoTime();
+    List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 *
+    3600 + 14 * 60 + 14);
+    end = System.nanoTime();
+    System.out.println("[Dijkstra] : Requete #2   en " + duration / 1000000000f + " secondes");
+    duration = end - start;
+    start = System.nanoTime();
+    List<Edge> path3 = algo.dijkstra("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
+    end = System.nanoTime();
+    duration = end - start;
+    System.out.println("[Dijkstra] : Requete #3   en " + duration / 1000000000f + " secondes");
   }
 
   public static void run_test_3() {
