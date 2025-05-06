@@ -20,7 +20,8 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    print_test();
+    // print_test();
+    runtime_test();
   }
 
   public static void runtime_test() {
@@ -35,7 +36,7 @@ public class Algorithm {
 
     start = System.nanoTime();
     List<Edge> path1 =
-        algo.dijkstra("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
+        algo.dijkstra("AUMALE", "FRAITEUR", 7 * 3600 + 0 * 60);
     end = System.nanoTime();
     duration = end - start;
     System.out.println("[Dijkstra] : Requete #1   en " + duration / 1000000000f
@@ -68,7 +69,7 @@ public class Algorithm {
     Graph graph = new Graph("src/main/resources/GTFS", set);
     Algorithm algo = new Algorithm(graph);
     List<Edge> path1 =
-        algo.dijkstra("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
+        algo.dijkstra("SCHUMAN", "ETTERBEEK GARE", 10 * 3600 + 30 * 60);
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     List<Edge> path3 = algo.dijkstra(
@@ -105,6 +106,8 @@ public class Algorithm {
   private List<Edge> dijkstra(String s, String t, int h) {
     init(s, t, h);
 
+    int tmpTODOrm = 0;
+
     IndexMinPQ<Integer> heap = new IndexMinPQ<>(graph.V_card());
     List<Node> node_list = new ArrayList<>(graph.V_card());
     int i = 0;
@@ -116,10 +119,12 @@ public class Algorithm {
     }
 
     while (heap.size() > 0) {
+      i++;
       int index = heap.delMin();
       Node node = node_list.get(index);
 
       if (node.is_target()) {
+        System.out.println(i + " nodes parsed");
         int time = node.best_cost();
         System.out.println("Best time found: "
             + String.format(

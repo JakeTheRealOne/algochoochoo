@@ -32,6 +32,15 @@ public class Route {
   }
 
   /**
+   * Convert a route object into a brief, clean string
+   * 
+   * @return route_type route_short_name
+   */
+  public String clean_str() {
+    return type + " " + short_name;
+  }
+
+  /**
    * Set the agency of the route
    *
    * @param ag The new agency name

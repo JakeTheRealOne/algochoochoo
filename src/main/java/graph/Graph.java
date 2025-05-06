@@ -97,7 +97,7 @@ public class Graph {
       TripElement current = list.get(0);
       for (int i = 1; i < n; ++i) {
         TripElement next = list.get(i);
-        Edge connection = new Edge(current, next, vertices);
+        Edge connection = new Edge(current, next, vertices, trip);
         Node node = vertices.get(current.stop().id());
         node.add_connection(connection);
         current = next;

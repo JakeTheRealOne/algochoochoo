@@ -11,13 +11,24 @@ public class View {
   // #### Public methods ####
 
   /**
-   * Print a result
+   * Print a result, concatenate the edges into trips
    *
    * @param path The path to print
    */
   public static void print(List<Edge> path) {
-    for (Edge e : path) {
-      e.print();
+    int n = path.size();
+    for (int i = 0; i < n; ++i) {
+      Edge e = path.get(i);
+      System.out.println(e);
+      // Trip trip = e.trip();
+      // e.print_directive();
+      // e.print_to();
+      // while (i < (n-1) && e.trip() == trip) {
+      //   ++i;
+      //   e = path.get(i);
+      // }
+      // path.get(i-1).print_to();
+      // System.out.println();
     }
   }
 

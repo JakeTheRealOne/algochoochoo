@@ -14,10 +14,12 @@ public class Edge {
    * @param first The first element
    * @param second The second element
    * @param V The vertices of the graph
+   * @param trip The trip
    */
-  public Edge(TripElement first, TripElement second, Map<String, Node> V) {
+  public Edge(TripElement first, TripElement second, Map<String, Node> V, Trip trip) {
     from = V.get(first.stop().id());
     to = V.get(second.stop().id());
+    trip = trip;
     dep = first.departure_time();
     dur = second.departure_time() - dep;
 
@@ -53,12 +55,25 @@ public class Edge {
   }
 
   /**
-   * Print the edge on STDOUT
+   * Print the source node on STDOUT
    */
-  public void print() {
-    System.out.println((is_transfer() ? "Walking" : "Moving") + " from "
-        + from.stop().name() + " " + beautiful_time(from.best_cost()) + " to "
-        + to.stop().name() + " " + beautiful_time(to.best_cost()));
+  public void print_from() {
+    System.out.print(" from " + from.stop().name() + " " + beautiful_time(from.best_cost()));
+  }
+
+  /**
+   * Print the target node on STDOUT
+   */
+  public void print_to() {
+    System.out.print(" to " + to.stop().name() + " " + beautiful_time(to.best_cost()));
+  }
+
+  /**
+   * Print the english directive related to the edge on STDOUT
+   */
+  public void print_directive() {
+    String directive = is_transfer() ? "Walking" : ("Taking");
+    System.out.print(directive);
   }
 
   // #### Getters ####
@@ -79,6 +94,11 @@ public class Edge {
    */
   public Node from() {
     return from;
+  }
+
+  /** Return the trip of the edge or null if its a transfer */
+  public Trip trip() {
+    return trip;
   }
 
   /**
