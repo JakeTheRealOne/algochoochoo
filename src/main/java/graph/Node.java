@@ -20,17 +20,20 @@ public class Node implements Comparable<Node> {
   /** Convert a Node object to string */
   @Override
   public String toString() {
-    return "Node(" + stop + ", " + transfers.size() + " transfers & " + connections.size() + " connections)";
+    return "Node(" + stop + ", " + transfers.size() + " transfers & "
+        + connections.size() + " connections)";
   }
 
   /** Compare two nodes based on cost */
   @Override
   public int compareTo(Node other) {
-      return Integer.compare(this.best_cost, other.best_cost);
+    return Integer.compare(this.best_cost, other.best_cost);
   }
 
   /** Initialize the node */
   public void init() {
+    source_flag = false;
+    target_flag = false;
     best_edge = null;
     best_cost = Integer.MAX_VALUE;
   }
@@ -91,6 +94,24 @@ public class Node implements Comparable<Node> {
     return index;
   }
 
+  /**
+   * Return if this node is the source of a path finding problem
+   *
+   * @return The source flag
+   */
+  public boolean is_source() {
+    return source_flag;
+  }
+
+  /**
+   * Return if this node is the target of a path finding problem
+   *
+   * @return The target flag
+   */
+  public boolean is_target() {
+    return target_flag;
+  }
+
   // #### Setters ####
 
   /**
@@ -131,8 +152,24 @@ public class Node implements Comparable<Node> {
     index = i;
   }
 
+  /**
+   * Declare this node as the source of a path finding problem
+   */
+  public void declare_source() {
+    source_flag = true;
+  }
+
+  /**
+   * Declare this node as the target of a path finding problem
+   */
+  public void declare_target() {
+    target_flag = true;
+  }
+
   // #### Attributes ####
 
+  boolean source_flag;
+  boolean target_flag;
   Stop stop;
   Edge best_edge;
   int index = -1;

@@ -16,18 +16,12 @@ public class View {
    * @param path The path to print
    */
   public static void print(List<Edge> path) {
-    // int n = path.size();
-    // int j;
-    // for (int i = 0; i < n; ++i) {
-    //   Trip trip = path.get(i).trip();
-    //   for (j = i; j < n && path.get(j).trip() == trip; ++j);
-    //   System.out.print(path.get(i).directive());
-    //   print_connection(path.get(i), true);
-    //   print_connection(path.get(j - 1), false);
-    //   i = j - 1;
-    // }
-    System.out.println("Coucou wowo");
+    for (Edge e : path) {
+      e.print();
+    }
   }
+
+  // TODO implementé un cli et un gui
 
   // /**
   //  * Show a result

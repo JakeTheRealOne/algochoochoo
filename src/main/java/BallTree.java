@@ -48,7 +48,8 @@ public class BallTree {
    * @param V The vertices of the graph
    * @return list of stops within radius
    */
-  public List<Edge> radius_search(Stop source, int radius, Map<String, Node> V) {
+  public List<Edge> radius_search(
+      Stop source, int radius, Map<String, Node> V) {
     List<Edge> output = new ArrayList<>();
     search(root, source, radius, output, V);
     return output;
@@ -98,11 +99,13 @@ public class BallTree {
   }
 
   // Searches the tree for stops within radius of source
-  private void search(BallNode node, Stop source, int radius, List<Edge> result, Map<String, Node> V) {
+  private void search(BallNode node, Stop source, int radius,
+      List<Edge> result, Map<String, Node> V) {
     int distToCenter = distance(source, node.center);
     if (distToCenter > radius + node.radius) {
       return; // prune this branch
     }
+
     if (node.isLeaf) {
       for (Stop s : node.points) {
         if (s == source) {
@@ -110,8 +113,9 @@ public class BallTree {
         }
         int dist = distance(source, s);
         if (dist <= radius) {
+          Node src = V.get(source.id());
           Node near = V.get(s.id());
-          result.add(new Edge(near, dist));
+          result.add(new Edge(src, near, dist));
         }
       }
     } else {

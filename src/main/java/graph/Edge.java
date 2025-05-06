@@ -16,12 +16,14 @@ public class Edge {
    * @param V The vertices of the graph
    */
   public Edge(TripElement first, TripElement second, Map<String, Node> V) {
+    from = V.get(first.stop().id());
     to = V.get(second.stop().id());
     dep = first.departure_time();
     dur = second.departure_time() - dep;
 
     if (to == null) {
-      throw new IllegalArgumentException("Can't build an edge with an unknown target");
+      throw new IllegalArgumentException(
+          "Can't build an edge with an unknown target");
     } else if (dur < 0) {
       throw new IllegalArgumentException("Can't build a negative edge");
     }
@@ -29,11 +31,12 @@ public class Edge {
 
   /**
    * Construct a new Edge object representing a transfer
-   * 
+   *
    * @param target The target node of the footpath
    * @param distance the distance between the two nodes (in meters)
    */
-  public Edge(Node target, int distance) {
+  public Edge(Node source, Node target, int distance) {
+    from = source;
     to = target;
     dep = -1;
     dur = compute_walk_time(distance);
@@ -45,18 +48,37 @@ public class Edge {
   /** Convert a Edge object to string */
   @Override
   public String toString() {
-    return "Edge(departure at " + beautiful_time(dep) + ", to " + to + ")";
+    return "Edge(from " + from.stop().name() + " " + beautiful_time(dep)
+        + ", to " + to.stop().name() + ")";
+  }
+
+  /**
+   * Print the edge on STDOUT
+   */
+  public void print() {
+    System.out.println((is_transfer() ? "Walking" : "Moving") + " from "
+        + from.stop().name() + " " + beautiful_time(from.best_cost()) + " to "
+        + to.stop().name() + " " + beautiful_time(to.best_cost()));
   }
 
   // #### Getters ####
 
   /**
-   * Get the target node of the connection
+   * Get the target node of the edge
    *
    * @return The target node
    */
   public Node to() {
     return to;
+  }
+
+  /**
+   * Get the source node of the edge
+   *
+   * @return The source node
+   */
+  public Node from() {
+    return from;
   }
 
   /**
@@ -77,9 +99,29 @@ public class Edge {
     return dur;
   }
 
+  /**
+   * Get if the edge is a transfer
+   *
+   * @return If the edge represents a footpath
+   */
+  public boolean is_transfer() {
+    return dep < 0;
+  }
+
+  /**
+   * Get if the edge is a connection
+   *
+   * @return If the edge represents a transport connection (e.g BUS, TRAIN)
+   */
+  public boolean is_connection() {
+    return !is_transfer();
+  }
+
   // #### Attributes ####
 
+  Node from;
   Node to;
+  Trip trip;
   int dep;
   int dur;
 
@@ -92,12 +134,12 @@ public class Edge {
    */
   private static String beautiful_time(int time) {
     return String.format(
-        "%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60);
+        "(%02d:%02d:%02d)", time / 3600, (time % 3600) / 60, time % 60);
   }
 
   /**
    * Compute the estimated walk time from a distance
-   * 
+   *
    * @param dist The distance (in meters)
    * @return The estimated walk time (in seconds)
    */
@@ -111,7 +153,7 @@ public class Edge {
 
   /**
    * Compute the estimated walk distance from a distance
-   * 
+   *
    * @param dist The distance (in meters)
    * @return The estimated walk distance (in meters)
    */

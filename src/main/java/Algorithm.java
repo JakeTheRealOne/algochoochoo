@@ -1,7 +1,8 @@
+import edu.princeton.cs.algs4.IndexMinPQ;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import edu.princeton.cs.algs4.IndexMinPQ;
 // TEST: TODO Remove
 import java.util.random.*;
 
@@ -19,7 +20,7 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    runtime_test();
+    print_test();
   }
 
   public static void runtime_test() {
@@ -29,24 +30,30 @@ public class Algorithm {
     Algorithm algo = new Algorithm(graph);
     long end = System.nanoTime();
     long duration = end - start;
-    System.out.println("[Dijkstra] : Construction en " + duration / 1000000000f + " secondes");
+    System.out.println("[Dijkstra] : Construction en " + duration / 1000000000f
+        + " secondes");
 
     start = System.nanoTime();
-    List<Edge> path1 = algo.dijkstra("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
+    List<Edge> path1 =
+        algo.dijkstra("AUMALE", "HERRMANN-DEBROUX", 7 * 3600 + 0 * 60);
     end = System.nanoTime();
     duration = end - start;
-    System.out.println("[Dijkstra] : Requete #1   en " + duration / 1000000000f + " secondes");
+    System.out.println("[Dijkstra] : Requete #1   en " + duration / 1000000000f
+        + " secondes");
     start = System.nanoTime();
-    List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station", "CHIMAY Petit Virelles", 14 *
-    3600 + 14 * 60 + 14);
+    List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
+        "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     end = System.nanoTime();
-    System.out.println("[Dijkstra] : Requete #2   en " + duration / 1000000000f + " secondes");
+    System.out.println("[Dijkstra] : Requete #2   en " + duration / 1000000000f
+        + " secondes");
     duration = end - start;
     start = System.nanoTime();
-    List<Edge> path3 = algo.dijkstra("Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
+    List<Edge> path3 = algo.dijkstra(
+        "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
     end = System.nanoTime();
     duration = end - start;
-    System.out.println("[Dijkstra] : Requete #3   en " + duration / 1000000000f + " secondes");
+    System.out.println("[Dijkstra] : Requete #3   en " + duration / 1000000000f
+        + " secondes");
   }
 
   public static void run_test_3() {
@@ -56,7 +63,7 @@ public class Algorithm {
     System.out.println(graph);
   }
 
-  public static void run_test_1() {
+  public static void print_test() {
     AlgoSettings set = new AlgoSettings();
     Graph graph = new Graph("src/main/resources/GTFS", set);
     Algorithm algo = new Algorithm(graph);
@@ -66,7 +73,6 @@ public class Algorithm {
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     List<Edge> path3 = algo.dijkstra(
         "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
-    System.out.println(graph);
     System.out.println();
     View.print(path1);
     System.out.println();
@@ -84,8 +90,6 @@ public class Algorithm {
   public Algorithm(Graph G) {
     graph = G;
     settings = G.settings();
-    sources = new ArrayList<>();
-    targets = new ArrayList<>();
   }
 
   // #### Private helpers ####
@@ -100,12 +104,6 @@ public class Algorithm {
    */
   private List<Edge> dijkstra(String s, String t, int h) {
     init(s, t, h);
-    for (Node node : graph.vertices()) {
-      node.init();
-    }
-    for (Node source : sources) {
-      source.set_best(h, null);
-    }
 
     IndexMinPQ<Integer> heap = new IndexMinPQ<>(graph.V_card());
     List<Node> node_list = new ArrayList<>(graph.V_card());
@@ -121,7 +119,16 @@ public class Algorithm {
       int index = heap.delMin();
       Node node = node_list.get(index);
 
-      if (node.best_cost() == Integer.MAX_VALUE) break;
+      if (node.is_target()) {
+        int time = node.best_cost();
+        System.out.println("Best time found: "
+            + String.format(
+                "%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+        return build_solution(node);
+      } else if (node.best_cost() == Integer.MAX_VALUE) {
+        System.out.println("No path found");
+        return new ArrayList<Edge>();
+      }
 
       for (Edge e : node.connections()) {
         boolean is_illegal = e.departure_time() < node.best_cost();
@@ -129,12 +136,9 @@ public class Algorithm {
           continue;
         Node target = e.to();
         int candidate = e.departure_time() + e.duration();
-        if (candidate < 0) {
-          throw new IllegalArgumentException("timed candidate: " + node.best_cost() + " " + e.duration());
-        }
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
-          target.set_best(candidate, null);
+          target.set_best(candidate, e);
           heap.decreaseKey(target.index(), candidate);
         }
       }
@@ -142,61 +146,63 @@ public class Algorithm {
       for (Edge e : node.transfers()) {
         Node target = e.to();
         int candidate = node.best_cost() + e.duration();
-        if (candidate < 0) {
-          throw new IllegalArgumentException("foot candidate: " + node.best_cost() + " " + e.duration());
-        }
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
-          target.set_best(candidate, null);
+          target.set_best(candidate, e);
           heap.decreaseKey(target.index(), candidate);
         }
       }
     }
 
+    // NOT SUPPOSED TO HAPPEND
     List<Edge> output = new ArrayList<Edge>();
-    // Check best time
-    Node best_target = null;
-    for (Node target : targets) {
-      if (best_target == null || best_target.best_cost() > target.best_cost()) {
-        best_target = target;
-      }
+    return output;
+  }
+
+  /**
+   * From a target node, build the list of edge such as the first
+   */
+  private List<Edge> build_solution(Node target) {
+    List<Edge> output = new ArrayList<Edge>();
+
+    Edge current = target.best_edge();
+    while (!current.from().is_source()) {
+      output.add(current);
+      current = current.from().best_edge();
     }
-    if (best_target == null) {
-      return output;
-    }
-  
-    int time = best_target.best_cost();
-    System.out.println("Best time found: " + String.format(
-      "%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+    output.add(current);
+    Collections.reverse(output);
+
     return output;
   }
 
   /**
    * Initialize the attributes to execute an algorithm
    *
-   * @param s_ The name of the source stop
+   * @param s The name of the source stop
    * @param t The name of the target stop
-   * @param h_ The departure time at the source stop
+   * @param h The departure time at the source stop
    */
-  private void init(String s_, String t, int h_) {
-    h = h_;
-    s = s_;
-    sources.clear();
-    targets.clear();
+  private void init(String s, String t, int h) {
+    boolean source_found = false;
+    boolean target_found = false;
     for (Node node : graph.vertices()) {
+      node.init();
       Stop stop = node.stop();
       String name = stop.name();
       if (equal(s, name)) {
-        sources.add(node);
+        source_found = true;
+        node.declare_source();
+        node.set_best(h, null);
       }
       if (equal(t, name)) {
-        targets.add(node);
+        target_found = true;
+        node.declare_target();
       }
     }
-    if (sources.isEmpty() || targets.isEmpty()) {
+    if (!target_found || !source_found) {
       throw new IllegalArgumentException(
-          "At least one source and one target is required (number of sources: "
-          + sources.size() + ", number of targets: " + targets.size() + ")");
+          "At least one source and one target is required");
     }
   }
 
@@ -212,8 +218,4 @@ public class Algorithm {
 
   private Graph graph;
   private AlgoSettings settings;
-  private List<Node> sources;
-  private List<Node> targets;
-  private String s;
-  private int h;
 }
