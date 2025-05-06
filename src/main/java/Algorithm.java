@@ -20,8 +20,8 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    // print_test();
-    runtime_test();
+    print_test();
+    // runtime_test();
   }
 
   public static void runtime_test() {
@@ -73,7 +73,7 @@ public class Algorithm {
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     List<Edge> path3 = algo.dijkstra(
-        "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
+        "Knokke", "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
     View.print(path1);
     System.out.println();
@@ -131,6 +131,7 @@ public class Algorithm {
                 "%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
         return build_solution(node);
       } else if (node.best_cost() == Integer.MAX_VALUE) {
+        System.out.println(i + " nodes parsed");
         System.out.println("No path found");
         return new ArrayList<Edge>();
       }
@@ -143,8 +144,10 @@ public class Algorithm {
         int candidate = e.departure_time() + e.duration();
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
-          target.set_best(candidate, e);
-          heap.decreaseKey(target.index(), candidate);
+          if (heap.contains(target.index())) {
+            target.set_best(candidate, e);
+            heap.decreaseKey(target.index(), candidate);
+          }
         }
       }
 
@@ -153,8 +156,10 @@ public class Algorithm {
         int candidate = node.best_cost() + e.duration();
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
-          target.set_best(candidate, e);
-          heap.decreaseKey(target.index(), candidate);
+          if (heap.contains(target.index())) {
+            target.set_best(candidate, e);
+            heap.decreaseKey(target.index(), candidate);
+          }
         }
       }
     }

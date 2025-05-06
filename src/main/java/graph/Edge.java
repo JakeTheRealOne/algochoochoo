@@ -16,10 +16,10 @@ public class Edge {
    * @param V The vertices of the graph
    * @param trip The trip
    */
-  public Edge(TripElement first, TripElement second, Map<String, Node> V, Trip trip) {
+  public Edge(TripElement first, TripElement second, Map<String, Node> V, Trip t) {
     from = V.get(first.stop().id());
     to = V.get(second.stop().id());
-    trip = trip;
+    trip = t;
     dep = first.departure_time();
     dur = second.departure_time() - dep;
 
@@ -72,7 +72,7 @@ public class Edge {
    * Print the english directive related to the edge on STDOUT
    */
   public void print_directive() {
-    String directive = is_transfer() ? "Walking" : ("Taking");
+    String directive = is_transfer() ? "Walking" : ("Taking " + trip.route().clean_str());
     System.out.print(directive);
   }
 

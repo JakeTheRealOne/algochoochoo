@@ -17,18 +17,22 @@ public class View {
    */
   public static void print(List<Edge> path) {
     int n = path.size();
+    if (n==0) {
+      return;
+    }
+    Edge e = path.get(0);
+    int time = e.from().best_cost();
     for (int i = 0; i < n; ++i) {
-      Edge e = path.get(i);
-      System.out.println(e);
-      // Trip trip = e.trip();
-      // e.print_directive();
-      // e.print_to();
-      // while (i < (n-1) && e.trip() == trip) {
-      //   ++i;
-      //   e = path.get(i);
-      // }
-      // path.get(i-1).print_to();
-      // System.out.println();
+      e = path.get(i);
+      Trip trip = e.trip();
+      e.print_directive();
+      e.print_from();
+      while (i < (n-1) && e.trip() == trip) {
+        ++i;
+        e = path.get(i);
+      }
+      path.get(i-1).print_to();
+      System.out.println();
     }
   }
 
