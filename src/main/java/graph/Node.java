@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** (Literally) A graph node */
-public class Node {
+public class Node implements Comparable<Node> {
   // #### Public methods ####
 
   /**
@@ -12,15 +12,27 @@ public class Node {
    */
   Node(Stop s) {
     stop = s;
+    transfers = new ArrayList<Edge>();
+    connections = new ArrayList<Edge>();
     init();
+  }
+
+  /** Convert a Node object to string */
+  @Override
+  public String toString() {
+    return "Node(" + stop + ", " + transfers.size() + " transfers & " + connections.size() + " connections)";
+  }
+
+  /** Compare two nodes based on cost */
+  @Override
+  public int compareTo(Node other) {
+      return Integer.compare(this.best_cost, other.best_cost);
   }
 
   /** Initialize the node */
   public void init() {
     best_edge = null;
     best_cost = Integer.MAX_VALUE;
-    transfers = new ArrayList<Edge>();
-    connections = new ArrayList<Edge>();
   }
 
   // #### Getters ####
@@ -70,11 +82,27 @@ public class Node {
     return connections;
   }
 
+  /**
+   * Get the index of the node in the list (for IndexFibonacciMinPQ)
+   *
+   * @return The index
+   */
+  public int index() {
+    return index;
+  }
+
   // #### Setters ####
 
-  // public void new_best() {
-  // TODO
-  // }
+  /**
+   * Set a new best path to get to the stop
+   *
+   * @param cost The cost of the path
+   * @param edge The last edge in the path
+   */
+  public void set_best(int cost, Edge edge) {
+    best_cost = cost;
+    best_edge = edge;
+  }
 
   /**
    * Set the outgoing transfers of the node
@@ -94,10 +122,20 @@ public class Node {
     connections.add(c);
   }
 
+  /**
+   * Set the index of the node in the list (for IndexFibonacciMinPQ)
+   *
+   * @param i The index
+   */
+  public void set_index(int i) {
+    index = i;
+  }
+
   // #### Attributes ####
 
   Stop stop;
   Edge best_edge;
+  int index = -1;
   int best_cost;
   List<Edge> connections;
   List<Edge> transfers;

@@ -1,7 +1,7 @@
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * (Literally) A graph representing transfer datas [GTFS]
@@ -97,7 +97,7 @@ public class Graph {
       TripElement current = list.get(0);
       for (int i = 1; i < n; ++i) {
         TripElement next = list.get(i);
-        Edge connection = new Edge(current, next);
+        Edge connection = new Edge(current, next, vertices);
         Node node = vertices.get(current.stop().id());
         node.add_connection(connection);
         current = next;
@@ -107,7 +107,7 @@ public class Graph {
     // 3. Populate transfers
     int radius = settings.footpath_radius;
     for (Node node : vertices.values()) {
-      List<Edge> transfers = tree.radius_search(node.stop(), radius);
+      List<Edge> transfers = tree.radius_search(node.stop(), radius, vertices);
       edge_count += transfers.size();
       node.set_transfers(transfers);
     }

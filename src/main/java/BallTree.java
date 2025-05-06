@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A data structure that allows fast neighbor search based on geographic
@@ -44,19 +45,20 @@ public class BallTree {
    *
    * @param source the query stop
    * @param radius search radius (in meters)
+   * @param V The vertices of the graph
    * @return list of stops within radius
    */
-  public List<Edge> radius_search(Stop source, int radius) {
+  public List<Edge> radius_search(Stop source, int radius, Map<String, Node> V) {
     List<Edge> output = new ArrayList<>();
-    search(root, source, radius, output);
+    search(root, source, radius, output, V);
     return output;
   }
 
   // #### Private helpers ####
 
   // Recursively builds the BallTree
-  private Node buildTree(List<Stop> stops) {
-    Node node = new Node();
+  private BallNode buildTree(List<Stop> stops) {
+    BallNode node = new BallNode();
     if (stops.size() <= LEAF_SIZE) {
       node.isLeaf = true;
       node.points = new ArrayList<>(stops);
@@ -96,7 +98,7 @@ public class BallTree {
   }
 
   // Searches the tree for stops within radius of source
-  private void search(Node node, Stop source, int radius, List<Edge> result) {
+  private void search(BallNode node, Stop source, int radius, List<Edge> result, Map<String, Node> V) {
     int distToCenter = distance(source, node.center);
     if (distToCenter > radius + node.radius) {
       return; // prune this branch
@@ -108,12 +110,13 @@ public class BallTree {
         }
         int dist = distance(source, s);
         if (dist <= radius) {
-          result.add(new Edge(s, dist));
+          Node near = V.get(s.id());
+          result.add(new Edge(near, dist));
         }
       }
     } else {
-      search(node.left, source, radius, result);
-      search(node.right, source, radius, result);
+      search(node.left, source, radius, result, V);
+      search(node.right, source, radius, result, V);
     }
   }
 
@@ -187,10 +190,10 @@ public class BallTree {
   }
 
   // Tree node
-  private static class Node {
+  private static class BallNode {
     Stop center;
     int radius;
-    Node left, right;
+    BallNode left, right;
     List<Stop> points;
     boolean isLeaf;
   }
@@ -198,5 +201,5 @@ public class BallTree {
   // #### Attributes ####
 
   private static final int LEAF_SIZE = 10;
-  private final Node root;
+  private final BallNode root;
 }
