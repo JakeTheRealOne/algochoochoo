@@ -126,15 +126,16 @@ public class Algorithm {
       Node node = node_list.get(index);
 
       if (node.is_target()) {
-        System.out.println("[DEBUG] " + treated_nodes + " nodes parsed");
-        int time = node.best_time();
-        System.out.println("[DEBUG] Best time found: "
-            + String.format(
-                "%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+      //   System.out.println("TARGET: " + node.best_time() + " " + (node.best_edge().departure_time() + node.best_edge().duration()));
+      //   // System.out.println("[DEBUG] " + treated_nodes + " nodes parsed");
+      //   // int time = node.best_time();
+      //   // System.out.println("[DEBUG] Best time found: "
+      //   //     + String.format(
+      //   //         "%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
         return build_solution(node);
       } else if (node.best_cost() == Integer.MAX_VALUE) {
-        System.out.println("[DEBUG] " + treated_nodes + " nodes parsed");
-        System.out.println("[DEBUG] No path found");
+      //   System.out.println("[DEBUG] " + treated_nodes + " nodes parsed");
+      //   System.out.println("[DEBUG] No path found");
         return new ArrayList<Edge>();
       }
 
@@ -175,6 +176,7 @@ public class Algorithm {
 
     Edge current = target.best_edge();
     while (!current.from().is_source()) {
+      Edge e = current;
       output.add(current);
       current = current.from().best_edge();
     }

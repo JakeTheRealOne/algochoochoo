@@ -59,16 +59,17 @@ public class Edge {
    * Print the source node on STDOUT
    */
   public void print_from() {
-    System.out.print(" from " + from.stop().name() + " "
-        + beautiful_time(from.best_time()));
+    System.out.print(" from " + from.stop().name()
+        + (is_transfer() ? "" : " " + beautiful_time(dep)));
   }
 
   /**
    * Print the target node on STDOUT
    */
   public void print_to() {
+    // TODO Separe transfer duration format and connetion hour format in two separated methods
     System.out.print(
-        " to " + to.stop().name() + " " + beautiful_time(to.best_time()));
+        " to " + to.stop().name() + (is_transfer() ? (" for " + Math.round(dur / 60f) + " minutes") : (" " + beautiful_time(dep + dur))));
   }
 
   /**

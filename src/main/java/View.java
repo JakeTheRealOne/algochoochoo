@@ -17,20 +17,18 @@ public class View {
    */
   public static void print(List<Edge> path) {
     int n = path.size();
+    int j;
     if (n == 0) {
       return;
     }
     for (int i = 0; i < n; ++i) {
-      // Edge e = path.get(i);
-      // System.out.println(e + " duration: " + e.duration());
       Edge e = path.get(i);
       Trip trip = e.trip();
       e.print_directive();
       e.print_from();
-      while (i < (n - 1) && e.trip() == trip) {
-        ++i;
-        e = path.get(i);
-      }
+      // TODO Here add all the walk times if transfers
+      for (j = i; j < n && path.get(j).trip() == trip; ++j);
+      i = j - 1;
       path.get(i).print_to();
       System.out.println();
     }

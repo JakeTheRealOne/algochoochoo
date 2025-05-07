@@ -135,6 +135,9 @@ public class Node implements Comparable<Node> {
     best_cost = cost;
     best_time = time;
     best_edge = edge;
+    if (edge != null && edge.is_connection() && edge.to().best_time() != edge.departure_time() + edge.duration()) {
+      throw new IllegalArgumentException("e");
+    }
   }
 
   /**
