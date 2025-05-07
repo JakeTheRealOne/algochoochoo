@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-// TEST: TODO Remove
-import java.util.random.*;
 
 /**
  * Execute algorithms on a graph
@@ -131,35 +129,38 @@ public class Algorithm {
       } else if (node.best_cost() == Long.MAX_VALUE) {
         return new ArrayList<Edge>();
       }
-
-      for (Edge e : node.connections()) {
-        boolean is_illegal = e.departure_time() < node.best_time();
-        if (is_illegal)
-          continue;
-        Node target = e.to();
-        // TODO here allow user to set settings of MIN_WAIT_TIME and MAX_WAIT_TIME (and check if a wait time is legal)
-        long candidate = node.best_cost() + (e.departure_time() - node.best_time()) + e.cost();
-        boolean is_best = candidate < target.best_cost();
-        if (is_best) {
-          target.set_best(candidate, e.departure_time() + e.duration(), e);
-          heap.decreaseKey(target.index(), candidate);
-        }
-      }
-
-      for (Edge e : node.transfers()) {
-        Node target = e.to();
-        long candidate = node.best_cost() + e.cost();
-        boolean is_best = candidate < target.best_cost();
-        if (is_best) {
-          target.set_best(candidate, node.best_time() + e.duration(), e);
-          heap.decreaseKey(target.index(), candidate);
-        }
-      }
+      relaxe(node, heap);
     }
 
     // NOT SUPPOSED TO HAPPEND
     List<Edge> output = new ArrayList<Edge>();
     return output;
+  }
+
+  private void relaxe(Node node, IndexMinPQ heap) {
+    for (Edge e : node.connections()) {
+      boolean is_illegal = e.departure_time() < node.best_time();
+      if (is_illegal)
+        continue;
+      Node target = e.to();
+      // TODO here allow user to set settings of MIN_WAIT_TIME and MAX_WAIT_TIME (and check if a wait time is legal)
+      long candidate = node.best_cost() + (e.departure_time() - node.best_time()) + e.cost();
+      boolean is_best = candidate < target.best_cost();
+      if (is_best) {
+        target.set_best(candidate, e.departure_time() + e.duration(), e);
+        heap.decreaseKey(target.index(), candidate);
+      }
+    }
+
+    for (Edge e : node.transfers()) {
+      Node target = e.to();
+      long candidate = node.best_cost() + e.cost();
+      boolean is_best = candidate < target.best_cost();
+      if (is_best) {
+        target.set_best(candidate, node.best_time() + e.duration(), e);
+        heap.decreaseKey(target.index(), candidate);
+      }
+    } 
   }
 
   /**
