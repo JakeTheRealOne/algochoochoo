@@ -20,8 +20,8 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    print_test();
-    // runtime_test();
+    // print_test();
+    runtime_test();
   }
 
   public static void runtime_test() {
@@ -35,8 +35,7 @@ public class Algorithm {
         + " secondes");
 
     start = System.nanoTime();
-    List<Edge> path1 =
-        algo.dijkstra("AUMALE", "FRAITEUR", 7 * 3600 + 0 * 60);
+    List<Edge> path1 = algo.dijkstra("AUMALE", "FRAITEUR", 7 * 3600 + 0 * 60);
     end = System.nanoTime();
     duration = end - start;
     System.out.println("[Dijkstra] : Requete #1   en " + duration / 1000000000f
@@ -72,8 +71,7 @@ public class Algorithm {
         algo.dijkstra("SCHUMAN", "ETTERBEEK GARE", 10 * 3600 + 30 * 60);
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
-    List<Edge> path3 = algo.dijkstra(
-        "Knokke", "Aubange", 10 * 3600 + 30 * 60);
+    List<Edge> path3 = algo.dijkstra("Knokke", "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
     View.print(path1);
     System.out.println();
@@ -110,18 +108,22 @@ public class Algorithm {
 
     IndexMinPQ<Integer> heap = new IndexMinPQ<>(graph.V_card());
     List<Node> node_list = new ArrayList<>(graph.V_card());
+    List<Boolean> bool_list = new ArrayList<>(graph.V_card());
     int i = 0;
     for (Node node : graph.vertices()) {
       heap.insert(i, node.best_cost());
       node.set_index(i);
       node_list.add(node);
+      bool_list.add(true);
       i += 1;
     }
 
     while (heap.size() > 0) {
-      i++;
       int index = heap.delMin();
+
+      i++;
       Node node = node_list.get(index);
+      bool_list.set(index, false);
 
       if (node.is_target()) {
         System.out.println(i + " nodes parsed");
@@ -144,7 +146,7 @@ public class Algorithm {
         int candidate = e.departure_time() + e.duration();
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
-          if (heap.contains(target.index())) {
+          if (bool_list.get(target.index())) {
             target.set_best(candidate, e);
             heap.decreaseKey(target.index(), candidate);
           }
@@ -156,7 +158,7 @@ public class Algorithm {
         int candidate = node.best_cost() + e.duration();
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
-          if (heap.contains(target.index())) {
+          if (bool_list.get(target.index())) {
             target.set_best(candidate, e);
             heap.decreaseKey(target.index(), candidate);
           }

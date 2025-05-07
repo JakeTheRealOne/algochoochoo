@@ -89,6 +89,9 @@ public class Graph {
 
     // 2. Populate connections from tips
     for (Trip trip : trips) {
+      // if (trip.route().type() == RouteType.TRAIN) {
+      // continue; // TODO remove
+      // }
       List<TripElement> list = trip.content();
       int n = list.size();
       if (n == 0)

@@ -33,7 +33,7 @@ public class Route {
 
   /**
    * Convert a route object into a brief, clean string
-   * 
+   *
    * @return route_type route_short_name
    */
   public String clean_str() {

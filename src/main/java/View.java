@@ -17,7 +17,7 @@ public class View {
    */
   public static void print(List<Edge> path) {
     int n = path.size();
-    if (n==0) {
+    if (n == 0) {
       return;
     }
     Edge e = path.get(0);
@@ -27,11 +27,11 @@ public class View {
       Trip trip = e.trip();
       e.print_directive();
       e.print_from();
-      while (i < (n-1) && e.trip() == trip) {
+      while (i < (n - 1) && e.trip() == trip) {
         ++i;
         e = path.get(i);
       }
-      path.get(i-1).print_to();
+      path.get(i - 1).print_to();
       System.out.println();
     }
   }

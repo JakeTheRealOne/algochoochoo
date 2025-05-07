@@ -16,7 +16,8 @@ public class Edge {
    * @param V The vertices of the graph
    * @param trip The trip
    */
-  public Edge(TripElement first, TripElement second, Map<String, Node> V, Trip t) {
+  public Edge(
+      TripElement first, TripElement second, Map<String, Node> V, Trip t) {
     from = V.get(first.stop().id());
     to = V.get(second.stop().id());
     trip = t;
@@ -58,21 +59,24 @@ public class Edge {
    * Print the source node on STDOUT
    */
   public void print_from() {
-    System.out.print(" from " + from.stop().name() + " " + beautiful_time(from.best_cost()));
+    System.out.print(" from " + from.stop().name() + " "
+        + beautiful_time(from.best_cost()));
   }
 
   /**
    * Print the target node on STDOUT
    */
   public void print_to() {
-    System.out.print(" to " + to.stop().name() + " " + beautiful_time(to.best_cost()));
+    System.out.print(
+        " to " + to.stop().name() + " " + beautiful_time(to.best_cost()));
   }
 
   /**
    * Print the english directive related to the edge on STDOUT
    */
   public void print_directive() {
-    String directive = is_transfer() ? "Walking" : ("Taking " + trip.route().clean_str());
+    String directive =
+        is_transfer() ? "Walking" : ("Taking " + trip.route().clean_str());
     System.out.print(directive);
   }
 
@@ -117,6 +121,26 @@ public class Edge {
    */
   public int duration() {
     return dur;
+  }
+
+  public int cost() {
+    if (is_transfer()) {
+      return dep + (int)(dur * 3);
+    }
+
+    RouteType type = trip.route().type();
+    switch (type) {
+      case RouteType.BUS:
+        return dep + (int)(dur * 1.5);
+      case RouteType.TRAIN:
+        return dep + (int)(dur * 1);
+      case RouteType.METRO:
+        return dep + (int)(dur * 1.2);
+      case RouteType.TRAM:
+        return dep + (int)(dur * 1.3);
+      default:
+        return dep + dur;
+    }
   }
 
   /**
