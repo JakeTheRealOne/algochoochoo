@@ -65,15 +65,14 @@ public class Algorithm {
     AlgoSettings set = new AlgoSettings();
     Graph graph = new Graph("src/main/resources/GTFS", set);
     Algorithm algo = new Algorithm(graph);
-    List<Edge> path1 =
-        algo.dijkstra("AUMALE", "DELTA", 8 * 3600 + 0 * 60);
-        // algo.dijkstra("SCHUMAN", "ETTERBEEK GARE", 10 * 3600 + 30 * 60);
+    List<Edge> path1 = algo.dijkstra("AUMALE", "DELTA", 8 * 3600 + 0 * 60);
+    // algo.dijkstra("SCHUMAN", "ETTERBEEK GARE", 10 * 3600 + 30 * 60);
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     List<Edge> path3 = algo.dijkstra("Alveringem Nieuwe Herberg",
-    // List<Edge> path3 = algo.dijkstra("Knokke",
-    
-    "Aubange", 10 * 3600 + 30 * 60);
+        // List<Edge> path3 = algo.dijkstra("Knokke",
+
+        "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
     View.print(path1);
     System.out.println();
@@ -143,8 +142,10 @@ public class Algorithm {
       if (is_illegal)
         continue;
       Node target = e.to();
-      // TODO here allow user to set settings of MIN_WAIT_TIME and MAX_WAIT_TIME (and check if a wait time is legal)
-      long candidate = node.best_cost() + (e.departure_time() - node.best_time()) + e.cost();
+      // TODO here allow user to set settings of MIN_WAIT_TIME and
+      // MAX_WAIT_TIME (and check if a wait time is legal)
+      long candidate = node.best_cost()
+          + (e.departure_time() - node.best_time()) + e.cost();
       boolean is_best = candidate < target.best_cost();
       if (is_best) {
         target.set_best(candidate, e.departure_time() + e.duration(), e);
@@ -160,12 +161,13 @@ public class Algorithm {
         target.set_best(candidate, node.best_time() + e.duration(), e);
         heap.decreaseKey(target.index(), candidate);
       }
-    } 
+    }
   }
 
   /**
-   * From a target node, build the list of edge such as the first one is a source and the last one is a target
-   * 
+   * From a target node, build the list of edge such as the first one is a
+   * source and the last one is a target
+   *
    * @param target The target reached during the Dijkstra algorithm
    * @return The list of edges constituting the best path
    */

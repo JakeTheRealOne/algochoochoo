@@ -67,9 +67,11 @@ public class Edge {
    * Print the target node on STDOUT
    */
   public void print_to() {
-    // TODO Separe transfer duration format and connetion hour format in two separated methods
-    System.out.print(
-        " to " + to.stop().name() + (is_transfer() ? (" for " + Math.round(dur / 60f) + " minutes") : (" " + beautiful_time(dep + dur))));
+    // TODO Separe transfer duration format and connetion hour format in two
+    // separated methods
+    System.out.print(" to " + to.stop().name()
+        + (is_transfer() ? (" for " + Math.round(dur / 60f) + " minutes")
+                         : (" " + beautiful_time(dep + dur))));
   }
 
   /**
@@ -126,21 +128,21 @@ public class Edge {
 
   public long cost() {
     if (is_transfer()) {
-      return (long)(dur * 3);
+      return (long) (dur * 3);
     }
 
     RouteType type = trip.route().type();
     switch (type) {
       case RouteType.BUS:
-        return (long)(dur * 1.5);
+        return (long) (dur * 1.5);
       case RouteType.TRAIN:
-        return (long)(dur * 1);
+        return (long) (dur * 1);
       case RouteType.METRO:
-        return (long)(dur * 1.2);
+        return (long) (dur * 1.2);
       case RouteType.TRAM:
-        return (long)(dur * 1.3);
+        return (long) (dur * 1.3);
       default:
-        return (long)dur;
+        return (long) dur;
     }
   }
 
