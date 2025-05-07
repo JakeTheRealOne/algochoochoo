@@ -60,7 +60,7 @@ public class Edge {
    */
   public void print_from() {
     System.out.print(" from " + from.stop().name() + " "
-        + beautiful_time(from.best_cost()));
+        + beautiful_time(from.best_time()));
   }
 
   /**
@@ -68,7 +68,7 @@ public class Edge {
    */
   public void print_to() {
     System.out.print(
-        " to " + to.stop().name() + " " + beautiful_time(to.best_cost()));
+        " to " + to.stop().name() + " " + beautiful_time(to.best_time()));
   }
 
   /**
@@ -124,23 +124,24 @@ public class Edge {
   }
 
   public int cost() {
-    if (is_transfer()) {
-      return dep + (int)(dur * 3);
-    }
+    return dur; // TEST
+    // if (is_transfer()) {
+    //   return (int)(dur * 3);
+    // }
 
-    RouteType type = trip.route().type();
-    switch (type) {
-      case RouteType.BUS:
-        return dep + (int)(dur * 1.5);
-      case RouteType.TRAIN:
-        return dep + (int)(dur * 1);
-      case RouteType.METRO:
-        return dep + (int)(dur * 1.2);
-      case RouteType.TRAM:
-        return dep + (int)(dur * 1.3);
-      default:
-        return dep + dur;
-    }
+    // RouteType type = trip.route().type();
+    // switch (type) {
+    //   case RouteType.BUS:
+    //     return (int)(dur * 1.5);
+    //   case RouteType.TRAIN:
+    //     return (int)(dur * 1);
+    //   case RouteType.METRO:
+    //     return (int)(dur * 1.2);
+    //   case RouteType.TRAM:
+    //     return (int)(dur * 1.3);
+    //   default:
+    //     return dur;
+    // }
   }
 
   /**

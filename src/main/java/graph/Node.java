@@ -36,6 +36,7 @@ public class Node implements Comparable<Node> {
     target_flag = false;
     best_edge = null;
     best_cost = Integer.MAX_VALUE;
+    best_time = Integer.MAX_VALUE;
   }
 
   // #### Getters ####
@@ -65,6 +66,15 @@ public class Node implements Comparable<Node> {
    */
   public int best_cost() {
     return best_cost;
+  }
+
+  /**
+   * Get the earliest time arriving at the node in the Dijkstra algorithm
+   *
+   * @return The best time
+   */
+  public int best_time() {
+    return best_time;
   }
 
   /**
@@ -118,10 +128,12 @@ public class Node implements Comparable<Node> {
    * Set a new best path to get to the stop
    *
    * @param cost The cost of the path
+   * @param time The time at the end of the path
    * @param edge The last edge in the path
    */
-  public void set_best(int cost, Edge edge) {
+  public void set_best(int cost, int time, Edge edge) {
     best_cost = cost;
+    best_time = time;
     best_edge = edge;
   }
 
@@ -174,6 +186,7 @@ public class Node implements Comparable<Node> {
   Edge best_edge;
   int index = -1;
   int best_cost;
+  int best_time;
   List<Edge> connections;
   List<Edge> transfers;
 }

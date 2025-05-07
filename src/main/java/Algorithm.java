@@ -20,8 +20,8 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    // print_test();
-    runtime_test();
+    print_test();
+    // runtime_test();
   }
 
   public static void runtime_test() {
@@ -68,10 +68,14 @@ public class Algorithm {
     Graph graph = new Graph("src/main/resources/GTFS", set);
     Algorithm algo = new Algorithm(graph);
     List<Edge> path1 =
-        algo.dijkstra("SCHUMAN", "ETTERBEEK GARE", 10 * 3600 + 30 * 60);
+        algo.dijkstra("AUMALE", "DELTA", 8 * 3600 + 0 * 60);
+        // algo.dijkstra("SCHUMAN", "ETTERBEEK GARE", 10 * 3600 + 30 * 60);
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
-    List<Edge> path3 = algo.dijkstra("Knokke", "Aubange", 10 * 3600 + 30 * 60);
+    List<Edge> path3 = algo.dijkstra("Alveringem Nieuwe Herberg",
+    // List<Edge> path3 = algo.dijkstra("Knokke",
+    
+    "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
     View.print(path1);
     System.out.println();
@@ -104,64 +108,56 @@ public class Algorithm {
   private List<Edge> dijkstra(String s, String t, int h) {
     init(s, t, h);
 
-    int tmpTODOrm = 0;
+    int treated_nodes = 0; // For debug
 
     IndexMinPQ<Integer> heap = new IndexMinPQ<>(graph.V_card());
     List<Node> node_list = new ArrayList<>(graph.V_card());
-    List<Boolean> bool_list = new ArrayList<>(graph.V_card());
     int i = 0;
     for (Node node : graph.vertices()) {
       heap.insert(i, node.best_cost());
       node.set_index(i);
       node_list.add(node);
-      bool_list.add(true);
       i += 1;
     }
 
     while (heap.size() > 0) {
+      treated_nodes++;
       int index = heap.delMin();
-
-      i++;
       Node node = node_list.get(index);
-      bool_list.set(index, false);
 
       if (node.is_target()) {
-        System.out.println(i + " nodes parsed");
-        int time = node.best_cost();
-        System.out.println("Best time found: "
+        System.out.println("[DEBUG] " + treated_nodes + " nodes parsed");
+        int time = node.best_time();
+        System.out.println("[DEBUG] Best time found: "
             + String.format(
                 "%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
         return build_solution(node);
       } else if (node.best_cost() == Integer.MAX_VALUE) {
-        System.out.println(i + " nodes parsed");
-        System.out.println("No path found");
+        System.out.println("[DEBUG] " + treated_nodes + " nodes parsed");
+        System.out.println("[DEBUG] No path found");
         return new ArrayList<Edge>();
       }
 
       for (Edge e : node.connections()) {
-        boolean is_illegal = e.departure_time() < node.best_cost();
+        boolean is_illegal = e.departure_time() < node.best_time();
         if (is_illegal)
           continue;
         Node target = e.to();
-        int candidate = e.departure_time() + e.duration();
+        int candidate = node.best_cost() + (e.departure_time() - node.best_time()) + e.cost();
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
-          if (bool_list.get(target.index())) {
-            target.set_best(candidate, e);
-            heap.decreaseKey(target.index(), candidate);
-          }
+          target.set_best(candidate, e.departure_time() + e.duration(), e);
+          heap.decreaseKey(target.index(), candidate);
         }
       }
 
       for (Edge e : node.transfers()) {
         Node target = e.to();
-        int candidate = node.best_cost() + e.duration();
+        int candidate = node.best_cost() + e.cost();
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
-          if (bool_list.get(target.index())) {
-            target.set_best(candidate, e);
-            heap.decreaseKey(target.index(), candidate);
-          }
+          target.set_best(candidate, node.best_time() + e.duration(), e);
+          heap.decreaseKey(target.index(), candidate);
         }
       }
     }
@@ -205,7 +201,7 @@ public class Algorithm {
       if (equal(s, name)) {
         source_found = true;
         node.declare_source();
-        node.set_best(h, null);
+        node.set_best(0, h, null);
       }
       if (equal(t, name)) {
         target_found = true;

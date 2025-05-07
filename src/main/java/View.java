@@ -20,10 +20,10 @@ public class View {
     if (n == 0) {
       return;
     }
-    Edge e = path.get(0);
-    int time = e.from().best_cost();
     for (int i = 0; i < n; ++i) {
-      e = path.get(i);
+      // Edge e = path.get(i);
+      // System.out.println(e + " duration: " + e.duration());
+      Edge e = path.get(i);
       Trip trip = e.trip();
       e.print_directive();
       e.print_from();
@@ -31,7 +31,7 @@ public class View {
         ++i;
         e = path.get(i);
       }
-      path.get(i - 1).print_to();
+      path.get(i).print_to();
       System.out.println();
     }
   }
