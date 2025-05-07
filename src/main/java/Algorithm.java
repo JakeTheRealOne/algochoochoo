@@ -110,7 +110,7 @@ public class Algorithm {
 
     int treated_nodes = 0; // For debug
 
-    IndexMinPQ<Integer> heap = new IndexMinPQ<>(graph.V_card());
+    IndexMinPQ<Long> heap = new IndexMinPQ<>(graph.V_card());
     List<Node> node_list = new ArrayList<>(graph.V_card());
     int i = 0;
     for (Node node : graph.vertices()) {
@@ -126,16 +126,9 @@ public class Algorithm {
       Node node = node_list.get(index);
 
       if (node.is_target()) {
-      //   System.out.println("TARGET: " + node.best_time() + " " + (node.best_edge().departure_time() + node.best_edge().duration()));
-      //   // System.out.println("[DEBUG] " + treated_nodes + " nodes parsed");
-      //   // int time = node.best_time();
-      //   // System.out.println("[DEBUG] Best time found: "
-      //   //     + String.format(
-      //   //         "%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60));
+        System.out.println("Total path cost: " + node.best_cost());
         return build_solution(node);
-      } else if (node.best_cost() == Integer.MAX_VALUE) {
-      //   System.out.println("[DEBUG] " + treated_nodes + " nodes parsed");
-      //   System.out.println("[DEBUG] No path found");
+      } else if (node.best_cost() == Long.MAX_VALUE) {
         return new ArrayList<Edge>();
       }
 
@@ -144,7 +137,8 @@ public class Algorithm {
         if (is_illegal)
           continue;
         Node target = e.to();
-        int candidate = node.best_cost() + (e.departure_time() - node.best_time()) + e.cost();
+        // TODO here allow user to set settings of MIN_WAIT_TIME and MAX_WAIT_TIME (and check if a wait time is legal)
+        long candidate = node.best_cost() + (e.departure_time() - node.best_time()) + e.cost();
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
           target.set_best(candidate, e.departure_time() + e.duration(), e);
@@ -154,7 +148,7 @@ public class Algorithm {
 
       for (Edge e : node.transfers()) {
         Node target = e.to();
-        int candidate = node.best_cost() + e.cost();
+        long candidate = node.best_cost() + e.cost();
         boolean is_best = candidate < target.best_cost();
         if (is_best) {
           target.set_best(candidate, node.best_time() + e.duration(), e);
@@ -169,9 +163,12 @@ public class Algorithm {
   }
 
   /**
-   * From a target node, build the list of edge such as the first
+   * From a target node, build the list of edge such as the first one is a source and the last one is a target
+   * 
+   * @param target The target reached during the Dijkstra algorithm
+   * @return The list of edges constituting the best path
    */
-  private List<Edge> build_solution(Node target) {
+  private static List<Edge> build_solution(Node target) {
     List<Edge> output = new ArrayList<Edge>();
 
     Edge current = target.best_edge();

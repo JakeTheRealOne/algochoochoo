@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** (Literally) A graph node */
-public class Node implements Comparable<Node> {
+public class Node {
   // #### Public methods ####
 
   /**
@@ -24,11 +24,11 @@ public class Node implements Comparable<Node> {
         + connections.size() + " connections)";
   }
 
-  /** Compare two nodes based on cost */
-  @Override
-  public int compareTo(Node other) {
-    return Integer.compare(this.best_cost, other.best_cost);
-  }
+  // /** Compare two nodes based on cost */
+  // @Override
+  // public long compareTo(Node other) {
+  //   return Long.compare(this.best_cost, other.best_cost);
+  // }
 
   /** Initialize the node */
   public void init() {
@@ -64,7 +64,7 @@ public class Node implements Comparable<Node> {
    *
    * @return The best cost
    */
-  public int best_cost() {
+  public long best_cost() {
     return best_cost;
   }
 
@@ -131,13 +131,10 @@ public class Node implements Comparable<Node> {
    * @param time The time at the end of the path
    * @param edge The last edge in the path
    */
-  public void set_best(int cost, int time, Edge edge) {
+  public void set_best(long cost, int time, Edge edge) {
     best_cost = cost;
     best_time = time;
     best_edge = edge;
-    if (edge != null && edge.is_connection() && edge.to().best_time() != edge.departure_time() + edge.duration()) {
-      throw new IllegalArgumentException("e");
-    }
   }
 
   /**
@@ -188,7 +185,7 @@ public class Node implements Comparable<Node> {
   Stop stop;
   Edge best_edge;
   int index = -1;
-  int best_cost;
+  long best_cost;
   int best_time;
   List<Edge> connections;
   List<Edge> transfers;

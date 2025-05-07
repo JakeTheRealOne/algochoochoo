@@ -124,25 +124,24 @@ public class Edge {
     return dur;
   }
 
-  public int cost() {
-    return dur; // TEST
-    // if (is_transfer()) {
-    //   return (int)(dur * 3);
-    // }
+  public long cost() {
+    if (is_transfer()) {
+      return (long)(dur * 3);
+    }
 
-    // RouteType type = trip.route().type();
-    // switch (type) {
-    //   case RouteType.BUS:
-    //     return (int)(dur * 1.5);
-    //   case RouteType.TRAIN:
-    //     return (int)(dur * 1);
-    //   case RouteType.METRO:
-    //     return (int)(dur * 1.2);
-    //   case RouteType.TRAM:
-    //     return (int)(dur * 1.3);
-    //   default:
-    //     return dur;
-    // }
+    RouteType type = trip.route().type();
+    switch (type) {
+      case RouteType.BUS:
+        return (long)(dur * 1.5);
+      case RouteType.TRAIN:
+        return (long)(dur * 1);
+      case RouteType.METRO:
+        return (long)(dur * 1.2);
+      case RouteType.TRAM:
+        return (long)(dur * 1.3);
+      default:
+        return (long)dur;
+    }
   }
 
   /**
