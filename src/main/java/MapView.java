@@ -4,6 +4,7 @@ import javax.swing.event.*;
 import org.jxmapviewer.*;
 import org.jxmapviewer.viewer.*;
 import org.jxmapviewer.input.*;
+import java.util.*;
 
 /**
  * Show the algorithm results on a map
@@ -34,9 +35,11 @@ public class MapView {
       mapViewer.addMouseListener(mia);
       mapViewer.addMouseMotionListener(mia);
       mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
-
+      
       frame.add(mapViewer, BorderLayout.CENTER);
       frame.setVisible(true);
+
+      
     });
   }
 }

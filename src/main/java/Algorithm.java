@@ -134,10 +134,7 @@ public class Algorithm {
       if (is_illegal)
         continue;
       Node target = e.to();
-      // TODO here allow user to set settings of MIN_WAIT_TIME and
-      // MAX_WAIT_TIME (and check if a wait time is legal)
-      long candidate = node.best_cost()
-          + (e.departure_time() - node.best_time()) + settings.cost_function(node.best_edge(), e);
+      long candidate = settings.cost_function(node, e);
       boolean is_best = candidate < target.best_cost();
       if (is_best) {
         target.set_best(candidate, e.departure_time() + e.duration(), e);
@@ -147,7 +144,7 @@ public class Algorithm {
 
     for (Edge e : node.transfers()) {
       Node target = e.to();
-      long candidate = node.best_cost() + settings.cost_function(node.best_edge(), e);
+      long candidate = settings.cost_function(node, e);
       boolean is_best = candidate < target.best_cost();
       if (is_best) {
         target.set_best(candidate, node.best_time() + e.duration(), e);

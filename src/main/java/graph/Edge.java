@@ -90,6 +90,13 @@ public class Edge {
   }
 
   /**
+   * Return the route type of the edge
+   */
+  public RouteType type() {
+    return is_transfer() ? RouteType.FOOT : trip.route().type();
+  }
+
+  /**
    * Get the departure time from the source stop
    *
    * @return The departure time

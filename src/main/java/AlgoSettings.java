@@ -10,7 +10,7 @@ public class AlgoSettings {
   boolean strict_search = true;
 
   /** The maximum walking distance for each transfer (meters) */
-  int footpath_radius = 3000;
+  int footpath_radius = 500;
 
   /**
    * The minimum waiting time at a stop for the trips. This can be used to
@@ -25,25 +25,31 @@ public class AlgoSettings {
    * @param edge The edge which we try to determine the cost An edge
    * @return The cost of the edge
    */
-  long cost_function(Edge previous, Edge e) {
-    int dur = e.duration();
-    if (e.is_transfer()) {
-      return (long) (dur * 3);
-    }
-    RouteType type = e.trip().route().type();
+  long cost_function(Node v, Edge e) {
+    long transfers = (v.best_edge() == null || v.best_edge().trip() != e.trip() || e.is_transfer()) ? 1 : 0;
+    transfers <<= 32;
+
+    int waiting_time = e.is_transfer() ? 0 : e.departure_time() - v.best_time();
+
+    long dur = e.duration();
+    RouteType type = e.type();
     switch (type) {
       case RouteType.BUS:
-        return (long) (dur * 1.5);
+        dur = (long) (dur * 1.5);
       case RouteType.TRAIN:
-        return (long) (dur * 1);
+        dur = (long) (dur * 1);
       case RouteType.METRO:
-        return (long) (dur * 1.2);
+        dur = (long) (dur * 1.2);
       case RouteType.TRAM:
-        return (long) (dur * 1.3);
-      default:
-        return (long) dur;
+        dur = (long) (dur * 1.3);
+      case RouteType.FOOT:
+        dur = (long) (dur * 3);
     }
+
+    return v.best_cost() + dur + waiting_time + transfers;
   }
+
+
 
   boolean train_is_banned = false; // We are going to change that
 }

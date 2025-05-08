@@ -10,5 +10,8 @@ public enum RouteType {
   BUS,
 
   /** The route is a tram line */
-  TRAM
+  TRAM,
+
+  /** The route is a footpath */
+  FOOT
 }
