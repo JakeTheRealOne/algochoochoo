@@ -18,8 +18,7 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    print_test();
-    // runtime_test();
+    runtime_test();
   }
 
   public static void runtime_test() {
@@ -108,19 +107,14 @@ public class Algorithm {
     int treated_nodes = 0; // For debug
 
     IndexMinPQ<Long> heap = new IndexMinPQ<>(graph.V_card());
-    List<Node> node_list = new ArrayList<>(graph.V_card());
-    int i = 0;
     for (Node node : graph.vertices()) {
-      heap.insert(i, node.best_cost());
-      node.set_index(i);
-      node_list.add(node);
-      i += 1;
+      heap.insert(node.index(), node.best_cost());
     }
 
     while (heap.size() > 0) {
       treated_nodes++;
       int index = heap.delMin();
-      Node node = node_list.get(index);
+      Node node = graph.vertices.get(index);
 
       if (node.is_target()) {
         System.out.println("Total path cost: " + node.best_cost());
@@ -131,14 +125,12 @@ public class Algorithm {
       relaxe(node, heap);
     }
 
-    // NOT SUPPOSED TO HAPPEND
-    List<Edge> output = new ArrayList<Edge>();
-    return output;
+    return new ArrayList<Edge>();
   }
 
   private void relaxe(Node node, IndexMinPQ heap) {
     for (Edge e : node.connections()) {
-      boolean is_illegal = e.departure_time() < node.best_time();
+      boolean is_illegal = check_legality(node, e);
       if (is_illegal)
         continue;
       Node target = e.to();
@@ -162,6 +154,15 @@ public class Algorithm {
         heap.decreaseKey(target.index(), candidate);
       }
     }
+  }
+
+  /**
+   * Check if we are allowed to
+   *
+   * @return If we cannot take the edge because it is illegal
+   */
+  private boolean check_legality(Node node, Edge edge) {
+    return edge.departure_time() < node.best_time();
   }
 
   /**

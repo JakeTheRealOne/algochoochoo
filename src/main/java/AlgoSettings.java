@@ -13,7 +13,15 @@ public class AlgoSettings {
   int footpath_radius = 3000;
 
   /**
-   * The safety margin to avoid the transport leaving without us (in seconds)
+   * The minimum waiting time at a stop for the trips. This can be used to
+   * handle and prevent delayed transport
    */
-  int min_ahead_time = 0 * 60;
+  int min_waiting_time = 0 * 60;
+
+  /**
+   * The maximum waiting time at a stop for the next trips.
+   */
+  int max_waiting_time = Integer.MAX_VALUE;
+
+  boolean train_is_banned = true; // We are going to change that
 }

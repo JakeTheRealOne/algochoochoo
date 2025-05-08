@@ -24,18 +24,12 @@ public class Node {
         + connections.size() + " connections)";
   }
 
-  // /** Compare two nodes based on cost */
-  // @Override
-  // public long compareTo(Node other) {
-  //   return Long.compare(this.best_cost, other.best_cost);
-  // }
-
   /** Initialize the node */
   public void init() {
     source_flag = false;
     target_flag = false;
     best_edge = null;
-    best_cost = Integer.MAX_VALUE;
+    best_cost = Long.MAX_VALUE;
     best_time = Integer.MAX_VALUE;
   }
 
@@ -187,6 +181,9 @@ public class Node {
   int index = -1;
   long best_cost;
   int best_time;
+
+  long hahaTODO;
+
   List<Edge> connections;
   List<Edge> transfers;
 }

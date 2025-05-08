@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,15 +32,6 @@ public class Graph {
     return "Graph(#V: " + V_card() + ", #E: " + E_card() + ")";
   }
 
-  /**
-   * Get a node by its id
-   *
-   * @return A stop
-   */
-  public Node get(String id) {
-    return vertices.get(id);
-  }
-
   // #### Getters ####
 
   /**
@@ -60,8 +52,8 @@ public class Graph {
     return vertices.size();
   }
 
-  Collection<Node> vertices() {
-    return vertices.values();
+  List<Node> vertices() {
+    return vertices;
   }
 
   AlgoSettings settings() {
@@ -82,16 +74,17 @@ public class Graph {
     edge_count = 0;
 
     // 1. Create the nodes from the stops
-    vertices = new LinkedHashMap<String, Node>();
+    Map<String, Node> map = new LinkedHashMap<String, Node>(stops.size());
+    vertices = new ArrayList<Node>(stops.size());
     for (Stop stop : stops.values()) {
-      vertices.put(stop.id(), new Node(stop));
+      Node node = new Node(stop);
+      node.set_index(vertices.size());
+      vertices.add(node);
+      map.put(stop.id(), node);
     }
 
     // 2. Populate connections from tips
     for (Trip trip : trips) {
-      // if (trip.route().type() == RouteType.TRAIN) {
-      // continue; // TODO remove
-      // }
       List<TripElement> list = trip.content();
       int n = list.size();
       if (n == 0)
@@ -100,8 +93,8 @@ public class Graph {
       TripElement current = list.get(0);
       for (int i = 1; i < n; ++i) {
         TripElement next = list.get(i);
-        Edge connection = new Edge(current, next, vertices, trip);
-        Node node = vertices.get(current.stop().id());
+        Edge connection = new Edge(current, next, map, trip);
+        Node node = map.get(current.stop().id());
         node.add_connection(connection);
         current = next;
       }
@@ -109,8 +102,8 @@ public class Graph {
 
     // 3. Populate transfers
     int radius = settings.footpath_radius;
-    for (Node node : vertices.values()) {
-      List<Edge> transfers = tree.radius_search(node.stop(), radius, vertices);
+    for (Node node : vertices) {
+      List<Edge> transfers = tree.radius_search(node.stop(), radius, map);
       edge_count += transfers.size();
       node.set_transfers(transfers);
     }
@@ -120,5 +113,5 @@ public class Graph {
 
   int edge_count = 0;
   AlgoSettings settings;
-  Map<String, Node> vertices;
+  List<Node> vertices;
 }
