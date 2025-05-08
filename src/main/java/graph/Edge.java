@@ -56,25 +56,6 @@ public class Edge {
   }
 
   /**
-   * Print the source node on STDOUT
-   */
-  public void print_from() {
-    System.out.print(" from " + from.stop().name()
-        + (is_transfer() ? "" : " " + beautiful_time(dep)));
-  }
-
-  /**
-   * Print the target node on STDOUT
-   */
-  public void print_to() {
-    // TODO Separe transfer duration format and connetion hour format in two
-    // separated methods
-    System.out.print(" to " + to.stop().name()
-        + (is_transfer() ? (" for " + Math.round(dur / 60f) + " minutes")
-                         : (" " + beautiful_time(dep + dur))));
-  }
-
-  /**
    * Print the english directive related to the edge on STDOUT
    */
   public void print_directive() {
@@ -124,26 +105,6 @@ public class Edge {
    */
   public int duration() {
     return dur;
-  }
-
-  public long cost() {
-    if (is_transfer()) {
-      return (long) (dur * 3);
-    }
-
-    RouteType type = trip.route().type();
-    switch (type) {
-      case RouteType.BUS:
-        return (long) (dur * 1.5);
-      case RouteType.TRAIN:
-        return (long) (dur * 1);
-      case RouteType.METRO:
-        return (long) (dur * 1.2);
-      case RouteType.TRAM:
-        return (long) (dur * 1.3);
-      default:
-        return (long) dur;
-    }
   }
 
   /**

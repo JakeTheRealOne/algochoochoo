@@ -1,10 +1,9 @@
 import java.awt.*;
 import javax.swing.*;
-import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.OSMTileFactoryInfo;
-import org.jxmapviewer.viewer.DefaultTileFactory;
-import org.jxmapviewer.viewer.GeoPosition;
-import org.jxmapviewer.viewer.TileFactoryInfo;
+import javax.swing.event.*;
+import org.jxmapviewer.*;
+import org.jxmapviewer.viewer.*;
+import org.jxmapviewer.input.*;
 
 /**
  * Show the algorithm results on a map
@@ -22,13 +21,19 @@ public class MapView {
       frame.setSize(800, 600);
       JXMapViewer mapViewer = new JXMapViewer();
 
-      TileFactoryInfo info = new OSMTileFactoryInfo();
+      // TileFactoryInfo info = new OSMTileFactoryInfo();
+      TileFactoryInfo info = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
       DefaultTileFactory tileFactory = new DefaultTileFactory(info);
       mapViewer.setTileFactory(tileFactory);
 
       GeoPosition geoPosition = new GeoPosition(50.8503, 4.3517);
       mapViewer.setCenterPosition(geoPosition);
       mapViewer.setZoom(5);
+
+      MouseInputListener mia = new PanMouseInputListener(mapViewer);
+      mapViewer.addMouseListener(mia);
+      mapViewer.addMouseMotionListener(mia);
+      mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
 
       frame.add(mapViewer, BorderLayout.CENTER);
       frame.setVisible(true);

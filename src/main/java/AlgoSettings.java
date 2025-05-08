@@ -16,12 +16,34 @@ public class AlgoSettings {
    * The minimum waiting time at a stop for the trips. This can be used to
    * handle and prevent delayed transport
    */
-  int min_waiting_time = 0 * 60;
+  int min_waiting_time = 0;
 
   /**
-   * The maximum waiting time at a stop for the next trips.
+   * The cost function (that we are trying to minimize)
+   * 
+   * @param previous The previous edge in the path
+   * @param edge The edge which we try to determine the cost An edge
+   * @return The cost of the edge
    */
-  int max_waiting_time = Integer.MAX_VALUE;
+  long cost_function(Edge previous, Edge e) {
+    int dur = e.duration();
+    if (e.is_transfer()) {
+      return (long) (dur * 3);
+    }
+    RouteType type = e.trip().route().type();
+    switch (type) {
+      case RouteType.BUS:
+        return (long) (dur * 1.5);
+      case RouteType.TRAIN:
+        return (long) (dur * 1);
+      case RouteType.METRO:
+        return (long) (dur * 1.2);
+      case RouteType.TRAM:
+        return (long) (dur * 1.3);
+      default:
+        return (long) dur;
+    }
+  }
 
-  boolean train_is_banned = true; // We are going to change that
+  boolean train_is_banned = false; // We are going to change that
 }

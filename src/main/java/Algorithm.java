@@ -18,7 +18,7 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    runtime_test();
+    print_test();
   }
 
   public static void runtime_test() {
@@ -137,7 +137,7 @@ public class Algorithm {
       // TODO here allow user to set settings of MIN_WAIT_TIME and
       // MAX_WAIT_TIME (and check if a wait time is legal)
       long candidate = node.best_cost()
-          + (e.departure_time() - node.best_time()) + e.cost();
+          + (e.departure_time() - node.best_time()) + settings.cost_function(node.best_edge(), e);
       boolean is_best = candidate < target.best_cost();
       if (is_best) {
         target.set_best(candidate, e.departure_time() + e.duration(), e);
@@ -147,7 +147,7 @@ public class Algorithm {
 
     for (Edge e : node.transfers()) {
       Node target = e.to();
-      long candidate = node.best_cost() + e.cost();
+      long candidate = node.best_cost() + settings.cost_function(node.best_edge(), e);
       boolean is_best = candidate < target.best_cost();
       if (is_best) {
         target.set_best(candidate, node.best_time() + e.duration(), e);
@@ -162,7 +162,21 @@ public class Algorithm {
    * @return If we cannot take the edge because it is illegal
    */
   private boolean check_legality(Node node, Edge edge) {
-    return edge.departure_time() < node.best_time();
+    if (settings.train_is_banned && edge.is_connection()
+        && edge.trip().route().type().equals(RouteType.TRAIN)) {
+      return true;
+    }
+
+    int waiting_time = edge.departure_time() - node.best_time();
+    if (waiting_time < 0) {
+      return true;
+    }
+
+    if (node.best_edge() == null || node.best_edge().trip() != edge.trip()) {
+      return waiting_time < settings.min_waiting_time;
+    }
+
+    return false;
   }
 
   /**
