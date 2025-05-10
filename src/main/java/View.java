@@ -21,7 +21,7 @@ public class View {
       System.out.println("Sorry, no path has been found");
       return;
     }
-    
+
     // TODO fix the time bug
     for (int i = 0; i < n; ++i) {
       Edge e = path.get(i);
@@ -32,7 +32,8 @@ public class View {
 
       while (e.trip() == trip) {
         ++i;
-        if (i >= n) break;
+        if (i >= n)
+          break;
         e = path.get(i);
       }
       --i;
@@ -41,7 +42,8 @@ public class View {
       int arrival = to.best_time();
 
       path.get(i).print_directive();
-      System.out.println(" " + from.stop().name() + beautiful_time(departure) + " - " + to.stop().name() + beautiful_time(arrival));
+      System.out.println(" " + from.stop().name() + beautiful_time(departure)
+          + " - " + to.stop().name() + beautiful_time(arrival));
     }
   }
 

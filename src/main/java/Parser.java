@@ -78,9 +78,10 @@ public class Parser {
       if (!file.isDirectory()) {
         continue;
       }
+      String agency = file.getName();
       String csv_file = file + "/routes.csv";
       for (Route route : iterate(csv_file, Route::new)) {
-        route.setAgency(file.getName());
+        route.setAgency(agency);
         output.put(route.id(), route);
       }
     }

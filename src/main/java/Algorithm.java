@@ -80,6 +80,8 @@ public class Algorithm {
     View.print(path3);
   }
 
+  /* Made on Earth by humans */
+
   /**
    * Construct a new Algorithm object
    *

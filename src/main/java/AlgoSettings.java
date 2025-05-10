@@ -20,16 +20,20 @@ public class AlgoSettings {
 
   /**
    * The cost function (that we are trying to minimize)
-   * 
+   *
    * @param previous The previous edge in the path
    * @param edge The edge which we try to determine the cost An edge
    * @return The cost of the edge
    */
   long cost_function(Node v, Edge e) {
-    long transfers = (v.best_edge() == null || v.best_edge().trip() != e.trip() || e.is_transfer()) ? 1 : 0;
+    long transfers = (v.best_edge() == null || v.best_edge().trip() != e.trip()
+                         || e.is_transfer())
+        ? 1
+        : 0;
     transfers <<= 32;
 
-    int waiting_time = e.is_transfer() ? 0 : e.departure_time() - v.best_time();
+    int waiting_time =
+        e.is_transfer() ? 0 : e.departure_time() - v.best_time();
 
     long dur = e.duration();
     RouteType type = e.type();
@@ -48,8 +52,6 @@ public class AlgoSettings {
 
     return v.best_cost() + dur + waiting_time + transfers;
   }
-
-
 
   boolean train_is_banned = false; // We are going to change that
 }
