@@ -25,40 +25,32 @@ import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
 import org.jxmapviewer.viewer.WaypointRenderer;
 
-public class MapView {
+/**
+ * Run the application
+ * 
+ * @author Bilal Vandenberge
+ */
+public class View {
   public static void main(String[] args) {
-    MapView view = new MapView();
+    View view = new View();
     view.set_up();
+    view.run();
   }
 
   private void set_up() {
-    sources = new HashSet<CustomWaypoint>();
-    targets = new HashSet<CustomWaypoint>();
-    results = new HashSet<CustomWaypoint>();
-    intersections = new HashSet<CustomWaypoint>();
+    init_var();
 
-    source_painter = new WaypointPainter<>();
-    source_painter.setRenderer(new CustomWaypointRenderer());
-    target_painter = new WaypointPainter<>();
-    target_painter.setRenderer(new CustomWaypointRenderer());
-    result_painter = new WaypointPainter<>();
-    result_painter.setRenderer(new CustomWaypointRenderer());
-    intersection_painter = new WaypointPainter<>();
-    intersection_painter.setRenderer(new CustomWaypointRenderer());
-    route_painter = new RoutePainter();
-
-    map_viewer = new JXMapViewer();
     JFrame frame = new JFrame("Belgium trip planner");
 
-    // Create a TileFactoryInfo for OpenStreetMap
+
+    map_viewer = new JXMapViewer();
     TileFactoryInfo info =
         new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
     DefaultTileFactory tileFactory = new DefaultTileFactory(info);
     map_viewer.setTileFactory(tileFactory);
-
     GeoPosition bruxelles = new GeoPosition(50.8503, 4.3517);
     map_viewer.setAddressLocation(bruxelles);
-    map_viewer.setZoom(1);
+    map_viewer.setZoom(10);
 
     MouseInputListener mia = new PanMouseInputListener(map_viewer);
     map_viewer.addMouseListener(mia);
@@ -66,7 +58,6 @@ public class MapView {
     map_viewer.addMouseWheelListener(
         new ZoomMouseWheelListenerCursor(map_viewer));
 
-    // Create a side panel with some components
     Dimension size = new Dimension(Integer.MAX_VALUE, 30);
     JPanel panel1 = new JPanel();
     panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
@@ -170,6 +161,30 @@ public class MapView {
     };
 
     worker.execute();
+  }
+
+  private void run() {
+
+  }
+
+  /**
+   * Initialize gui variables
+   */
+  private void init_var() {
+    sources = new HashSet<CustomWaypoint>();
+    targets = new HashSet<CustomWaypoint>();
+    results = new HashSet<CustomWaypoint>();
+    intersections = new HashSet<CustomWaypoint>();
+
+    source_painter = new WaypointPainter<>();
+    source_painter.setRenderer(new CustomWaypointRenderer());
+    target_painter = new WaypointPainter<>();
+    target_painter.setRenderer(new CustomWaypointRenderer());
+    result_painter = new WaypointPainter<>();
+    result_painter.setRenderer(new CustomWaypointRenderer());
+    intersection_painter = new WaypointPainter<>();
+    intersection_painter.setRenderer(new CustomWaypointRenderer());
+    route_painter = new RoutePainter();
   }
 
   private void execute_algorithm() {

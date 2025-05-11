@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import raw.RStopTime;
 
 /**
  * Execute algorithms on a graph
@@ -54,7 +53,7 @@ public class Algorithm {
       System.err.println("Erreur: " + e.getMessage());
       System.exit(1);
     }
-    View.print(result);
+    Out.print(result);
   }
 
   // TODO: modifier test/resources/TOC
@@ -101,11 +100,11 @@ public class Algorithm {
     List<Edge> path3 = algo.dijkstra(
         "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
-    View.print(path1);
+    Out.print(path1);
     System.out.println();
-    View.print(path2);
+    Out.print(path2);
     System.out.println();
-    View.print(path3);
+    Out.print(path3);
   }
 
   /* Made on Earth by humans */

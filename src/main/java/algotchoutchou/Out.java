@@ -7,7 +7,7 @@ import java.util.Random;
  *
  * @author Bilal Vandenberge
  */
-public class View {
+public class Out {
   // #### Public methods ####
 
   /**

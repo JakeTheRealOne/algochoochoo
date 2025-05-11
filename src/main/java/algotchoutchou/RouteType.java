@@ -1,4 +1,8 @@
-/** (Literally) A route type */
+/**
+ * (Literally) A route type
+ * 
+ * @author Bilal Vandenberge
+ */
 public enum RouteType {
   /** The route is a train line */
   TRAIN,

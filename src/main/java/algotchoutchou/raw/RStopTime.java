@@ -1,5 +1,3 @@
-package raw;
-
 /**
  * A raw stop time from GTFS stop_times.csv file
  *

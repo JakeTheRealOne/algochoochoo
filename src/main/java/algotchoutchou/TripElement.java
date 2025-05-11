@@ -1,5 +1,4 @@
 import java.util.Map;
-import raw.RStopTime;
 
 /**
  * (Literally) A trip element

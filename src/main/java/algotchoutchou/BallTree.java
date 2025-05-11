@@ -1,6 +1,6 @@
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,19 +11,6 @@ import java.util.Map;
  */
 public class BallTree {
   // #### Public methods ####
-
-  /**
-   * Update the footpaths in the stops neighbor list with all the stops in a
-   * 500m radius
-   *
-   * @param stops The list of stops from GTFS
-   */
-  public void update_footpaths(Collection<Stop> stops, AlgoSettings set) {
-    // for (Stop stop : stops) {
-    //   List<Edge> neighbors = radius_search(stop, set.footpath_radius);
-    //   stop.set_transfers(neighbors);
-    // } DANGER TODO REMOVE
-  }
 
   /**
    * Constructs a BallTree from a collection of stops.
