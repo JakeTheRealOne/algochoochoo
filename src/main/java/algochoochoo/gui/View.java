@@ -92,13 +92,18 @@ public class View {
     JPanel panel3 = new JPanel();
     panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
     panel3.setBorder(new EmptyBorder(5, 5, 5, 5));
-    SpinnerDateModel spinner_model = new SpinnerDateModel();
-    time_spinner = new JSpinner(spinner_model);
-    JSpinner.DateEditor editor = new JSpinner.DateEditor(time_spinner, "HH:mm:ss");
-    time_spinner.setEditor(editor);
-    time_spinner.setMaximumSize(size);
-    time_spinner.setValue(new Date(h*1000));
-    time_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+    SpinnerNumberModel hour_model = new SpinnerNumberModel(8, 0, 23, 1);
+    hour_spinner = new JSpinner(hour_model);
+    hour_spinner.setMaximumSize(size);
+    hour_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+    SpinnerNumberModel min_model = new SpinnerNumberModel(30, 0, 59, 1);
+    min_spinner = new JSpinner(min_model);
+    min_spinner.setMaximumSize(size);
+    min_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+    SpinnerNumberModel sec_model = new SpinnerNumberModel(0, 0, 59, 1);
+    sec_spinner = new JSpinner(sec_model);
+    sec_spinner.setMaximumSize(size);
+    sec_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
 
     panel1.add(label1);
     panel1.add(field1);
@@ -108,7 +113,9 @@ public class View {
     panel2.add(field2);
     panel2.add(button2);
 
-    panel3.add(time_spinner);
+    panel3.add(hour_spinner);
+    panel3.add(min_spinner);
+    panel3.add(sec_spinner);
 
     JPanel side_panel = new JPanel();
     side_panel.setLayout(new BoxLayout(side_panel, BoxLayout.Y_AXIS));
@@ -206,14 +213,12 @@ public class View {
     if (s == null || t == null)
       return;
 
-    Date date = (Date)time_spinner.getValue();
-    System.err.println(date);
-    h = (int)(date.getTime() / 1000);
-
-    System.err.println(h / 3600 + " : " + h % 60);
+    int hour = (int)hour_spinner.getValue();
+    int min = (int)min_spinner.getValue();
+    int sec = (int)sec_spinner.getValue();
+    h = 3600 * hour + 60 * min + sec;
 
     List<Edge> result = algo.dijkstra(s, t, h);
-    Out.print(result);
 
     s = "";
     t = "";
@@ -373,7 +378,7 @@ public class View {
 
   private String s;
   private String t;
-  private int h = 8 * 3600; // TODO remove this test value
+  private int h = 8 * 3600 + 30 * 60; // TODO remove this test value
 
   private Set<CustomWaypoint> sources;
   private Set<CustomWaypoint> targets;
@@ -386,7 +391,9 @@ public class View {
   private JTextField field2;
   private JXMapViewer map_viewer;
   private JSplitPane split_pane;
-  private JSpinner time_spinner;
+  private JSpinner hour_spinner;
+  private JSpinner min_spinner;
+  private JSpinner sec_spinner;
 
   private WaypointPainter<CustomWaypoint> source_painter;
   private WaypointPainter<CustomWaypoint> target_painter;
