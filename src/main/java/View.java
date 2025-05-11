@@ -23,6 +23,7 @@ public class View {
     }
 
     // TODO fix the time bug
+    // TODO un autre bug: on doit pas partir à h, mais à h + W
     for (int i = 0; i < n; ++i) {
       Edge e = path.get(i);
       Trip trip = e.trip();

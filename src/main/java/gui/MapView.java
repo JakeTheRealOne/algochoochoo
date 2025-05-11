@@ -34,14 +34,16 @@ public class MapView {
   private void set_up() {
     sources = new HashSet<Waypoint>();
     targets = new HashSet<Waypoint>();
+    results = new HashSet<Waypoint>();
 
     source_painter = new WaypointPainter<>();
     source_painter.setRenderer(new TerminusRenderer());
     target_painter = new WaypointPainter<>();
-    source_painter.setRenderer(new TerminusRenderer());
+    target_painter.setRenderer(new TerminusRenderer());
+    result_painter = new WaypointPainter<>();
+    result_painter.setRenderer(new RegularRenderer());
+    route_painter = new RoutePainter();
 
-    AlgoSettings set = new AlgoSettings();
-    // Graph graph = new Graph("src/main/resources/GTFS", set);
     map_viewer = new JXMapViewer();
     JFrame frame = new JFrame("Belgium trip planner");
 
@@ -150,6 +152,7 @@ public class MapView {
       protected Void doInBackground() throws Exception {
         AlgoSettings set = new AlgoSettings();
         graph = new Graph("src/main/resources/GTFS", set);
+        algo = new Algorithm(graph);
         return null;
       }
 
@@ -168,7 +171,43 @@ public class MapView {
   }
 
   private void execute_algorithm() {
-    System.err.println("exec");
+    if (s == null || t == null) return;
+
+    List<Edge> result = algo.dijkstra(s, t, h);
+
+    List<GeoPosition> track = new ArrayList<>(result.size());
+    List<DefaultWaypoint> waypoints = new ArrayList<>();
+    if (!result.isEmpty()) {
+      Stop stop = result.get(0).from().stop();
+      GeoPosition pos = new GeoPosition(stop.latitude(), stop.longitude());
+      track.add(pos);
+    }
+    for (Edge e : result) {
+      Stop stop = e.to().stop();
+      GeoPosition pos = new GeoPosition(stop.latitude(), stop.longitude());
+      track.add(pos);
+      waypoints.add(new DefaultWaypoint(pos));
+    }  
+
+    results = new HashSet<Waypoint>(waypoints);;
+
+    List<GeoPosition> positions = new ArrayList<>();
+    for (Waypoint waypoint : sources) {
+      positions.add(waypoint.getPosition());
+    } 
+    for (Waypoint waypoint : targets) {
+      positions.add(waypoint.getPosition());
+    }
+    for (Waypoint waypoint : results) {
+      positions.add(waypoint.getPosition());
+    }
+    zoom_on(map_viewer, new HashSet<GeoPosition>(positions), 0.7);
+
+    route_painter = new RoutePainter(track);
+    result_painter.setWaypoints(results);
+    CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
+    all_painters.setPainters(List.of(route_painter, result_painter, source_painter, target_painter));
+    map_viewer.setOverlayPainter(all_painters);
   }
 
   private void click_find(boolean source) {
@@ -199,30 +238,15 @@ public class MapView {
     } 
     for (Waypoint waypoint : targets) {
       positions.add(waypoint.getPosition());
-    } 
+    }
+    for (Waypoint waypoint : results) {
+      positions.add(waypoint.getPosition());
+    }
     zoom_on(map_viewer, new HashSet<GeoPosition>(positions), 0.7);
 
     (source ? source_painter : target_painter).setWaypoints(tmp);
-    // painter.setRenderer(new WaypointRenderer<>() {
-    //   @Override
-    //   public void paintWaypoint(Graphics2D g, JXMapViewer map, Waypoint wp) {
-    //     // Conversion des coordonnées géographiques en pixels
-    //     Point2D point =
-    //         map.getTileFactory().geoToPixel(wp.getPosition(), map.getZoom());
-
-    //     // Récupération de l'offset à l'intérieur du JXMapViewer
-    //     Rectangle viewportBounds = map.getViewportBounds();
-    //     int x = (int) (point.getX() - viewportBounds.getX());
-    //     int y = (int) (point.getY() - viewportBounds.getY());
-
-    //     // Dessin du cercle à la bonne position
-    //     g.setColor(Color.RED);
-    //     g.fillOval(x - 5, y - 5, 10, 10);
-    //   }
-    // });
-
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
-    all_painters.setPainters(List.of(source_painter, target_painter));
+    all_painters.setPainters(List.of(route_painter, result_painter, source_painter, target_painter));
     map_viewer.setOverlayPainter(all_painters);
   }
 
@@ -267,6 +291,7 @@ public class MapView {
 
   // #### Attributes ####
   private Graph graph;
+  private Algorithm algo;
 
   private String s;
   private String t;
@@ -274,6 +299,7 @@ public class MapView {
 
   private Set<Waypoint> sources;
   private Set<Waypoint> targets;
+  private Set<Waypoint> results;
 
   private JTextField field1;
   private JTextField field2;
@@ -281,4 +307,6 @@ public class MapView {
 
   private WaypointPainter<Waypoint> source_painter;
   private WaypointPainter<Waypoint> target_painter;
+  private WaypointPainter<Waypoint> result_painter;
+  private RoutePainter route_painter;
 }

@@ -74,22 +74,25 @@ public class RStopTime {
   /**
    * Convert a string representing a departure time to a numeric value
    *
-   * @param dep_str Time (HH:mm:ss)
+   * @exception IllegalArgumentException if the string isn't formatted properly
+   * @param dep_str Time (HH:MM:SS)
    */
-  private static int read_time(String dep_str) {
-    int h = 0, m = 0, s = 0;
-    int i = 0, j = 0;
-
-    while (dep_str.charAt(j) != ':') j++;
-    h = Integer.parseInt(dep_str.substring(i, j));
-    i = ++j;
-
-    while (dep_str.charAt(j) != ':') j++;
-    m = Integer.parseInt(dep_str.substring(i, j));
-    i = ++j;
-
-    s = Integer.parseInt(dep_str.substring(i));
-
+  public static int read_time(String dep_str) {
+    int h = 0;
+    int m = 0;
+    int s = 0;
+    if (dep_str.length() != 8 || dep_str.charAt(2) != ':' || dep_str.charAt(5) != ':') {
+      String msg = "Invalid time format (HH:MM:SS) : [" + dep_str + "]";
+      throw new IllegalArgumentException(msg);
+    }
+    try {
+      h = Integer.parseInt(dep_str.substring(0, 2));
+      m = Integer.parseInt(dep_str.substring(3, 5));
+      s = Integer.parseInt(dep_str.substring(6, 8));
+    } catch (NumberFormatException e) {
+      String msg = "Invalid time format (HH:MM:SS) : [" + dep_str + "]";
+      throw new IllegalArgumentException(msg);
+    }
     return h * 3600 + m * 60 + s;
   }
 

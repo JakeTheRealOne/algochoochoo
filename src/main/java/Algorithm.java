@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import raw.RStopTime;
+
 /**
  * Execute algorithms on a graph
  *
@@ -18,13 +20,49 @@ public class Algorithm {
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
-    print_test();
+    if (args.length != 3) {
+      System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name target_name HH:MM:SS\"");
+      System.exit(1);
+    }
+
+    String s_input = args[0];
+    String t_input = args[1];
+    int h_input = 0;
+    try {
+      h_input = RStopTime.read_time(args[2]);
+    } catch (IllegalArgumentException e) {
+      System.err.println(e.getMessage());
+      System.exit(1);
+    }
+
+    System.out.println("### Analyse demandée\n");
+    System.out.println("s = " + s_input);
+    System.out.println("t = " + t_input);
+    System.out.println("h = " + args[2] + "\n");
+
+    System.out.println("### Construction du graphe...\n");
+    AlgoSettings settings = new AlgoSettings();
+    Graph graph = new Graph("src/main/resources/GTFS", settings);
+    Algorithm algo = new Algorithm(graph);
+    System.out.println(" terminée\n");
+    System.out.println("### Résultat:\n");
+
+    List<Edge> result = new ArrayList<>();
+    try {
+      result = algo.dijkstra(s_input, t_input, h_input);
+    } catch (IllegalArgumentException e) {
+      System.err.println("Erreur: " + e.getMessage());
+      System.exit(1);
+    }
+    View.print(result);
   }
+
+  // TODO: modifier test/resources/TOC
 
   public static void runtime_test() {
     long start = System.nanoTime();
-    AlgoSettings set = new AlgoSettings();
-    Graph graph = new Graph("src/main/resources/GTFS", set);
+    AlgoSettings settings = new AlgoSettings();
+    Graph graph = new Graph("src/main/resources/GTFS", settings);
     Algorithm algo = new Algorithm(graph);
     long end = System.nanoTime();
     long duration = end - start;
@@ -53,24 +91,14 @@ public class Algorithm {
         + " secondes");
   }
 
-  public static void run_test_3() {
-    AlgoSettings set = new AlgoSettings();
-    Graph graph = new Graph("src/test/resources", set);
-    Algorithm algo = new Algorithm(graph);
-    System.out.println(graph);
-  }
-
   public static void print_test() {
     AlgoSettings set = new AlgoSettings();
     Graph graph = new Graph("src/main/resources/GTFS", set);
     Algorithm algo = new Algorithm(graph);
     List<Edge> path1 = algo.dijkstra("AUMALE", "DELTA", 8 * 3600 + 0 * 60);
-    // algo.dijkstra("SCHUMAN", "ETTERBEEK GARE", 10 * 3600 + 30 * 60);
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     List<Edge> path3 = algo.dijkstra("Alveringem Nieuwe Herberg",
-        // List<Edge> path3 = algo.dijkstra("Knokke",
-
         "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
     View.print(path1);
@@ -103,10 +131,8 @@ public class Algorithm {
    * @param t The target node
    * @param h The departure time (in seconds)
    */
-  private List<Edge> dijkstra(String s, String t, int h) {
+  public List<Edge> dijkstra(String s, String t, int h) {
     init(s, t, h);
-
-    int treated_nodes = 0; // For debug
 
     IndexMinPQ<Long> heap = new IndexMinPQ<>(graph.V_card());
     for (Node node : graph.vertices()) {
@@ -114,12 +140,10 @@ public class Algorithm {
     }
 
     while (heap.size() > 0) {
-      treated_nodes++;
       int index = heap.delMin();
       Node node = graph.vertices.get(index);
 
       if (node.is_target()) {
-        System.out.println("Total path cost: " + node.best_cost());
         return build_solution(node);
       } else if (node.best_cost() == Long.MAX_VALUE) {
         return new ArrayList<Edge>();
