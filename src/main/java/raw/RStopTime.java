@@ -81,7 +81,8 @@ public class RStopTime {
     int h = 0;
     int m = 0;
     int s = 0;
-    if (dep_str.length() != 8 || dep_str.charAt(2) != ':' || dep_str.charAt(5) != ':') {
+    if (dep_str.length() != 8 || dep_str.charAt(2) != ':'
+        || dep_str.charAt(5) != ':') {
       String msg = "Invalid time format (HH:MM:SS) : [" + dep_str + "]";
       throw new IllegalArgumentException(msg);
     }
@@ -93,7 +94,11 @@ public class RStopTime {
       String msg = "Invalid time format (HH:MM:SS) : [" + dep_str + "]";
       throw new IllegalArgumentException(msg);
     }
-    return h * 3600 + m * 60 + s;
+
+    // Keep the time under 24h
+    final int max_time = 24 * 3600;
+    int time = h * 3600 + m * 60 + s;
+    return time % max_time;
   }
 
   // #### Attributes ####

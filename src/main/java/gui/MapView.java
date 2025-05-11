@@ -32,16 +32,19 @@ public class MapView {
   }
 
   private void set_up() {
-    sources = new HashSet<Waypoint>();
-    targets = new HashSet<Waypoint>();
-    results = new HashSet<Waypoint>();
+    sources = new HashSet<CustomWaypoint>();
+    targets = new HashSet<CustomWaypoint>();
+    results = new HashSet<CustomWaypoint>();
+    intersections = new HashSet<CustomWaypoint>();
 
     source_painter = new WaypointPainter<>();
-    source_painter.setRenderer(new TerminusRenderer());
+    source_painter.setRenderer(new CustomWaypointRenderer());
     target_painter = new WaypointPainter<>();
-    target_painter.setRenderer(new TerminusRenderer());
+    target_painter.setRenderer(new CustomWaypointRenderer());
     result_painter = new WaypointPainter<>();
-    result_painter.setRenderer(new RegularRenderer());
+    result_painter.setRenderer(new CustomWaypointRenderer());
+    intersection_painter = new WaypointPainter<>();
+    intersection_painter.setRenderer(new CustomWaypointRenderer());
     route_painter = new RoutePainter();
 
     map_viewer = new JXMapViewer();
@@ -118,8 +121,7 @@ public class MapView {
 
     JSplitPane splitPane =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidePanel, map_viewer);
-    splitPane.setDividerLocation(
-        200);
+    splitPane.setDividerLocation(200);
 
     frame.getContentPane().add(waiting_panel);
     frame.setSize(800, 600);
@@ -171,82 +173,115 @@ public class MapView {
   }
 
   private void execute_algorithm() {
-    if (s == null || t == null) return;
+    if (s == null || t == null)
+      return;
 
     List<Edge> result = algo.dijkstra(s, t, h);
 
-    List<GeoPosition> track = new ArrayList<>(result.size());
-    List<DefaultWaypoint> waypoints = new ArrayList<>();
-    if (!result.isEmpty()) {
-      Stop stop = result.get(0).from().stop();
-      GeoPosition pos = new GeoPosition(stop.latitude(), stop.longitude());
-      track.add(pos);
-    }
-    for (Edge e : result) {
-      Stop stop = e.to().stop();
-      GeoPosition pos = new GeoPosition(stop.latitude(), stop.longitude());
-      track.add(pos);
-      waypoints.add(new DefaultWaypoint(pos));
-    }  
+    s = "";
+    t = "";
+    field1.setText(s);
+    field2.setText(t);
 
-    results = new HashSet<Waypoint>(waypoints);;
+    List<GeoPosition> track = new ArrayList<>(result.size());
+    List<Color> colors = new ArrayList<>(result.size());
+    List<Boolean> walks = new ArrayList<>(result.size());
+    List<CustomWaypoint> waypoints = new ArrayList<>();
+    List<CustomWaypoint> inter = new ArrayList<>();
+
+    for (int i = 0; i < result.size(); ++i) {
+      Edge current = result.get(i);
+      if (i == 0) {
+        Stop begin = current.from().stop();
+        GeoPosition first_pos =
+            new GeoPosition(begin.latitude(), begin.longitude());
+        track.add(first_pos);
+        inter.add(new CustomWaypoint(first_pos, current.color(), true));
+      }
+      Trip next_trip =
+          i == result.size() - 1 ? null : result.get(i + 1).trip();
+      boolean intersection = next_trip == null || current.trip() != next_trip;
+      Color color = current.color();
+      Stop stop = current.to().stop();
+      GeoPosition pos = new GeoPosition(stop.latitude(), stop.longitude());
+      track.add(pos);
+      (intersection ? inter : waypoints).add(new CustomWaypoint(pos, color, intersection));
+      colors.add(color);
+      walks.add(current.is_transfer());
+    }
+
+    results = new HashSet<CustomWaypoint>(waypoints);
+    intersections = new HashSet<CustomWaypoint>(inter);
+    sources.clear();
+    targets.clear();
 
     List<GeoPosition> positions = new ArrayList<>();
-    for (Waypoint waypoint : sources) {
-      positions.add(waypoint.getPosition());
-    } 
-    for (Waypoint waypoint : targets) {
+    for (CustomWaypoint waypoint : sources) {
       positions.add(waypoint.getPosition());
     }
-    for (Waypoint waypoint : results) {
+    for (CustomWaypoint waypoint : targets) {
+      positions.add(waypoint.getPosition());
+    }
+    for (CustomWaypoint waypoint : results) {
+      positions.add(waypoint.getPosition());
+    }
+    for (CustomWaypoint waypoint : intersections) {
       positions.add(waypoint.getPosition());
     }
     zoom_on(map_viewer, new HashSet<GeoPosition>(positions), 0.7);
 
-    route_painter = new RoutePainter(track);
+    source_painter.setWaypoints(sources);
+    target_painter.setWaypoints(targets);
+    route_painter = new RoutePainter(track, colors, walks);
     result_painter.setWaypoints(results);
+    intersection_painter.setWaypoints(intersections);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
-    all_painters.setPainters(List.of(route_painter, result_painter, source_painter, target_painter));
+    all_painters.setPainters(List.of(
+        route_painter, result_painter, intersection_painter, source_painter, target_painter));
     map_viewer.setOverlayPainter(all_painters);
   }
 
   private void click_find(boolean source) {
     String input = (source ? field1 : field2).getText();
-    List<DefaultWaypoint> waypoints = new ArrayList<>();
+    List<CustomWaypoint> waypoints = new ArrayList<>();
     for (Node v : graph.vertices()) {
       Stop stop = v.stop();
       if (stop.name().equals(input)) {
         GeoPosition pos = new GeoPosition(stop.latitude(), stop.longitude());
-        waypoints.add(new DefaultWaypoint(pos));
+        waypoints.add(new CustomWaypoint(pos, new Color(0, 0, 0), true));
       }
     }
 
-    Set<Waypoint> tmp;
+    Set<CustomWaypoint> tmp;
     if (source) {
       s = input;
-      sources = new HashSet<Waypoint>(waypoints);
+      sources = new HashSet<CustomWaypoint>(waypoints);
       tmp = sources;
     } else {
       t = input;
-      targets = new HashSet<Waypoint>(waypoints);
+      targets = new HashSet<CustomWaypoint>(waypoints);
       tmp = targets;
     }
 
     List<GeoPosition> positions = new ArrayList<>();
-    for (Waypoint waypoint : sources) {
-      positions.add(waypoint.getPosition());
-    } 
-    for (Waypoint waypoint : targets) {
+    for (CustomWaypoint waypoint : sources) {
       positions.add(waypoint.getPosition());
     }
-    for (Waypoint waypoint : results) {
+    for (CustomWaypoint waypoint : targets) {
+      positions.add(waypoint.getPosition());
+    }
+    for (CustomWaypoint waypoint : results) {
+      positions.add(waypoint.getPosition());
+    }
+    for (CustomWaypoint waypoint : intersections) {
       positions.add(waypoint.getPosition());
     }
     zoom_on(map_viewer, new HashSet<GeoPosition>(positions), 0.7);
 
     (source ? source_painter : target_painter).setWaypoints(tmp);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
-    all_painters.setPainters(List.of(route_painter, result_painter, source_painter, target_painter));
+    all_painters.setPainters(List.of(
+        route_painter, result_painter, source_painter, target_painter));
     map_viewer.setOverlayPainter(all_painters);
   }
 
@@ -295,18 +330,20 @@ public class MapView {
 
   private String s;
   private String t;
-  private int h = 8*3600; // TODO remove this test value
+  private int h = 8 * 3600; // TODO remove this test value
 
-  private Set<Waypoint> sources;
-  private Set<Waypoint> targets;
-  private Set<Waypoint> results;
+  private Set<CustomWaypoint> sources;
+  private Set<CustomWaypoint> targets;
+  private Set<CustomWaypoint> results;
+  private Set<CustomWaypoint> intersections;
 
   private JTextField field1;
   private JTextField field2;
   private JXMapViewer map_viewer;
 
-  private WaypointPainter<Waypoint> source_painter;
-  private WaypointPainter<Waypoint> target_painter;
-  private WaypointPainter<Waypoint> result_painter;
+  private WaypointPainter<CustomWaypoint> source_painter;
+  private WaypointPainter<CustomWaypoint> target_painter;
+  private WaypointPainter<CustomWaypoint> result_painter;
+  private WaypointPainter<CustomWaypoint> intersection_painter;
   private RoutePainter route_painter;
 }

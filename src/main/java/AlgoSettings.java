@@ -13,12 +13,6 @@ public class AlgoSettings {
   int footpath_radius = 500;
 
   /**
-   * The minimum waiting time at a stop for the trips. This can be used to
-   * handle and prevent delayed transport
-   */
-  int min_waiting_time = 0;
-
-  /**
    * The cost function (that we are trying to minimize)
    *
    * @param previous The previous edge in the path
@@ -34,6 +28,9 @@ public class AlgoSettings {
 
     int waiting_time =
         e.is_transfer() ? 0 : e.departure_time() - v.best_time();
+    while (waiting_time < 0) {
+      waiting_time += 24 * 3600; // Handle trips over several days
+    }
 
     long dur = e.duration();
     RouteType type = e.type();
@@ -52,6 +49,4 @@ public class AlgoSettings {
 
     return v.best_cost() + dur + waiting_time + transfers;
   }
-
-  boolean train_is_banned = false; // We are going to change that
 }

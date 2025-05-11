@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import raw.RStopTime;
 
 /**
@@ -21,7 +20,8 @@ public class Algorithm {
    */
   public static void main(String[] args) {
     if (args.length != 3) {
-      System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name target_name HH:MM:SS\"");
+      System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name "
+          + "target_name HH:MM:SS\"");
       System.exit(1);
     }
 
@@ -31,7 +31,7 @@ public class Algorithm {
     try {
       h_input = RStopTime.read_time(args[2]);
     } catch (IllegalArgumentException e) {
-      System.err.println(e.getMessage());
+      System.err.println("Erreur: " + e.getMessage());
       System.exit(1);
     }
 
@@ -44,7 +44,7 @@ public class Algorithm {
     AlgoSettings settings = new AlgoSettings();
     Graph graph = new Graph("src/main/resources/GTFS", settings);
     Algorithm algo = new Algorithm(graph);
-    System.out.println(" terminée\n");
+    System.out.println("terminée\n");
     System.out.println("### Résultat:\n");
 
     List<Edge> result = new ArrayList<>();
@@ -98,8 +98,8 @@ public class Algorithm {
     List<Edge> path1 = algo.dijkstra("AUMALE", "DELTA", 8 * 3600 + 0 * 60);
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
-    List<Edge> path3 = algo.dijkstra("Alveringem Nieuwe Herberg",
-        "Aubange", 10 * 3600 + 30 * 60);
+    List<Edge> path3 = algo.dijkstra(
+        "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
     View.print(path1);
     System.out.println();
@@ -156,9 +156,9 @@ public class Algorithm {
 
   private void relaxe(Node node, IndexMinPQ heap) {
     for (Edge e : node.connections()) {
-      boolean is_illegal = check_legality(node, e);
-      if (is_illegal)
-        continue;
+      // boolean is_illegal = check_legality(node, e);
+      // if (is_illegal)
+      //   continue;
       Node target = e.to();
       long candidate = settings.cost_function(node, e);
       boolean is_best = candidate < target.best_cost();
@@ -185,18 +185,9 @@ public class Algorithm {
    * @return If we cannot take the edge because it is illegal
    */
   private boolean check_legality(Node node, Edge edge) {
-    if (settings.train_is_banned && edge.is_connection()
-        && edge.trip().route().type().equals(RouteType.TRAIN)) {
-      return true;
-    }
-
     int waiting_time = edge.departure_time() - node.best_time();
     if (waiting_time < 0) {
       return true;
-    }
-
-    if (node.best_edge() == null || node.best_edge().trip() != edge.trip()) {
-      return waiting_time < settings.min_waiting_time;
     }
 
     return false;

@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.Map;
 
 /**
@@ -23,12 +24,16 @@ public class Edge {
     trip = t;
     dep = first.departure_time();
     dur = second.departure_time() - dep;
+    while (dur < 0) {
+      dur += 24 * 3600;
+    }
 
     if (to == null) {
       throw new IllegalArgumentException(
           "Can't build an edge with an unknown target");
     } else if (dur < 0) {
-      throw new IllegalArgumentException("Can't build a negative edge");
+      throw new IllegalArgumentException(
+          "Can't build a negative edge: " + dur);
     }
   }
 
@@ -44,7 +49,8 @@ public class Edge {
     dep = -1;
     dur = compute_walk_time(distance);
     if (dur < 0) {
-      throw new IllegalArgumentException("Can't build a negative edge");
+      throw new IllegalArgumentException(
+          "Can't build a negative edge: " + dur);
     }
   }
 
@@ -132,6 +138,29 @@ public class Edge {
     return !is_transfer();
   }
 
+  /**
+   * Compute a vivid color based on the trip of the edge
+   *
+   * @return The color of the edge
+   */
+  public Color color() {
+    if (is_transfer()) {
+      return new Color(40, 40, 40); // Light grey
+    }
+
+    String name = trip().route().long_name();
+    int hash = name.hashCode();
+
+    int r = (hash & 0xFF0000) >> 16;
+    int g = (hash & 0x00FF00) >> 8;
+    int b = (hash & 0x0000FF);
+    float[] hsb = Color.RGBtoHSB(r, g, b, null);
+    float saturation = Math.min(
+        1.0f, hsb[1] * 1.5f);
+    float brightness = 0.8f;
+    return Color.getHSBColor(hsb[0], saturation, brightness);
+  }
+
   // #### Attributes ####
 
   Node from;
@@ -175,7 +204,7 @@ public class Edge {
    * @return The estimated walk distance (in meters)
    */
   private static int compute_walk_dist(int dist) {
-    final double coef = Math.sqrt(2);
+    final double coef = Math.PI / 2.0;
     return (int) Math.abs(dist * coef);
   }
 }
