@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.*;
+import javax.swing.SpinnerDateModel;
 import javax.swing.JFrame;
+import javax.swing.JSpinner;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import org.jxmapviewer.JXMapViewer;
@@ -24,6 +26,10 @@ import org.jxmapviewer.viewer.TileFactoryInfo;
 import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
 import org.jxmapviewer.viewer.WaypointRenderer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+// TODO: effectuer un clean up laptop
 
 /**
  * Run the application
@@ -40,9 +46,7 @@ public class View {
   private void set_up() {
     init_var();
 
-    JFrame frame = new JFrame("Belgium trip planner");
-
-
+    main_frame = new JFrame("Belgium trip planner");
     map_viewer = new JXMapViewer();
     TileFactoryInfo info =
         new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
@@ -85,6 +89,17 @@ public class View {
     button2.setMaximumSize(size);
     button2.setBorder(new EmptyBorder(5, 5, 5, 5));
 
+    JPanel panel3 = new JPanel();
+    panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
+    panel3.setBorder(new EmptyBorder(5, 5, 5, 5));
+    SpinnerDateModel spinner_model = new SpinnerDateModel();
+    time_spinner = new JSpinner(spinner_model);
+    JSpinner.DateEditor editor = new JSpinner.DateEditor(time_spinner, "HH:mm:ss");
+    time_spinner.setEditor(editor);
+    time_spinner.setMaximumSize(size);
+    time_spinner.setValue(new Date(h*1000));
+    time_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+
     panel1.add(label1);
     panel1.add(field1);
     panel1.add(button1);
@@ -93,14 +108,17 @@ public class View {
     panel2.add(field2);
     panel2.add(button2);
 
-    JPanel sidePanel = new JPanel();
-    sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
-    sidePanel.add(panel1);
-    sidePanel.add(panel2);
-    JButton start_button = new JButton("Start search");
-    sidePanel.add(start_button);
+    panel3.add(time_spinner);
 
-    JPanel waiting_panel = new JPanel();
+    JPanel side_panel = new JPanel();
+    side_panel.setLayout(new BoxLayout(side_panel, BoxLayout.Y_AXIS));
+    side_panel.add(panel1);
+    side_panel.add(panel2);
+    side_panel.add(panel3);
+    JButton start_button = new JButton("Start search");
+    side_panel.add(start_button);
+
+    waiting_panel = new JPanel();
     waiting_panel.setLayout(new BoxLayout(waiting_panel, BoxLayout.Y_AXIS));
     waiting_panel.add(Box.createVerticalGlue());
     waiting_panel.add(new JLabel("Constructing the graph", JLabel.CENTER));
@@ -110,15 +128,13 @@ public class View {
     waiting_panel.add(progress_bar);
     waiting_panel.add(Box.createVerticalGlue());
 
-    JSplitPane splitPane =
-        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidePanel, map_viewer);
-    splitPane.setDividerLocation(200);
+    split_pane =
+        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, side_panel, map_viewer);
+    split_pane.setDividerLocation(400);
 
-    frame.getContentPane().add(waiting_panel);
-    frame.setSize(800, 600);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setVisible(true);
-
+    main_frame.getContentPane().add(waiting_panel);
+    main_frame.setSize(800, 600);
+    main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     button1.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -139,7 +155,10 @@ public class View {
         execute_algorithm();
       }
     });
+  }
 
+  private void run() {
+    main_frame.setVisible(true);
     SwingWorker<Void, Void> worker = new SwingWorker<>() {
       @Override
       protected Void doInBackground() throws Exception {
@@ -151,20 +170,16 @@ public class View {
 
       @Override
       protected void done() {
-        frame.remove(waiting_panel);
-        frame.add(splitPane);
+        main_frame.remove(waiting_panel);
+        main_frame.add(split_pane);
         map_viewer.revalidate();
         map_viewer.repaint();
-        frame.revalidate();
-        frame.repaint();
+        main_frame.revalidate();
+        main_frame.repaint();
       }
     };
 
     worker.execute();
-  }
-
-  private void run() {
-
   }
 
   /**
@@ -191,7 +206,14 @@ public class View {
     if (s == null || t == null)
       return;
 
+    Date date = (Date)time_spinner.getValue();
+    System.err.println(date);
+    h = (int)(date.getTime() / 1000);
+
+    System.err.println(h / 3600 + " : " + h % 60);
+
     List<Edge> result = algo.dijkstra(s, t, h);
+    Out.print(result);
 
     s = "";
     t = "";
@@ -243,7 +265,7 @@ public class View {
     for (CustomWaypoint waypoint : intersections) {
       positions.add(waypoint.getPosition());
     }
-    zoom_on(map_viewer, new HashSet<GeoPosition>(positions), 0.7);
+    zoom_on(map_viewer, new HashSet<GeoPosition>(positions));
 
     source_painter.setWaypoints(sources);
     target_painter.setWaypoints(targets);
@@ -291,17 +313,23 @@ public class View {
     for (CustomWaypoint waypoint : intersections) {
       positions.add(waypoint.getPosition());
     }
-    zoom_on(map_viewer, new HashSet<GeoPosition>(positions), 0.7);
+    zoom_on(map_viewer, new HashSet<GeoPosition>(positions));
 
     (source ? source_painter : target_painter).setWaypoints(tmp);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
     all_painters.setPainters(List.of(
-        route_painter, result_painter, source_painter, target_painter));
+        route_painter, result_painter, intersection_painter, source_painter, target_painter));
     map_viewer.setOverlayPainter(all_painters);
   }
 
-  public void zoom_on(
-      JXMapViewer mapViewer, Set<GeoPosition> positions, double maxFraction) {
+  /**
+   * Zoom on a set of geopositions
+   * 
+   * @param map_viewer The map widget
+   * @param positions The set of positions
+   */
+  private void zoom_on(
+      JXMapViewer mapViewer, Set<GeoPosition> positions) {
     if (positions == null || positions.isEmpty()) {
       System.out.println("Aucune position trouvée.");
       return;
@@ -352,9 +380,13 @@ public class View {
   private Set<CustomWaypoint> results;
   private Set<CustomWaypoint> intersections;
 
+  private JFrame main_frame;
+  private JPanel waiting_panel;
   private JTextField field1;
   private JTextField field2;
   private JXMapViewer map_viewer;
+  private JSplitPane split_pane;
+  private JSpinner time_spinner;
 
   private WaypointPainter<CustomWaypoint> source_painter;
   private WaypointPainter<CustomWaypoint> target_painter;
