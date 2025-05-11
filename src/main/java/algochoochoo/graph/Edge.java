@@ -62,12 +62,14 @@ public class Edge {
   }
 
   /**
-   * Print the english directive related to the edge on STDOUT
+   * Get the english directive related to the edge on STDOUT
+   * 
+   * @return The directive (as a string)
    */
-  public void print_directive() {
+  public String directive() {
     String directive =
         is_transfer() ? "Walking" : ("Taking " + trip.route().clean_str());
-    System.out.print(directive);
+    return directive;
   }
 
   // #### Getters ####
@@ -155,8 +157,7 @@ public class Edge {
     int g = (hash & 0x00FF00) >> 8;
     int b = (hash & 0x0000FF);
     float[] hsb = Color.RGBtoHSB(r, g, b, null);
-    float saturation = Math.min(
-        1.0f, hsb[1] * 1.5f);
+    float saturation = Math.min(1.0f, hsb[1] * 1.5f);
     float brightness = 0.8f;
     return Color.getHSBColor(hsb[0], saturation, brightness);
   }

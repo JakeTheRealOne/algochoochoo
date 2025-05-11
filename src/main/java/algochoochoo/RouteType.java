@@ -1,6 +1,6 @@
 /**
  * (Literally) A route type
- * 
+ *
  * @author Bilal Vandenberge
  */
 public enum RouteType {

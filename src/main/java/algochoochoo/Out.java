@@ -42,7 +42,7 @@ public class Out {
       Node to = path.get(i).to();
       int arrival = to.best_time();
 
-      path.get(i).print_directive();
+      System.out.print(path.get(i).directive());
       System.out.println(" " + from.stop().name() + beautiful_time(departure)
           + " - " + to.stop().name() + beautiful_time(arrival));
     }

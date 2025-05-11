@@ -2,15 +2,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.*;
-import javax.swing.SpinnerDateModel;
 import javax.swing.JFrame;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import org.jxmapviewer.JXMapViewer;
@@ -26,14 +28,12 @@ import org.jxmapviewer.viewer.TileFactoryInfo;
 import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
 import org.jxmapviewer.viewer.WaypointRenderer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 // TODO: effectuer un clean up laptop
 
 /**
  * Run the application
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class View {
@@ -105,6 +105,10 @@ public class View {
     sec_spinner.setMaximumSize(size);
     sec_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
 
+    panel4 = new JPanel();
+    panel4.setLayout(new BoxLayout(panel4, BoxLayout.Y_AXIS));
+    panel4.setBorder(new EmptyBorder(5, 5, 5, 5));
+
     panel1.add(label1);
     panel1.add(field1);
     panel1.add(button1);
@@ -113,17 +117,50 @@ public class View {
     panel2.add(field2);
     panel2.add(button2);
 
+    // TODO bug: quand on cherche avec le même s et le même t
+
     panel3.add(hour_spinner);
     panel3.add(min_spinner);
     panel3.add(sec_spinner);
 
-    JPanel side_panel = new JPanel();
-    side_panel.setLayout(new BoxLayout(side_panel, BoxLayout.Y_AXIS));
-    side_panel.add(panel1);
-    side_panel.add(panel2);
-    side_panel.add(panel3);
     JButton start_button = new JButton("Start search");
-    side_panel.add(start_button);
+    JPanel side_panel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    side_panel.add(panel1, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.anchor = GridBagConstraints.CENTER;
+    side_panel.add(panel2, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    gbc.anchor = GridBagConstraints.CENTER;
+    side_panel.add(panel3, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 3;
+    gbc.anchor = GridBagConstraints.CENTER;
+    side_panel.add(start_button, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 4;
+    gbc.anchor = GridBagConstraints.WEST;
+    side_panel.add(panel4, gbc);
+
+    // TODO refaire l'ex de la TOC et le placer dans src/test/resources/GTFS
+    // TODO refaire le javadoc
+
+    JPanel filler = new JPanel();
+    gbc.gridx = 0;
+    gbc.gridy = 5;
+    gbc.weighty = 1;
+    gbc.fill = GridBagConstraints.VERTICAL;
+    side_panel.add(filler, gbc);
 
     waiting_panel = new JPanel();
     waiting_panel.setLayout(new BoxLayout(waiting_panel, BoxLayout.Y_AXIS));
@@ -213,9 +250,9 @@ public class View {
     if (s == null || t == null)
       return;
 
-    int hour = (int)hour_spinner.getValue();
-    int min = (int)min_spinner.getValue();
-    int sec = (int)sec_spinner.getValue();
+    int hour = (int) hour_spinner.getValue();
+    int min = (int) min_spinner.getValue();
+    int sec = (int) sec_spinner.getValue();
     h = 3600 * hour + 60 * min + sec;
 
     List<Edge> result = algo.dijkstra(s, t, h);
@@ -247,7 +284,8 @@ public class View {
       Stop stop = current.to().stop();
       GeoPosition pos = new GeoPosition(stop.latitude(), stop.longitude());
       track.add(pos);
-      (intersection ? inter : waypoints).add(new CustomWaypoint(pos, color, intersection));
+      (intersection ? inter : waypoints)
+          .add(new CustomWaypoint(pos, color, intersection));
       colors.add(color);
       walks.add(current.is_transfer());
     }
@@ -278,9 +316,32 @@ public class View {
     result_painter.setWaypoints(results);
     intersection_painter.setWaypoints(intersections);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
-    all_painters.setPainters(List.of(
-        route_painter, result_painter, intersection_painter, source_painter, target_painter));
+    all_painters.setPainters(List.of(route_painter, result_painter,
+        intersection_painter, source_painter, target_painter));
     map_viewer.setOverlayPainter(all_painters);
+
+    show_details(result);
+  }
+
+  private void show_details(List<Edge> result) {
+    panel4.removeAll();
+    panel4.revalidate();
+    panel4.repaint();
+
+    Font title_font = new Font("Arial", Font.BOLD, 24);
+
+    int time = h;
+    for (int i = 0; i < result.size(); ++i) {
+      Edge current = result.get(i);
+      time = current.is_connection() ? current.departure_time() : time;
+      if (i == 0 || current.trip() != result.get(i-1).trip()) {
+        JLabel route_title = new JLabel(current.directive(), JLabel.LEFT);
+        route_title.setFont(title_font);
+        panel4.add(route_title);
+      }
+    }
+
+    panel4.add(new JLabel("Bouton 4", JLabel.LEFT));
   }
 
   private void click_find(boolean source) {
@@ -322,19 +383,18 @@ public class View {
 
     (source ? source_painter : target_painter).setWaypoints(tmp);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
-    all_painters.setPainters(List.of(
-        route_painter, result_painter, intersection_painter, source_painter, target_painter));
+    all_painters.setPainters(List.of(route_painter, result_painter,
+        intersection_painter, source_painter, target_painter));
     map_viewer.setOverlayPainter(all_painters);
   }
 
   /**
    * Zoom on a set of geopositions
-   * 
+   *
    * @param map_viewer The map widget
    * @param positions The set of positions
    */
-  private void zoom_on(
-      JXMapViewer mapViewer, Set<GeoPosition> positions) {
+  private void zoom_on(JXMapViewer mapViewer, Set<GeoPosition> positions) {
     if (positions == null || positions.isEmpty()) {
       System.out.println("Aucune position trouvée.");
       return;
@@ -394,6 +454,8 @@ public class View {
   private JSpinner hour_spinner;
   private JSpinner min_spinner;
   private JSpinner sec_spinner;
+  private JTextArea result_area;
+  private JPanel panel4;
 
   private WaypointPainter<CustomWaypoint> source_painter;
   private WaypointPainter<CustomWaypoint> target_painter;

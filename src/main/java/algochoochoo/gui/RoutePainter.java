@@ -63,11 +63,7 @@ public class RoutePainter implements Painter<JXMapViewer> {
     final float[] dash_pattern = {5, 5};
     final BasicStroke connection_stroke = new BasicStroke(thickness);
     final BasicStroke transfer_stroke = new BasicStroke(thickness,
-    BasicStroke.CAP_BUTT,
-    BasicStroke.JOIN_BEVEL,
-    0,
-    dash_pattern,
-    0);   
+        BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, dash_pattern, 0);
 
     int lastX = 0;
     int lastY = 0;
