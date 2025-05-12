@@ -61,7 +61,7 @@ public class Edge {
   @Override
   public String toString() {
     return "Edge(from " + from.stop().name() + " " + beautiful_time(dep)
-        + ", to " + to.stop().name() + ")";
+        + ", to " + to.stop().name() + " in " + dur / 60f + " minutes)";
   }
 
   /**

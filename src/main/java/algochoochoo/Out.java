@@ -20,7 +20,7 @@ public class Out {
    *
    * @param path The path to print
    */
-  public static void print(List<Edge> path) {
+  public static void print(List<Edge> path, int h) {
     int n = path.size();
     if (n == 0) {
       System.out.println("Sorry, no path has been found");
@@ -29,27 +29,27 @@ public class Out {
 
     // TODO fix the time bug
     // TODO un autre bug: on doit pas partir à h, mais à h + W
+    int time = h;
     for (int i = 0; i < n; ++i) {
-      Edge e = path.get(i);
-      Trip trip = e.trip();
-
-      Node from = e.from();
-      int departure = from.best_time();
-
-      while (e.trip() == trip) {
-        ++i;
-        if (i >= n)
-          break;
-        e = path.get(i);
+      Edge current = path.get(i);
+      Trip trip = current.trip();
+      if (current.is_connection()) {
+        time = current.departure_time();
       }
-      --i;
+      System.out.print(current.directive());
+      System.out.print(" from " + current.from().stop().name() + beautiful_time(time));
+      time += current.duration();
 
-      Node to = path.get(i).to();
-      int arrival = to.best_time();
-
-      System.out.print(path.get(i).directive());
-      System.out.println(" " + from.stop().name() + beautiful_time(departure)
-          + " - " + to.stop().name() + beautiful_time(arrival));
+      int j = i + 1;
+      while (j < n && path.get(j).trip() == trip) {
+        if (path.get(j).is_connection()) {
+          time = path.get(j).departure_time();
+        }
+        time += path.get(j).duration();
+        ++j;
+      }
+      i = j - 1;
+      System.out.println(" to " + path.get(i).to().stop().name() + beautiful_time(time));
     }
   }
 

@@ -344,8 +344,6 @@ public class View {
         panel4.add(route_title);
       }
     }
-
-    panel4.add(new JLabel("Bouton 4", JLabel.LEFT));
   }
 
   private void click_find(boolean source) {

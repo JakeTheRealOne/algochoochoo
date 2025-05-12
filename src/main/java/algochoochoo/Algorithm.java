@@ -18,12 +18,16 @@ import java.util.Map;
 public class Algorithm {
   // #### Public methods ####
 
+  public static void main(String[] e) {
+    print_test();
+  }
+
   /**
    * Run unit tests
    *
    * @param args Irrelevant here
    */
-  public static void main(String[] args) {
+  public static void maine(String[] args) {
     if (args.length != 3) {
       System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name "
           + "target_name HH:MM:SS\"");
@@ -59,7 +63,7 @@ public class Algorithm {
       System.err.println("Erreur: " + e.getMessage());
       System.exit(1);
     }
-    Out.print(result);
+    Out.print(result, h_input);
   }
 
   // TODO: modifier test/resources/TOC
@@ -84,9 +88,9 @@ public class Algorithm {
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
     end = System.nanoTime();
+    duration = end - start;
     System.out.println("[Dijkstra] : Requete #2   en " + duration / 1000000000f
         + " secondes");
-    duration = end - start;
     start = System.nanoTime();
     List<Edge> path3 = algo.dijkstra(
         "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
@@ -94,7 +98,16 @@ public class Algorithm {
     duration = end - start;
     System.out.println("[Dijkstra] : Requete #3   en " + duration / 1000000000f
         + " secondes");
+    start = System.nanoTime();
+    List<Edge> path4 = algo.dijkstra(
+        "Paris Nord (FR)", "Amsterdam Cs (NL)", 10 * 3600 + 30 * 60);
+    end = System.nanoTime();
+    duration = end - start;
+    System.out.println("[Dijkstra] : Requete #4   en " + duration / 1000000000f
+        + " secondes");
   }
+
+  // TODO hum, well it seems W > 24
 
   public static void print_test() {
     AlgoSettings set = new AlgoSettings();
@@ -106,11 +119,11 @@ public class Algorithm {
     List<Edge> path3 = algo.dijkstra(
         "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
-    Out.print(path1);
+    Out.print(path1, 8 * 3600 + 0 * 60);
     System.out.println();
-    Out.print(path2);
+    Out.print(path2, 14 * 3600 + 14 * 60 + 14);
     System.out.println();
-    Out.print(path3);
+    Out.print(path3, 10 * 3600 + 30 * 60);
   }
 
   /* Made on Earth by humans */

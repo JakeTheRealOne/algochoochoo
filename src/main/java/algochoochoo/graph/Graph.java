@@ -73,8 +73,7 @@ public class Graph {
    * @param trips The map {trip_id,trip_object}
    * @param tree The balltree containing the stops
    */
-  private void build_nodes(
-      Map<String, Stop> stops, List<Trip> trips) {
+  private void build_nodes(Map<String, Stop> stops, List<Trip> trips) {
     edge_count = 0;
 
     // 1. Create the nodes from the stops
@@ -140,7 +139,7 @@ public class Graph {
           double candidateLon = candidate.stop().longitude();
           double distance = haversine(lat, lon, candidateLat, candidateLon);
           if (distance <= radius) {
-            neighbors.add(new Edge(node, candidate, (int)distance));
+            neighbors.add(new Edge(node, candidate, (int) distance));
           }
         }
       }
