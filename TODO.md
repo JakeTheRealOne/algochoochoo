@@ -1,0 +1,3 @@
+- trier les connections par heure de départ
+- passer à l'implementation par ajout incrémental
+- ajouter le fiboheap

@@ -1,8 +1,7 @@
 package algochoochoo.gui;
 
-import algochoochoo.graph.*;
 import algochoochoo.*;
-
+import algochoochoo.graph.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
@@ -339,7 +338,7 @@ public class View {
     for (int i = 0; i < result.size(); ++i) {
       Edge current = result.get(i);
       time = current.is_connection() ? current.departure_time() : time;
-      if (i == 0 || current.trip() != result.get(i-1).trip()) {
+      if (i == 0 || current.trip() != result.get(i - 1).trip()) {
         JLabel route_title = new JLabel(current.directive(), JLabel.LEFT);
         route_title.setFont(title_font);
         panel4.add(route_title);

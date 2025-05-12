@@ -1,7 +1,6 @@
 package algochoochoo.graph;
 
 import algochoochoo.*;
-
 import java.awt.Color;
 import java.util.Map;
 
@@ -67,7 +66,7 @@ public class Edge {
 
   /**
    * Get the english directive related to the edge on STDOUT
-   * 
+   *
    * @return The directive (as a string)
    */
   public String directive() {

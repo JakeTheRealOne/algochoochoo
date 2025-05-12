@@ -1,7 +1,6 @@
 package algochoochoo.graph;
 
 import algochoochoo.*;
-
 import java.util.ArrayList;
 import java.util.List;
 

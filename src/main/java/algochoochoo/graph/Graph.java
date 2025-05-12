@@ -1,12 +1,13 @@
 package algochoochoo.graph;
 
 import algochoochoo.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.index.strtree.STRtree;
 
 /**
  * (Literally) A graph representing transfer datas [GTFS]
@@ -26,8 +27,7 @@ public class Graph {
     settings = set;
     Map<String, Stop> stops = Parser.stops(path);
     List<Trip> trips = Parser.trips(path, stops);
-    BallTree tree = new BallTree(stops.values());
-    build_nodes(stops, trips, tree);
+    build_nodes(stops, trips);
   }
 
   /** Convert a Graph object to string */
@@ -74,7 +74,7 @@ public class Graph {
    * @param tree The balltree containing the stops
    */
   private void build_nodes(
-      Map<String, Stop> stops, List<Trip> trips, BallTree tree) {
+      Map<String, Stop> stops, List<Trip> trips) {
     edge_count = 0;
 
     // 1. Create the nodes from the stops
@@ -105,12 +105,60 @@ public class Graph {
     }
 
     // 3. Populate transfers
-    int radius = settings.footpath_radius;
+    populate_transfers();
+    System.err.println(this);
+  }
+
+  public void populate_transfers() {
+    double radius = settings.footpath_radius;
+
+    GeometryFactory geometryFactory = new GeometryFactory();
+    STRtree index = new STRtree();
     for (Node node : vertices) {
-      List<Edge> transfers = tree.radius_search(node.stop(), radius, map);
-      edge_count += transfers.size();
-      node.set_transfers(transfers);
+      double lat = node.stop().latitude();
+      double lon = node.stop().longitude();
+      Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
+      index.insert(point.getEnvelopeInternal(), node);
     }
+
+    for (Node node : vertices) {
+      double lat = node.stop().latitude();
+      double lon = node.stop().longitude();
+      Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
+      Envelope searchEnv = point.getEnvelopeInternal();
+      double deltaLat = radius / 111320.0;
+      double deltaLon = radius / (111320.0 * Math.cos(Math.toRadians(lat)));
+      searchEnv.expandBy(deltaLat, deltaLon);
+
+      List<?> candidates = index.query(searchEnv);
+      List<Edge> neighbors = new ArrayList<>();
+
+      for (Object obj : candidates) {
+        Node candidate = (Node) obj;
+        if (!candidate.equals(node)) {
+          double candidateLat = candidate.stop().latitude();
+          double candidateLon = candidate.stop().longitude();
+          double distance = haversine(lat, lon, candidateLat, candidateLon);
+          if (distance <= radius) {
+            neighbors.add(new Edge(node, candidate, (int)distance));
+          }
+        }
+      }
+      edge_count += neighbors.size();
+      node.set_transfers(neighbors);
+    }
+  }
+
+  public static double haversine(
+      double lat1, double lon1, double lat2, double lon2) {
+    final int R = 6371000; // Rayon de la Terre en mètres
+    double dLat = Math.toRadians(lat2 - lat1);
+    double dLon = Math.toRadians(lon2 - lon1);
+    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+        + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+            * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
   }
 
   // #### Attributes ####

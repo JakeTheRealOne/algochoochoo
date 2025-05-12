@@ -1,7 +1,6 @@
 package algochoochoo;
 
 import algochoochoo.raw.*;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,7 +30,7 @@ public class Trip {
       throw new IllegalArgumentException(
           "Unknown route: '" + raw_trip.route_id() + "'");
     }
-    content = new ArrayList<>();
+    content = new ArrayList<>(50);
   }
 
   /** Convert a Trip object to string */
