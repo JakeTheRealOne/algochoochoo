@@ -1,3 +1,5 @@
+package algochoochoo;
+
 import java.util.ArrayList;
 
 /**

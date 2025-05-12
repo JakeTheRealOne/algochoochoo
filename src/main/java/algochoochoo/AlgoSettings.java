@@ -1,3 +1,7 @@
+package algochoochoo;
+
+import algochoochoo.graph.*;
+
 /**
  * Store settings for algorithm
  *
@@ -7,10 +11,10 @@ public class AlgoSettings {
   // #### Attributes ####
 
   /** If the name of the s and t stops are strictly given */
-  boolean strict_search = true;
+  public boolean strict_search = true;
 
   /** The maximum walking distance for each transfer (meters) */
-  int footpath_radius = 500;
+  public int footpath_radius = 500;
 
   /**
    * The cost function (that we are trying to minimize)

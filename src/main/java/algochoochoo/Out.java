@@ -1,3 +1,9 @@
+package algochoochoo;
+
+import algochoochoo.*;
+import algochoochoo.raw.*;
+import algochoochoo.graph.*;
+
 import java.awt.Color;
 import java.util.List;
 import java.util.Random;

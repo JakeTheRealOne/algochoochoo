@@ -1,3 +1,5 @@
+package algochoochoo.gui;
+
 import java.awt.Color;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.Waypoint;

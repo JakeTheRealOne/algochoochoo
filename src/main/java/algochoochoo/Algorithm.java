@@ -1,8 +1,19 @@
+package algochoochoo;
+
+import algochoochoo.graph.*;
+import algochoochoo.raw.RStopTime;
+
+// TODO remove
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.index.strtree.STRtree;
+
 import edu.princeton.cs.algs4.IndexMinPQ;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Execute algorithms on a graph
@@ -13,11 +24,95 @@ public class Algorithm {
   // #### Public methods ####
 
   /**
-   * Run unit tests
+   * Run unit tests // TODO remove
    *
    * @param args Irrelevant here
    */
   public static void main(String[] args) {
+    Map<String, Stop> stops = Parser.stops("src/main/resources/GTFS");
+    Map<String, Node> nodes = new LinkedHashMap<>(stops.size());
+    List<Node> other = new ArrayList<>();
+    for (Stop stop : stops.values()) {
+      Node node = new Node(stop);
+      nodes.put(stop.id(), node);
+      other.add(node);
+    }
+
+    long start = System.nanoTime();
+    BallTree tree = new BallTree(stops.values());
+    for (Stop stop : stops.values()) { // O(n)
+      List<Edge> n = tree.radius_search(stop, 500, nodes); // O(logn)
+    }
+    long end = System.nanoTime();
+    long duration = end - start;
+    System.out.println("Balltree in: " + duration / 1000000000f + " seconds");
+
+    start = System.nanoTime();
+
+    GeometryFactory geometryFactory = new GeometryFactory();
+    STRtree index = new STRtree();
+
+    for (Node node : other) {
+      double lat = node.stop().latitude();
+      double lon = node.stop().longitude();
+      Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
+      index.insert(point.getEnvelopeInternal(), node);
+    }
+
+    double searchRadius = 500; // en mètres
+
+    for (Node node : other) {
+        double lat = node.stop().latitude();
+        double lon = node.stop().longitude();
+        Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
+        Envelope searchEnv = point.getEnvelopeInternal();
+        // Étendre l'enveloppe pour inclure le rayon de recherche
+        double delta = 0.005; // Approximation en degrés (~500m), ajustez selon la latitude
+        searchEnv.expandBy(delta);
+    
+        List<?> candidates = index.query(searchEnv);
+        List<Node> neighbors = new ArrayList<>();
+    
+        for (Object obj : candidates) {
+            Node candidate = (Node) obj;
+            if (!candidate.equals(node)) {
+                double candidateLat = candidate.stop().latitude();
+                double candidateLon = candidate.stop().longitude();
+                double distance = haversine(lat, lon, candidateLat, candidateLon);
+                if (distance <= searchRadius) {
+                    neighbors.add(candidate);
+                }
+            }
+        }
+    
+        // Traitement des voisins trouvés
+        // Par exemple, stocker dans une structure de données ou effectuer des calculs supplémentaires
+    }
+
+    end = System.nanoTime();
+    duration = end - start;
+    System.out.println("SpatialGrid in: " + duration / 1000000000f + " seconds");
+  }
+
+  // TODO remove
+  public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+    final int R = 6371000; // Rayon de la Terre en mètres
+    double dLat = Math.toRadians(lat2 - lat1);
+    double dLon = Math.toRadians(lon2 - lon1);
+    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  // TODO undo
+  /**
+   * Run unit tests
+   *
+   * @param args Irrelevant here
+   */
+  private static void maine(String[] args) {
     if (args.length != 3) {
       System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name "
           + "target_name HH:MM:SS\"");
@@ -112,7 +207,7 @@ public class Algorithm {
   /**
    * Construct a new Algorithm object
    *
-   * @param G The graph of the algorithm
+   * @param G   The graph of the algorithm
    * @param set The algorithm settings
    */
   public Algorithm(Graph G) {
@@ -140,7 +235,7 @@ public class Algorithm {
 
     while (heap.size() > 0) {
       int index = heap.delMin();
-      Node node = graph.vertices.get(index);
+      Node node = graph.vertices().get(index);
 
       if (node.is_target()) {
         return build_solution(node);
@@ -157,7 +252,7 @@ public class Algorithm {
     for (Edge e : node.connections()) {
       // boolean is_illegal = check_legality(node, e);
       // if (is_illegal)
-      //   continue;
+      // continue;
       Node target = e.to();
       long candidate = settings.cost_function(node, e);
       boolean is_best = candidate < target.best_cost();

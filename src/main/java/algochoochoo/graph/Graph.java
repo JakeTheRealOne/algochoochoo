@@ -1,3 +1,7 @@
+package algochoochoo.graph;
+
+import algochoochoo.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -39,7 +43,7 @@ public class Graph {
    *
    * @return The number of edges
    */
-  int E_card() {
+  public int E_card() {
     return edge_count;
   }
 
@@ -48,15 +52,15 @@ public class Graph {
    *
    * @return The number of nodes
    */
-  int V_card() {
+  public int V_card() {
     return vertices.size();
   }
 
-  List<Node> vertices() {
+  public List<Node> vertices() {
     return vertices;
   }
 
-  AlgoSettings settings() {
+  public AlgoSettings settings() {
     return settings;
   }
 
@@ -111,7 +115,7 @@ public class Graph {
 
   // #### Attributes ####
 
-  int edge_count = 0;
-  AlgoSettings settings;
-  List<Node> vertices;
+  private int edge_count = 0;
+  private AlgoSettings settings;
+  private List<Node> vertices;
 }

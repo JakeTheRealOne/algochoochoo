@@ -1,3 +1,7 @@
+package algochoochoo;
+
+import algochoochoo.raw.*;
+
 import java.util.Map;
 
 /**

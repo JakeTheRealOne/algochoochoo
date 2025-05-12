@@ -1,3 +1,5 @@
+package algochoochoo;
+
 /**
  * Convert a CSV row into an object of type T
  *

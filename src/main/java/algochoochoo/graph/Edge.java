@@ -1,3 +1,7 @@
+package algochoochoo.graph;
+
+import algochoochoo.*;
+
 import java.awt.Color;
 import java.util.Map;
 

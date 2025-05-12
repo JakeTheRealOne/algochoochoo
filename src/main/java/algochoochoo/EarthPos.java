@@ -1,3 +1,5 @@
+package algochoochoo;
+
 /**
  * (Literally) An earth position
  *

@@ -1,3 +1,7 @@
+package algochoochoo.graph;
+
+import algochoochoo.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +14,7 @@ public class Node {
    *
    * @param s The stop of the node
    */
-  Node(Stop s) {
+  public Node(Stop s) {
     stop = s;
     transfers = new ArrayList<Edge>();
     connections = new ArrayList<Edge>();
