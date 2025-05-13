@@ -159,8 +159,8 @@ public class AlgoSettings {
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException("Invalid weight: " + arg.substring(i));
     }
-    if (weight < 0) {
-      throw new IllegalArgumentException("Weight can't be negative: " + weight);
+    if (weight <= 0) {
+      throw new IllegalArgumentException("Weight can't be negative or null: " + weight);
     } else if (weight > MAX_WEIGHT) {
       throw new IllegalArgumentException("Weight can't exceed " + MAX_WEIGHT + ": " + weight);
     }

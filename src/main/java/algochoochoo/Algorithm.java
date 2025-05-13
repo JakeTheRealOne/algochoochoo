@@ -168,12 +168,11 @@ public class Algorithm {
     List<Edge> output = new ArrayList<Edge>();
 
     Edge current = target.best_edge();
-    while (!current.from().is_source()) {
-      Edge e = current;
+    while (current != null && !current.from().is_source()) {
       output.add(current);
       current = current.from().best_edge();
     }
-    output.add(current);
+    if (current != null) output.add(current);
     Collections.reverse(output);
 
     return output;

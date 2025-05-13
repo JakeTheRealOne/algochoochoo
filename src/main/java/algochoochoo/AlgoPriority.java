@@ -1,7 +1,5 @@
 package algochoochoo;
 
-// TODO javadoc + docstring
-
 /**
  * The priority of a TDSP algorithm
  *
