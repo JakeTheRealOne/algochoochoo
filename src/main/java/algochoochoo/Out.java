@@ -1,11 +1,7 @@
 package algochoochoo;
 
-import algochoochoo.*;
 import algochoochoo.graph.*;
-import algochoochoo.raw.*;
-import java.awt.Color;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Handle the project view
@@ -15,10 +11,14 @@ import java.util.Random;
 public class Out {
   // #### Public methods ####
 
+  /** Construct a default Out object */
+  public Out() {}
+
   /**
    * Print a result, concatenate the edges into trips
    *
    * @param path The path to print
+   * @param h The departure time
    */
   public static void print(List<Edge> path, int h) {
     int n = path.size();

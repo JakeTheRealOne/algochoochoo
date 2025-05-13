@@ -18,7 +18,7 @@ public class Edge {
    * @param first The first element
    * @param second The second element
    * @param V The vertices of the graph
-   * @param trip The trip
+   * @param t The trip
    */
   public Edge(
       TripElement first, TripElement second, Map<String, Node> V, Trip t) {
@@ -46,6 +46,7 @@ public class Edge {
   /**
    * Construct a new Edge object representing a transfer
    *
+   * @param source The source node of the footpath
    * @param target The target node of the footpath
    * @param distance the distance between the two nodes (in meters)
    */
@@ -98,13 +99,19 @@ public class Edge {
     return from;
   }
 
-  /** Return the trip of the edge or null if its a transfer */
+  /** 
+   * Get the trip of the edge or null if its a transfer
+   * 
+   * @return Edge trip or null if is transfer
+   */
   public Trip trip() {
     return trip;
   }
 
   /**
-   * Return the route type of the edge
+   * Get the route type of the edge
+   * 
+   * @return The edge type
    */
   public RouteType type() {
     return is_transfer() ? RouteType.FOOT : trip.route().type();

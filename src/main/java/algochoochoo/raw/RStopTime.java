@@ -76,6 +76,7 @@ public class RStopTime {
    *
    * @exception IllegalArgumentException if the string isn't formatted properly
    * @param dep_str Time (HH:MM:SS)
+   * @return The time (in seconds from midnight)
    */
   public static int read_time(String dep_str) {
     int h = 0;

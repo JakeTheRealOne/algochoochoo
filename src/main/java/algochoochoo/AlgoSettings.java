@@ -35,8 +35,7 @@ public class AlgoSettings {
       String arg = args[i];
       if (arg.startsWith(PRIORITY_ARG)) {
         parsePriority(arg);
-      } 
-      else if (arg.startsWith(FOOTW_ARG)) {
+      } else if (arg.startsWith(FOOTW_ARG)) {
         parseWeight(arg, RouteType.FOOT);
       } else if (arg.startsWith(TRAMW_ARG)) {
         parseWeight(arg, RouteType.TRAM);
@@ -75,13 +74,14 @@ public class AlgoSettings {
   /** The user preferences for transport mode */
   public Map<RouteType, Double> weights = new LinkedHashMap<>();
 
+  /** The priority of the algorithm (which criteria we will minimize first) */
   public AlgoPriority priority = AlgoPriority.TOTAL_DURATION;
 
   /**
    * The cost function (that the algorithm is minimizing)
    *
-   * @param v    The current node
-   * @param edge The edge from v which we try to determine the cost
+   * @param v The current node
+   * @param e The edge from v which we try to determine the cost
    * @return cost(v) + cost(e)
    */
   public long cost_function(Node v, Edge e) {

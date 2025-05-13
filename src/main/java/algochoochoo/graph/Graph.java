@@ -20,7 +20,6 @@ public class Graph {
   /**
    * Construct a new Graph object from GTFS datas
    *
-   * @param path The path of the main GTFS directory
    * @param set The settings for graph construction
    */
   public Graph(GraphSettings set) {
@@ -76,10 +75,20 @@ public class Graph {
     return vertices.size();
   }
 
+  /**
+   * Get the list of the vertices of the graph
+   * 
+   * @return The graph nodes
+   */
   public List<Node> vertices() {
     return vertices;
   }
 
+  /**
+   * Get the settings used to build the graph
+   * 
+   * @return The graph settings
+   */
   public GraphSettings settings() {
     return settings;
   }
@@ -129,7 +138,10 @@ public class Graph {
 
   // TODO fix the file structure
 
-  public void populate_transfers() {
+  /**
+   * Evaluate all transfers between near stops
+   */
+  private void populate_transfers() {
     double radius = settings.foot_radius;
 
     GeometryFactory geometryFactory = new GeometryFactory();
@@ -169,9 +181,12 @@ public class Graph {
     }
   }
 
-  // TODO change inverse tan to sin - 1
+  // TODO change inverse tan to sin - 1 and param to GeoPos
 
-  public static double haversine(
+  /**
+   * Compute the haversine distance between two position
+   */
+  private static double haversine(
       double lat1, double lon1, double lat2, double lon2) {
     final int R = 6371000; // Rayon de la Terre en mètres
     double dLat = Math.toRadians(lat2 - lat1);

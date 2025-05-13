@@ -1,20 +1,35 @@
 package algochoochoo.gui;
 
 import java.awt.*;
-import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointRenderer;
 
-public class CustomWaypointRenderer
-    implements WaypointRenderer<CustomWaypoint> {
+/**
+ * The waypoint renderer for StopWaypoint
+ * 
+ * @author Bilal Vandenberge
+ */
+public class StopWaypointRenderer
+    implements WaypointRenderer<StopWaypoint> {
+  // #### Public methods ####
+
+  /** Construct a default StopWaypointRenderer */
+  public StopWaypointRenderer() {
+  }
+
   @Override
+  /**
+   * Draw the waypoint on the map
+   * 
+   * @param g        the graphics object
+   * @param map      The map widget
+   * @param waypoint The waypoint to draw
+   */
   public void paintWaypoint(
-      Graphics2D g, JXMapViewer map, CustomWaypoint waypoint) {
-    Point2D point =
-        map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom());
+      Graphics2D g, JXMapViewer map, StopWaypoint waypoint) {
+    Point2D point = map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom());
     final int size = 20;
     final float thickness = 6f;
 

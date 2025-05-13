@@ -22,10 +22,16 @@ public class Parser {
   // #### Public methods ####
 
   /**
+   * Construct a default Parser object
+   */
+  public Parser() {
+  }
+
+  /**
    * Return the list of trips of a GTFS directory
    *
    * @param main_dir The main GTFS directory
-   * @param stops The list of stops
+   * @param stops    The list of stops
    * @return The list of populated trips
    */
   public static ArrayList<Trip> trips(
@@ -123,8 +129,8 @@ public class Parser {
    * Populate the trips of a GTFS directory with stop times
    *
    * @param main_dir The main GTFS directory
-   * @param trips The list of trips
-   * @param stops The list of stops
+   * @param trips    The list of trips
+   * @param stops    The list of stops
    */
   private static void populate_trips(
       String main_dir, Map<String, Trip> trips, Map<String, Stop> stops) {
@@ -150,8 +156,8 @@ public class Parser {
   /**
    * Iterate trough the rows of a GTFS .csv file
    *
-   * @param <T> The object type stored in the GTFS file (e.g Stop, Trip)
-   * @param path The path of the CSV file
+   * @param <T>     The object type stored in the GTFS file (e.g Stop, Trip)
+   * @param path    The path of the CSV file
    * @param factory The factory of objects
    * @return An iterable over the objects stored in the file
    */
