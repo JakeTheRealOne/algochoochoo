@@ -27,8 +27,6 @@ public class Out {
       return;
     }
 
-    // TODO fix the time bug
-    // TODO un autre bug: on doit pas partir à h, mais à h + W
     int time = h;
     for (int i = 0; i < n; ++i) {
       Edge current = path.get(i);

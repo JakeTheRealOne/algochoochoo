@@ -2,12 +2,25 @@ package algochoochoo;
 
 import algochoochoo.graph.*;
 
+import java.util.Map;
+import java.util.LinkedHashMap;
+
 /**
  * Store settings for algorithm
  *
  * @author Bilal Vandenberge
  */
 public class AlgoSettings {
+  // #### Public methods ####
+
+  public AlgoSettings() {
+    weights.put(RouteType.FOOT, 3.0);
+    weights.put(RouteType.TRAM, 1.3);
+    weights.put(RouteType.TRAIN, 1.0);
+    weights.put(RouteType.METRO, 1.2);
+    weights.put(RouteType.BUS, 1.5);
+  }
+
   // #### Attributes ####
 
   /** If the name of the s and t stops are strictly given */
@@ -15,6 +28,11 @@ public class AlgoSettings {
 
   /** The maximum walking distance for each transfer (meters) */
   public int footpath_radius = 500;
+
+  /** The user preferences for transport mode */
+  public Map<RouteType, Double> weights = new LinkedHashMap<>();
+
+  public AlgoPriority priority = AlgoPriority.TOTAL_DURATION;
 
   /**
    * The cost function (that we are trying to minimize)
@@ -28,29 +46,21 @@ public class AlgoSettings {
                          || e.is_transfer())
         ? 1
         : 0;
-    transfers <<= 32;
 
     int waiting_time =
         e.is_transfer() ? 0 : e.departure_time() - v.best_time();
     while (waiting_time < 0) {
       waiting_time += 24 * 3600; // Handle trips over several days
     }
+    int dur = (int)(e.duration() * weights.getOrDefault(e.type(), 1.0));
+    long time = dur + waiting_time;
 
-    long dur = e.duration();
-    RouteType type = e.type();
-    switch (type) {
-      case RouteType.BUS:
-        dur = (long) (dur * 1.5);
-      case RouteType.TRAIN:
-        dur = (long) (dur * 1);
-      case RouteType.METRO:
-        dur = (long) (dur * 1.2);
-      case RouteType.TRAM:
-        dur = (long) (dur * 1.3);
-      case RouteType.FOOT:
-        dur = (long) (dur * 3);
+    if (priority.equals(AlgoPriority.TOTAL_DURATION)) {
+      time <<= 32;
+    } else {
+      transfers <<= 32;
     }
 
-    return v.best_cost() + dur + waiting_time + transfers;
+    return v.best_cost() + time + transfers;
   }
 }

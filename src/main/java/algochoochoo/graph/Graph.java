@@ -105,7 +105,6 @@ public class Graph {
 
     // 3. Populate transfers
     populate_transfers();
-    System.err.println(this);
   }
 
   public void populate_transfers() {
