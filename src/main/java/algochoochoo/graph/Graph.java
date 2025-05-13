@@ -5,12 +5,10 @@ import algochoochoo.parsing.Parser;
 import algochoochoo.parsing.Stop;
 import algochoochoo.parsing.Trip;
 import algochoochoo.parsing.TripElement;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.index.strtree.STRtree;
 
@@ -39,19 +37,22 @@ public class Graph {
 
   /**
    * (Lazy) Reload the graph with new settings
-   * 
+   *
    * @param new_settings Graph building settings
    */
   public void reload(GraphSettings new_settings) {
     if (new_settings.foot_radius < 0) {
-      throw new IllegalArgumentException("The footpath distance has to be positive: " + new_settings.foot_radius);
+      throw new IllegalArgumentException(
+          "The footpath distance has to be positive: "
+          + new_settings.foot_radius);
     }
 
     GraphSettings old_settings = settings;
     settings = new_settings;
     edge_count = 0;
 
-    if (old_settings == null || !old_settings.GTFS_path.equals(settings.GTFS_path)) {
+    if (old_settings == null
+        || !old_settings.GTFS_path.equals(settings.GTFS_path)) {
       // New settings or new GTFS path (reevaluate everything)
       Map<String, Stop> stops = Parser.stops(settings.GTFS_path);
       List<Trip> trips = Parser.trips(settings.GTFS_path, stops);
@@ -83,7 +84,7 @@ public class Graph {
 
   /**
    * Get the list of the vertices of the graph
-   * 
+   *
    * @return The graph nodes
    */
   public List<Node> vertices() {
@@ -92,7 +93,7 @@ public class Graph {
 
   /**
    * Get the settings used to build the graph
-   * 
+   *
    * @return The graph settings
    */
   public GraphSettings settings() {
@@ -171,7 +172,8 @@ public class Graph {
       for (Object obj : candidates) {
         Node candidate = (Node) obj;
         if (!candidate.equals(node)) {
-          double distance = haversine(node.stop().pos(), candidate.stop().pos());
+          double distance =
+              haversine(node.stop().pos(), candidate.stop().pos());
           if (distance <= radius) {
             neighbors.add(new Edge(node, candidate, (int) distance));
           }
@@ -184,21 +186,20 @@ public class Graph {
 
   /**
    * Compute the distance between two position with the haversine formula
-   * 
+   *
    * @param pos1 The origin position
    * @param pos2 The other position
    * @return The distance (in meters) between pos1 and pos2
    */
-  private static double haversine(
-      EarthPos pos1, EarthPos pos2) {
+  private static double haversine(EarthPos pos1, EarthPos pos2) {
     final double R = 6371000.0;
     double phi1 = Math.toRadians(pos1.latitude());
     double phi2 = Math.toRadians(pos2.latitude());
     double deltaPhi = Math.toRadians(pos2.latitude() - pos1.latitude());
     double deltaLambda = Math.toRadians(pos2.longitude() - pos1.longitude());
-    double a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
-        Math.cos(phi1) * Math.cos(phi2) *
-            Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+    double a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2)
+        + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2)
+            * Math.sin(deltaLambda / 2);
     double distance = R * Math.sqrt(a * (2 - a));
 
     return distance;

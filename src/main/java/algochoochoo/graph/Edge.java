@@ -3,7 +3,6 @@ package algochoochoo.graph;
 import algochoochoo.parsing.RouteType;
 import algochoochoo.parsing.Trip;
 import algochoochoo.parsing.TripElement;
-
 import java.awt.Color;
 import java.util.Map;
 
@@ -28,7 +27,8 @@ public class Edge {
     from = V.get(first.stop().id());
     to = V.get(second.stop().id());
     if (from == null || to == null) {
-      throw new IllegalArgumentException("Stop doesn't match any nodes in the graph");
+      throw new IllegalArgumentException(
+          "Stop doesn't match any nodes in the graph");
     }
     trip = t;
     dep = first.departure_time();
@@ -109,9 +109,9 @@ public class Edge {
     return from;
   }
 
-  /** 
+  /**
    * Get the trip of the edge or null if its a transfer
-   * 
+   *
    * @return Edge trip or null if is transfer
    */
   public Trip trip() {
@@ -120,7 +120,7 @@ public class Edge {
 
   /**
    * Get the route type of the edge
-   * 
+   *
    * @return The edge type
    */
   public RouteType type() {

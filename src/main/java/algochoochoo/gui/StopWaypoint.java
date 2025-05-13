@@ -6,7 +6,7 @@ import org.jxmapviewer.viewer.Waypoint;
 
 /**
  * A waypoint on the GUI of a stop
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class StopWaypoint implements Waypoint {
@@ -14,7 +14,7 @@ public class StopWaypoint implements Waypoint {
 
   /**
    * Construct a new StopWaypoint object
-   * 
+   *
    * @param pos The position of the waypoint
    * @param c The color of the waypoint
    * @param intersec If the waypoint is an intersection of two trips
@@ -30,7 +30,7 @@ public class StopWaypoint implements Waypoint {
   @Override
   /**
    * Get the position of the waypoint
-   * 
+   *
    * @return The waypoint position
    */
   public GeoPosition getPosition() {
@@ -39,7 +39,7 @@ public class StopWaypoint implements Waypoint {
 
   /**
    * Get the color of the waypoint
-   * 
+   *
    * @return The waypoint color
    */
   public Color color() {
@@ -48,7 +48,7 @@ public class StopWaypoint implements Waypoint {
 
   /**
    * Get if the waypoint is an intersection
-   * 
+   *
    * @return The intersection flag
    */
   public boolean is_intersection() {

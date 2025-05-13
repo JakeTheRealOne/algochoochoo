@@ -2,7 +2,6 @@ package algochoochoo.parsing;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -24,8 +23,7 @@ public class Parser {
   /**
    * Construct a default Parser object
    */
-  public Parser() {
-  }
+  public Parser() {}
 
   /**
    * Return the list of trips of a GTFS directory
@@ -56,7 +54,8 @@ public class Parser {
       for (TripData rtrip : iterate(csv_file, TripData::new)) {
         Trip trip = new Trip(rtrip, routes);
         if (map.get(trip.id()) != null) {
-          throw new IllegalArgumentException("Two trips have the same id: " + trip.id());
+          throw new IllegalArgumentException(
+              "Two trips have the same id: " + trip.id());
         }
         output.add(trip);
         map.put(trip.id(), trip);
@@ -122,7 +121,8 @@ public class Parser {
       String csv_file = file + "/stops.csv";
       for (Stop stop : iterate(csv_file, Stop::new)) {
         if (output.get(stop.id()) != null) {
-          throw new IllegalArgumentException("Two stops have the same id: " + stop.id());
+          throw new IllegalArgumentException(
+              "Two stops have the same id: " + stop.id());
         }
         output.put(stop.id(), stop);
       }

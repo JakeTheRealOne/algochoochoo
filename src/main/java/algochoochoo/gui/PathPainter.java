@@ -14,7 +14,7 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 /**
  * GUI Painter for routes
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class PathPainter implements Painter<JXMapViewer> {
@@ -31,7 +31,7 @@ public class PathPainter implements Painter<JXMapViewer> {
 
   /**
    * Construct a RoutePainter object
-   * 
+   *
    * @param t The track of the route
    * @param c The colors of each edge of the path
    * @param w The 'is_transfer' flag for each edge of the path
@@ -45,7 +45,7 @@ public class PathPainter implements Painter<JXMapViewer> {
   @Override
   /**
    * Paint the path
-   * 
+   *
    * @param g   the graphics object
    * @param map The map widget
    * @param w   The width
@@ -73,13 +73,13 @@ public class PathPainter implements Painter<JXMapViewer> {
 
   /**
    * Draw the lines of the route
-   * 
+   *
    * @param g   the graphics object
    * @param map the map
    */
   private void drawLines(Graphics2D g, JXMapViewer map) {
     final float thickness = 12f;
-    final float[] dash_pattern = { 5, 5 };
+    final float[] dash_pattern = {5, 5};
     final BasicStroke connection_stroke = new BasicStroke(thickness);
     final BasicStroke transfer_stroke = new BasicStroke(thickness,
         BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, dash_pattern, 0);
@@ -87,7 +87,8 @@ public class PathPainter implements Painter<JXMapViewer> {
     if (path.isEmpty())
       return;
 
-    Point2D before = map.getTileFactory().geoToPixel(path.get(0), map.getZoom());
+    Point2D before =
+        map.getTileFactory().geoToPixel(path.get(0), map.getZoom());
     for (int i = 1; i < path.size(); ++i) {
       GeoPosition gp = path.get(i);
       Point2D current = map.getTileFactory().geoToPixel(gp, map.getZoom());
@@ -95,7 +96,8 @@ public class PathPainter implements Painter<JXMapViewer> {
       Boolean walk = walks.get(i - 1);
       g.setStroke(walk ? transfer_stroke : connection_stroke);
       g.setColor(color);
-      g.drawLine((int) before.getX(), (int) before.getY(), (int) current.getX(), (int) current.getY());
+      g.drawLine((int) before.getX(), (int) before.getY(),
+          (int) current.getX(), (int) current.getY());
       before = current;
     }
   }

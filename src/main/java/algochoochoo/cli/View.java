@@ -2,7 +2,6 @@ package algochoochoo.cli;
 
 import algochoochoo.graph.*;
 import algochoochoo.parsing.Trip;
-
 import java.util.List;
 
 /**

@@ -21,7 +21,8 @@ public class TripElement {
     index = stop_time.stop_index();
     stop = stops.get(stop_time.stop_id());
     if (stop == null) {
-      throw new IllegalArgumentException("Unknown stop: " + stop_time.stop_id());
+      throw new IllegalArgumentException(
+          "Unknown stop: " + stop_time.stop_id());
     }
   }
 

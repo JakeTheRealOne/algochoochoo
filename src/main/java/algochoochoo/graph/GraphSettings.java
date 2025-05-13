@@ -13,7 +13,7 @@ public class GraphSettings {
 
   /**
    * Construct a GraphSettings object
-   * 
+   *
    * @param gtfs_path The GTFS directory path
    */
   public GraphSettings(String gtfs_path) {
@@ -69,7 +69,8 @@ public class GraphSettings {
     try {
       radius = Double.parseDouble(arg.substring(i));
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("Invalid distance: " + arg.substring(i));
+      throw new IllegalArgumentException(
+          "Invalid distance: " + arg.substring(i));
     }
     int rounded = (int) Math.round(radius);
     foot_radius = rounded;
@@ -77,7 +78,7 @@ public class GraphSettings {
 
   /**
    * Reevaluate the GTFS path from arg
-   * 
+   *
    * @param arg One executable argument
    */
   private void parsePath(String arg) {

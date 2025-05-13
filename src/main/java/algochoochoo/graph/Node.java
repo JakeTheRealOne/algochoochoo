@@ -1,11 +1,10 @@
 package algochoochoo.graph;
 
 import algochoochoo.parsing.Stop;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.TreeSet;
 
 /** (Literally) A graph node */
@@ -20,7 +19,8 @@ public class Node {
   public Node(Stop s) {
     stop = s;
     transfers = new ArrayList<Edge>();
-    connections = new TreeSet<Edge>(Comparator.comparing(c -> c.departure_time()));
+    connections =
+        new TreeSet<Edge>(Comparator.comparing(c -> c.departure_time()));
     init();
   }
 

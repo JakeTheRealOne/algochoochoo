@@ -1,10 +1,9 @@
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import algochoochoo.*;
+import org.junit.Test;
 
 public class AlgorithmTest {
-
   @Test
   public static void print_test() {
     AlgoSettings set = new AlgoSettings();

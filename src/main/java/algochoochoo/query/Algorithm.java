@@ -2,8 +2,8 @@ package algochoochoo.query;
 
 import algochoochoo.cli.View;
 import algochoochoo.graph.*;
-import algochoochoo.parsing.StopTime;
 import algochoochoo.parsing.Stop;
+import algochoochoo.parsing.StopTime;
 import edu.princeton.cs.algs4.IndexMinPQ;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +38,7 @@ public class Algorithm {
     int h_input = 0;
     try {
       h_input = StopTime.read_time(args[2]);
-      h_input = Math.floorMod(h_input, 24*3600);
+      h_input = Math.floorMod(h_input, 24 * 3600);
       System.out.println(h_input);
     } catch (IllegalArgumentException e) {
       System.err.println("Error: " + e.getMessage());
@@ -122,7 +122,8 @@ public class Algorithm {
 
   private void relaxe(Node node, IndexMinPQ heap) {
     int time = node.best_time();
-    SortedSet<Edge> available_conns = node.connections().tailSet(new Edge(time), true);
+    SortedSet<Edge> available_conns =
+        node.connections().tailSet(new Edge(time), true);
     for (Edge e : available_conns) {
       Node target = e.to();
       long candidate = settings.cost_function(node, e);
@@ -173,7 +174,8 @@ public class Algorithm {
       output.add(current);
       current = current.from().best_edge();
     }
-    if (current != null) output.add(current);
+    if (current != null)
+      output.add(current);
     Collections.reverse(output);
 
     return output;

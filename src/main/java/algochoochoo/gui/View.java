@@ -72,9 +72,11 @@ public class View {
         new ZoomMouseWheelListenerCursor(map_viewer));
 
     Dimension size = new Dimension(Integer.MAX_VALUE, 30);
-    JPanel panel1 = new JPanel();
-    panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
-    panel1.setBorder(new EmptyBorder(5, 5, 5, 5));
+    JPanel panel1 = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5,5,5,5);
+    gbc.gridy  = 0;
+    gbc.fill   = GridBagConstraints.HORIZONTAL;
     JLabel label1 = new JLabel("Source stop");
     label1.setMaximumSize(size);
     label1.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -85,10 +87,24 @@ public class View {
     button1.setMaximumSize(size);
     button1.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-    JPanel panel2 = new JPanel();
-    panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
-    panel2.setBorder(new EmptyBorder(5, 5, 5, 5));
-    JLabel label2 = new JLabel("Target stop");
+    gbc.gridx   = 0;
+    gbc.weightx = 0;
+    panel1.add(label1, gbc);
+
+    gbc.gridx   = 1;
+    gbc.weightx = 1.0;
+    panel1.add(field1, gbc);
+
+    gbc.gridx   = 2;
+    gbc.weightx = 0;
+    panel1.add(button1, gbc);
+
+    JPanel panel2 = new JPanel(new GridBagLayout());
+    gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5,5,5,5);
+    gbc.gridy  = 0;
+    gbc.fill   = GridBagConstraints.HORIZONTAL;
+    JLabel label2 = new JLabel("Source stop");
     label2.setMaximumSize(size);
     label2.setBorder(new EmptyBorder(5, 5, 5, 5));
     field2 = new JTextField("", 15);
@@ -97,10 +113,27 @@ public class View {
     JButton button2 = new JButton("Find");
     button2.setMaximumSize(size);
     button2.setBorder(new EmptyBorder(5, 5, 5, 5));
+    
+    gbc.gridx   = 0;
+    gbc.weightx = 0;
+    panel2.add(label2, gbc);
+    
+    gbc.gridx   = 1;
+    gbc.weightx = 1.0;
+    panel2.add(field2, gbc);
+    
+    gbc.gridx   = 2;
+    gbc.weightx = 0;
+    panel2.add(button2, gbc);
 
-    JPanel panel3 = new JPanel();
-    panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
-    panel3.setBorder(new EmptyBorder(5, 5, 5, 5));
+    JPanel panel3 = new JPanel(new GridBagLayout());
+    gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5,5,5,5);
+    gbc.gridy  = 0;
+    gbc.fill   = GridBagConstraints.HORIZONTAL;
+    JLabel label3 = new JLabel("Departure time");
+    label3.setMaximumSize(size);
+    label3.setBorder(new EmptyBorder(5, 5, 5, 5));
     SpinnerNumberModel hour_model = new SpinnerNumberModel(8, 0, 23, 1);
     hour_spinner = new JSpinner(hour_model);
     hour_spinner.setMaximumSize(size);
@@ -114,54 +147,67 @@ public class View {
     sec_spinner.setMaximumSize(size);
     sec_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
 
+    gbc.gridx   = 0;
+    gbc.weightx = 1.0;
+    panel3.add(label3, gbc);
+
+    gbc.gridx   = 1;
+    gbc.weightx = 0;
+    panel3.add(hour_spinner, gbc);
+    
+    gbc.gridx   = 2;
+    gbc.weightx = 0;
+    panel3.add(min_spinner, gbc);
+    
+    gbc.gridx   = 3;
+    gbc.weightx = 0;
+    panel3.add(sec_spinner, gbc);
+
     panel4 = new JPanel();
     panel4.setLayout(new BoxLayout(panel4, BoxLayout.Y_AXIS));
     panel4.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-    panel1.add(label1);
-    panel1.add(field1);
-    panel1.add(button1);
-
-    panel2.add(label2);
-    panel2.add(field2);
-    panel2.add(button2);
-
-    panel3.add(hour_spinner);
-    panel3.add(min_spinner);
-    panel3.add(sec_spinner);
-
     JButton start_button = new JButton("Start search");
     JPanel side_panel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
+    gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5,5,5,5);
+    gbc.gridy  = 0;
+    gbc.fill   = GridBagConstraints.HORIZONTAL;
 
     gbc.gridx = 0;
     gbc.gridy = 0;
+    gbc.weightx = 1.0;
     gbc.anchor = GridBagConstraints.CENTER;
     side_panel.add(panel1, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 1;
+    gbc.weightx = 1.0;
     gbc.anchor = GridBagConstraints.CENTER;
     side_panel.add(panel2, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 2;
+    gbc.weightx = 1.0;
     gbc.anchor = GridBagConstraints.CENTER;
     side_panel.add(panel3, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 3;
+    gbc.weightx = 1.0;
     gbc.anchor = GridBagConstraints.CENTER;
     side_panel.add(start_button, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 4;
+    gbc.weightx = 1.0;
     gbc.anchor = GridBagConstraints.WEST;
     side_panel.add(panel4, gbc);
 
     JPanel filler = new JPanel();
     gbc.gridx = 0;
     gbc.gridy = 5;
+    gbc.weightx = 1.0;
     gbc.weighty = 1;
     gbc.fill = GridBagConstraints.VERTICAL;
     side_panel.add(filler, gbc);
@@ -182,6 +228,7 @@ public class View {
 
     main_frame.getContentPane().add(waiting_panel);
     main_frame.setSize(800, 600);
+    main_frame.setLocationRelativeTo(null);
     main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     button1.addActionListener(new ActionListener() {
       @Override
@@ -413,7 +460,6 @@ public class View {
    */
   private void zoom_on(JXMapViewer mapViewer, Set<GeoPosition> positions) {
     if (positions == null || positions.isEmpty()) {
-      System.out.println("Aucune position trouvée.");
       return;
     }
 

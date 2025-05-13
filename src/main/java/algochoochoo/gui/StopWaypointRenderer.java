@@ -8,28 +8,27 @@ import org.jxmapviewer.viewer.WaypointRenderer;
 
 /**
  * The waypoint renderer for StopWaypoint
- * 
+ *
  * @author Bilal Vandenberge
  */
-public class StopWaypointRenderer
-    implements WaypointRenderer<StopWaypoint> {
+public class StopWaypointRenderer implements WaypointRenderer<StopWaypoint> {
   // #### Public methods ####
 
   /** Construct a default StopWaypointRenderer */
-  public StopWaypointRenderer() {
-  }
+  public StopWaypointRenderer() {}
 
   @Override
   /**
    * Draw the waypoint on the map
-   * 
+   *
    * @param g        the graphics object
    * @param map      The map widget
    * @param waypoint The waypoint to draw
    */
   public void paintWaypoint(
       Graphics2D g, JXMapViewer map, StopWaypoint waypoint) {
-    Point2D point = map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom());
+    Point2D point =
+        map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom());
     final int size = 20;
     final float thickness = 6f;
 
