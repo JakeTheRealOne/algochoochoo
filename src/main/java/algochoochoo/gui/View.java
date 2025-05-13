@@ -52,7 +52,7 @@ public class View {
   /**
    * Set up the GUI
    */
-  private void set_up() {
+  public void set_up() {
     init_var();
 
     main_frame = new JFrame("Belgium trip planner");
@@ -208,7 +208,7 @@ public class View {
   /**
    * Run the GUI
    */
-  private void run() {
+  public void run() {
     main_frame.setVisible(true);
     SwingWorker<Void, Void> worker = new SwingWorker<>() {
       @Override
@@ -480,3 +480,4 @@ public class View {
   private WaypointPainter<StopWaypoint> intersection_painter;
   private PathPainter route_painter;
 }
+

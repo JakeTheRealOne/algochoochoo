@@ -70,9 +70,6 @@ public class AlgoSettings {
   /** If the name of the s and t stops are strictly given */
   public boolean strict_search = true;
 
-  /** The maximum walking distance for each transfer (meters) */
-  public int footpath_radius = 500;
-
   /** The user preferences for transport mode */
   public Map<RouteType, Double> weights = new LinkedHashMap<>();
 
@@ -93,9 +90,7 @@ public class AlgoSettings {
             : 0;
 
     int waiting_time = e.is_transfer() ? 0 : e.departure_time() - v.best_time();
-    while (waiting_time < 0) {
-      waiting_time += 24 * 3600; // Handle trips over several days
-    }
+    waiting_time = Math.floorMod(waiting_time, 24*3600); // Handle trips over several days
     int dur = (int) (e.duration() * weights.getOrDefault(e.type(), 1.0));
     long time = dur + waiting_time;
 

@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 /**
  * Execute algorithms on a graph
@@ -21,7 +22,7 @@ public class Algorithm {
   // #### Public methods ####
 
   /**
-   * Run unit tests
+   * Run the CLI
    *
    * @param args Irrelevant here
    */
@@ -37,6 +38,8 @@ public class Algorithm {
     int h_input = 0;
     try {
       h_input = StopTime.read_time(args[2]);
+      h_input = Math.floorMod(h_input, 24*3600);
+      System.out.println(h_input);
     } catch (IllegalArgumentException e) {
       System.err.println("Error: " + e.getMessage());
       System.exit(1);
@@ -118,7 +121,9 @@ public class Algorithm {
   }
 
   private void relaxe(Node node, IndexMinPQ heap) {
-    for (Edge e : node.connections()) {
+    int time = node.best_time();
+    SortedSet<Edge> available_conns = node.connections().tailSet(new Edge(time), true);
+    for (Edge e : available_conns) {
       Node target = e.to();
       long candidate = settings.cost_function(node, e);
       boolean is_best = candidate < target.best_cost();

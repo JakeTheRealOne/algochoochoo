@@ -64,6 +64,13 @@ public class Edge {
     }
   }
 
+  /**
+   * Build a test edge (Do not use in graph)
+   */
+  public Edge(int departure) {
+    dep = departure;
+  }
+
   /** Convert a Edge object to string */
   @Override
   public String toString() {
@@ -180,11 +187,11 @@ public class Edge {
 
   // #### Attributes ####
 
-  Node from;
-  Node to;
-  Trip trip;
-  int dep;
-  int dur;
+  private Node from;
+  private Node to;
+  private Trip trip;
+  private int dep;
+  private int dur;
 
   // #### Private helpers ####
 

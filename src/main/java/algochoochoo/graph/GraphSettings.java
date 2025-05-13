@@ -7,7 +7,7 @@ public class GraphSettings {
   // #### Public methods ####
 
   /**
-   * Construc a default GraphSettings object
+   * Construct a default GraphSettings object
    */
   public GraphSettings() {}
 

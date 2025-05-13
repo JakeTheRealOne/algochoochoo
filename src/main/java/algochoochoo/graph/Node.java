@@ -4,6 +4,9 @@ import algochoochoo.parsing.Stop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 /** (Literally) A graph node */
 public class Node {
@@ -17,7 +20,7 @@ public class Node {
   public Node(Stop s) {
     stop = s;
     transfers = new ArrayList<Edge>();
-    connections = new ArrayList<Edge>();
+    connections = new TreeSet<Edge>(Comparator.comparing(c -> c.departure_time()));
     init();
   }
 
@@ -89,7 +92,7 @@ public class Node {
    *
    * @return The list of outgoing edges defined as connections
    */
-  public List<Edge> connections() {
+  public TreeSet<Edge> connections() {
     return connections;
   }
 
@@ -186,6 +189,6 @@ public class Node {
   long best_cost;
   int best_time;
 
-  List<Edge> connections;
+  TreeSet<Edge> connections;
   List<Edge> transfers;
 }
