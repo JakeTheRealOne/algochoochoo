@@ -35,7 +35,8 @@ public class Out {
         time = current.departure_time();
       }
       System.out.print(current.directive());
-      System.out.print(" from " + current.from().stop().name() + beautiful_time(time));
+      System.out.print(
+          " from " + current.from().stop().name() + beautiful_time(time));
       time += current.duration();
 
       int j = i + 1;
@@ -47,7 +48,8 @@ public class Out {
         ++j;
       }
       i = j - 1;
-      System.out.println(" to " + path.get(i).to().stop().name() + beautiful_time(time));
+      System.out.println(
+          " to " + path.get(i).to().stop().name() + beautiful_time(time));
     }
   }
 

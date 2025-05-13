@@ -18,17 +18,13 @@ import java.util.Map;
 public class Algorithm {
   // #### Public methods ####
 
-  public static void main(String[] e) {
-    print_test();
-  }
-
   /**
    * Run unit tests
    *
    * @param args Irrelevant here
    */
-  public static void maine(String[] args) {
-    if (args.length != 3) {
+  public static void main(String[] args) {
+    if (args.length < 3) {
       System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name "
           + "target_name HH:MM:SS\"");
       System.exit(1);
@@ -49,8 +45,12 @@ public class Algorithm {
     System.out.println("t = " + t_input);
     System.out.println("h = " + args[2] + "\n");
 
+    AlgoSettings settings = new AlgoSettings(args);
+    System.out.println("### Configurations\n");
+    settings.print();
+    System.out.println();
+
     System.out.println("### Construction du graphe...\n");
-    AlgoSettings settings = new AlgoSettings();
     Graph graph = new Graph("src/main/resources/GTFS", settings);
     Algorithm algo = new Algorithm(graph);
     System.out.println("terminée\n");
@@ -174,9 +174,6 @@ public class Algorithm {
 
   private void relaxe(Node node, IndexMinPQ heap) {
     for (Edge e : node.connections()) {
-      // boolean is_illegal = check_legality(node, e);
-      // if (is_illegal)
-      // continue;
       Node target = e.to();
       long candidate = settings.cost_function(node, e);
       boolean is_best = candidate < target.best_cost();

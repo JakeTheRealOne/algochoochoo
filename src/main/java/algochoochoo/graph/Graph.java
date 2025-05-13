@@ -107,6 +107,8 @@ public class Graph {
     populate_transfers();
   }
 
+  // TODO fix the file structure
+
   public void populate_transfers() {
     double radius = settings.footpath_radius;
 
