@@ -24,6 +24,9 @@ public class Edge {
       TripElement first, TripElement second, Map<String, Node> V, Trip t) {
     from = V.get(first.stop().id());
     to = V.get(second.stop().id());
+    if (from == null || to == null) {
+      throw new IllegalArgumentException("Stop doesn't match any nodes in the graph");
+    }
     trip = t;
     dep = first.departure_time();
     dur = second.departure_time() - dep;

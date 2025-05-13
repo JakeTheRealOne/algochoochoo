@@ -14,8 +14,6 @@ import java.util.Map;
 public class Trip {
   // #### Public methods ####
 
-  // TODO: for each map.get, check if null
-
   /**
    * Construct a new Trip object
    *

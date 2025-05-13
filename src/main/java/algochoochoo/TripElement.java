@@ -21,6 +21,9 @@ public class TripElement {
     departure_time = stop_time.departure_time();
     index = stop_time.stop_index();
     stop = stops.get(stop_time.stop_id());
+    if (stop == null) {
+      throw new IllegalArgumentException("Unknown stop: " + stop_time.stop_id());
+    }
   }
 
   /** Convert a TripElement object to string */
