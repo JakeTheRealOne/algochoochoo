@@ -1,4 +1,4 @@
-package algochoochoo;
+package algochoochoo.query;
 
 /**
  * The priority of a TDSP algorithm

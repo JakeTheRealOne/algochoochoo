@@ -1,8 +1,8 @@
-package algochoochoo;
+package algochoochoo.parsing;
 
-import algochoochoo.raw.*;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -52,7 +52,7 @@ public class Parser {
         continue;
       }
       String csv_file = file + "/trips.csv";
-      for (RTrip rtrip : iterate(csv_file, RTrip::new)) {
+      for (TripData rtrip : iterate(csv_file, TripData::new)) {
         Trip trip = new Trip(rtrip, routes);
         output.add(trip);
         map.put(trip.id(), trip);
@@ -146,7 +146,7 @@ public class Parser {
         continue;
       }
       String csv_file = file + "/stop_times.csv";
-      for (RStopTime stop_time : iterate(csv_file, RStopTime::new)) {
+      for (StopTime stop_time : iterate(csv_file, StopTime::new)) {
         TripElement element = new TripElement(stop_time, stops);
         trips.get(stop_time.trip_id()).add(element);
       }

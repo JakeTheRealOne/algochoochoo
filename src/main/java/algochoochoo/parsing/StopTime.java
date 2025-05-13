@@ -1,11 +1,11 @@
-package algochoochoo.raw;
+package algochoochoo.parsing;
 
 /**
  * A raw stop time from GTFS stop_times.csv file
  *
  * @author Bilal Vandenberge
  */
-public class RStopTime {
+public class StopTime {
   // #### Public methods ####
 
   /**
@@ -14,7 +14,7 @@ public class RStopTime {
    * @exception IllegalArgumentException If the argument is invalid
    * @param data A CSV file row
    */
-  public RStopTime(String[] data) {
+  public StopTime(String[] data) {
     if (data.length != 4) {
       throw new IllegalArgumentException("Wrong stop time entry size (Input: "
           + data.length + " != Expected: 4)");
@@ -96,12 +96,8 @@ public class RStopTime {
       throw new IllegalArgumentException(msg);
     }
 
-    // TODO are we really gonna limit time under 24h ? (danger)
-
-    // Keep the time under 24h
-    final int max_time = 24 * 3600;
     int time = h * 3600 + m * 60 + s;
-    return time % max_time;
+    return time;
   }
 
   // #### Attributes ####

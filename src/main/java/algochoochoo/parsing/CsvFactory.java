@@ -1,4 +1,4 @@
-package algochoochoo;
+package algochoochoo.parsing;
 
 /**
  * Convert a CSV row into an object of type T

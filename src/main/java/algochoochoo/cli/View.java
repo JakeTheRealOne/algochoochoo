@@ -1,6 +1,8 @@
-package algochoochoo;
+package algochoochoo.cli;
 
 import algochoochoo.graph.*;
+import algochoochoo.parsing.Trip;
+
 import java.util.List;
 
 /**
@@ -8,11 +10,11 @@ import java.util.List;
  *
  * @author Bilal Vandenberge
  */
-public class Out {
+public class View {
   // #### Public methods ####
 
   /** Construct a default Out object */
-  public Out() {}
+  public View() {}
 
   /**
    * Print a result, concatenate the edges into trips

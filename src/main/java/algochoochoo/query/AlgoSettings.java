@@ -1,6 +1,8 @@
-package algochoochoo;
+package algochoochoo.query;
 
 import algochoochoo.graph.*;
+import algochoochoo.parsing.RouteType;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 

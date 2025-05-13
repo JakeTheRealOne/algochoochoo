@@ -79,7 +79,7 @@
               <artifactId>exec-maven-plugin</artifactId>
               <version>3.1.0</version>
               <configuration>
-                <mainClass>algochoochoo.Algorithm</mainClass>
+                <mainClass>algochoochoo.query.Algorithm</mainClass>
               </configuration>
             </plugin>
             <plugin>
@@ -87,7 +87,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>View</mainClass>
+                    <mainClass>algochoochoo.gui.View</mainClass>
                 </configuration>
             </plugin>
             <plugin>

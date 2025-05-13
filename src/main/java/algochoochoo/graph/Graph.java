@@ -1,11 +1,15 @@
 package algochoochoo.graph;
 
-import algochoochoo.*;
+import algochoochoo.parsing.Parser;
+import algochoochoo.parsing.Stop;
+import algochoochoo.parsing.Trip;
+import algochoochoo.parsing.TripElement;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.index.strtree.STRtree;
 
@@ -132,12 +136,9 @@ public class Graph {
         current = next;
       }
     }
-
-    // 3. Populate transfers
+    // TODO add two more methods
     populate_transfers();
   }
-
-  // TODO fix the file structure
 
   /**
    * Evaluate all transfers between near stops

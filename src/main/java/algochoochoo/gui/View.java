@@ -1,7 +1,11 @@
 package algochoochoo.gui;
 
-import algochoochoo.*;
 import algochoochoo.graph.*;
+import algochoochoo.parsing.Stop;
+import algochoochoo.parsing.Trip;
+import algochoochoo.query.AlgoSettings;
+import algochoochoo.query.Algorithm;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;

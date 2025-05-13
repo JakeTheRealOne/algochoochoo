@@ -1,11 +1,11 @@
-package algochoochoo.raw;
+package algochoochoo.parsing;
 
 /**
- * A raw trip from GTFS trips.csv file
+ * Raw trip datas from GTFS trips.csv file
  *
  * @author Bilal Vandenberge
  */
-public class RTrip {
+public class TripData {
   // #### Public methods ####
 
   /**
@@ -14,7 +14,7 @@ public class RTrip {
    * @exception IllegalArgumentException If the argument is invalid
    * @param data A CSV file row
    */
-  public RTrip(String[] data) {
+  public TripData(String[] data) {
     if (data.length != 2) {
       throw new IllegalArgumentException(
           "Wrong trip entry size (Input: " + data.length + " != Expected: 2)");

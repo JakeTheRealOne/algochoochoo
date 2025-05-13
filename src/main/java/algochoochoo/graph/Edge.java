@@ -1,6 +1,9 @@
 package algochoochoo.graph;
 
-import algochoochoo.*;
+import algochoochoo.parsing.RouteType;
+import algochoochoo.parsing.Trip;
+import algochoochoo.parsing.TripElement;
+
 import java.awt.Color;
 import java.util.Map;
 

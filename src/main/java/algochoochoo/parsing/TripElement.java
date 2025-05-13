@@ -1,6 +1,5 @@
-package algochoochoo;
+package algochoochoo.parsing;
 
-import algochoochoo.raw.*;
 import java.util.Map;
 
 /**
@@ -17,7 +16,7 @@ public class TripElement {
    * @param stop_time The raw stop time coming from stop_times.csv
    * @param stops The map of {id, stop} from the GTFS data
    */
-  public TripElement(RStopTime stop_time, Map<String, Stop> stops) {
+  public TripElement(StopTime stop_time, Map<String, Stop> stops) {
     departure_time = stop_time.departure_time();
     index = stop_time.stop_index();
     stop = stops.get(stop_time.stop_id());

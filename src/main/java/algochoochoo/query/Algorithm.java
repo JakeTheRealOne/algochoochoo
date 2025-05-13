@@ -1,7 +1,9 @@
-package algochoochoo;
+package algochoochoo.query;
 
+import algochoochoo.cli.View;
 import algochoochoo.graph.*;
-import algochoochoo.raw.RStopTime;
+import algochoochoo.parsing.StopTime;
+import algochoochoo.parsing.Stop;
 import edu.princeton.cs.algs4.IndexMinPQ;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +36,7 @@ public class Algorithm {
     String t_input = args[1];
     int h_input = 0;
     try {
-      h_input = RStopTime.read_time(args[2]);
+      h_input = StopTime.read_time(args[2]);
     } catch (IllegalArgumentException e) {
       System.err.println("Error: " + e.getMessage());
       System.exit(1);
@@ -65,12 +67,8 @@ public class Algorithm {
       System.err.println("Error: " + e.getMessage());
       System.exit(1);
     }
-    Out.print(result, h_input);
+    View.print(result, h_input);
   }
-
-  // TODO: modifier test/resources/TOC
-
-  // TODO hum, well it seems W > 24
 
   // TODO add my own implementation of STR tree
 

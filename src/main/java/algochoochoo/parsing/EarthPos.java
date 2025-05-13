@@ -1,4 +1,4 @@
-package algochoochoo;
+package algochoochoo.parsing;
 
 /**
  * (Literally) An earth position

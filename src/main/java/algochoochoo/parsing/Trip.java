@@ -1,6 +1,5 @@
-package algochoochoo;
+package algochoochoo.parsing;
 
-import algochoochoo.raw.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -21,7 +20,7 @@ public class Trip {
    * @param raw_trip The raw trip output from the trips.csv file
    * @param routes The routes of the GTFS datas
    */
-  public Trip(RTrip raw_trip, Map<String, Route> routes) {
+  public Trip(TripData raw_trip, Map<String, Route> routes) {
     id = raw_trip.trip_id();
     route = routes.get(raw_trip.route_id());
     if (route == null) {
