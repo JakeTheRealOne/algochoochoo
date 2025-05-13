@@ -1,5 +1,6 @@
 package algochoochoo.graph;
 
+import algochoochoo.parsing.EarthPos;
 import algochoochoo.parsing.Parser;
 import algochoochoo.parsing.Stop;
 import algochoochoo.parsing.Trip;
@@ -105,7 +106,7 @@ public class Graph {
    *
    * @param stops The map {stop_id,stop_object}
    * @param trips The map {trip_id,trip_object}
-   * @param tree The balltree containing the stops
+   * @param tree  The balltree containing the stops
    */
   private void build_nodes(Map<String, Stop> stops, List<Trip> trips) {
     edge_count = 0;
@@ -136,7 +137,7 @@ public class Graph {
         current = next;
       }
     }
-    // TODO add two more methods
+
     populate_transfers();
   }
 
@@ -170,9 +171,7 @@ public class Graph {
       for (Object obj : candidates) {
         Node candidate = (Node) obj;
         if (!candidate.equals(node)) {
-          double candidateLat = candidate.stop().latitude();
-          double candidateLon = candidate.stop().longitude();
-          double distance = haversine(lat, lon, candidateLat, candidateLon);
+          double distance = haversine(node.stop().pos(), candidate.stop().pos());
           if (distance <= radius) {
             neighbors.add(new Edge(node, candidate, (int) distance));
           }
@@ -183,21 +182,26 @@ public class Graph {
     }
   }
 
-  // TODO change inverse tan to sin - 1 and param to GeoPos
-
   /**
-   * Compute the haversine distance between two position
+   * Compute the distance between two position with the haversine formula
+   * 
+   * @param pos1 The origin position
+   * @param pos2 The other position
+   * @return The distance (in meters) between pos1 and pos2
    */
   private static double haversine(
-      double lat1, double lon1, double lat2, double lon2) {
-    final int R = 6371000; // Rayon de la Terre en mètres
-    double dLat = Math.toRadians(lat2 - lat1);
-    double dLon = Math.toRadians(lon2 - lon1);
-    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-        + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-            * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+      EarthPos pos1, EarthPos pos2) {
+    final double R = 6371000.0;
+    double phi1 = Math.toRadians(pos1.latitude());
+    double phi2 = Math.toRadians(pos2.latitude());
+    double deltaPhi = Math.toRadians(pos2.latitude() - pos1.latitude());
+    double deltaLambda = Math.toRadians(pos2.longitude() - pos1.longitude());
+    double a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+        Math.cos(phi1) * Math.cos(phi2) *
+            Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+    double distance = R * Math.sqrt(a * (2 - a));
+
+    return distance;
   }
 
   // #### Attributes ####

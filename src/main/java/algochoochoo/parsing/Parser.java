@@ -51,9 +51,13 @@ public class Parser {
       if (!file.isDirectory()) {
         continue;
       }
+
       String csv_file = file + "/trips.csv";
       for (TripData rtrip : iterate(csv_file, TripData::new)) {
         Trip trip = new Trip(rtrip, routes);
+        if (map.get(trip.id()) != null) {
+          throw new IllegalArgumentException("Two trips have the same id: " + trip.id());
+        }
         output.add(trip);
         map.put(trip.id(), trip);
       }
@@ -117,6 +121,9 @@ public class Parser {
       }
       String csv_file = file + "/stops.csv";
       for (Stop stop : iterate(csv_file, Stop::new)) {
+        if (output.get(stop.id()) != null) {
+          throw new IllegalArgumentException("Two stops have the same id: " + stop.id());
+        }
         output.put(stop.id(), stop);
       }
     }

@@ -70,8 +70,6 @@ public class Algorithm {
     View.print(result, h_input);
   }
 
-  // TODO add my own implementation of STR tree
-
   /* Made on Earth by humans */
 
   /**

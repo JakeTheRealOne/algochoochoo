@@ -212,8 +212,6 @@ public class Edge {
     return time + margin;
   }
 
-  // TODO Add cyclism
-
   /**
    * Compute the estimated walk distance from a distance
    *

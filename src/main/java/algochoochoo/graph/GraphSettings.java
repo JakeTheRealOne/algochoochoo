@@ -47,8 +47,6 @@ public class GraphSettings {
 
   // #### Constants ####
 
-  // TODO rajouter des contraintes d'unicité sur les ids de: stops.csv, trips.csv
-
   final private String FOOT_RADIUS_ARG = "--foot-radius=";
   final private String PATH_ARG = "--gtfs-path=";
 

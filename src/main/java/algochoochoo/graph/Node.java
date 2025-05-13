@@ -186,8 +186,6 @@ public class Node {
   long best_cost;
   int best_time;
 
-  long hahaTODO;
-
   List<Edge> connections;
   List<Edge> transfers;
 }

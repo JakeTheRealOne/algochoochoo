@@ -21,13 +21,15 @@ public class Trip {
    * @param routes The routes of the GTFS datas
    */
   public Trip(TripData raw_trip, Map<String, Route> routes) {
+    final int estimate_trip_size = 50;
+
     id = raw_trip.trip_id();
     route = routes.get(raw_trip.route_id());
     if (route == null) {
       throw new IllegalArgumentException(
           "Unknown route: '" + raw_trip.route_id() + "'");
     }
-    content = new ArrayList<>(50);
+    content = new ArrayList<>(estimate_trip_size);
   }
 
   /** Convert a Trip object to string */
