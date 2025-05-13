@@ -95,6 +95,8 @@ public class RStopTime {
       throw new IllegalArgumentException(msg);
     }
 
+    // TODO are we really gonna limit time under 24h ? (danger)
+
     // Keep the time under 24h
     final int max_time = 24 * 3600;
     int time = h * 3600 + m * 60 + s;

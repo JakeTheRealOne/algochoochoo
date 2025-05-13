@@ -16,11 +16,11 @@ public class AlgoSettings {
    * Construct a new default AlgoSettings object
    */
   public AlgoSettings() {
-    weights.put(RouteType.FOOT, 3.0);
-    weights.put(RouteType.TRAM, 1.3);
+    weights.put(RouteType.FOOT, 1.0);
+    weights.put(RouteType.TRAM, 1.0);
     weights.put(RouteType.TRAIN, 1.0);
-    weights.put(RouteType.METRO, 1.2);
-    weights.put(RouteType.BUS, 1.5);
+    weights.put(RouteType.METRO, 1.0);
+    weights.put(RouteType.BUS, 1.0);
   }
 
   /**
@@ -33,30 +33,27 @@ public class AlgoSettings {
     int n = args.length;
     for (int i = 3; i < n; ++i) {
       String arg = args[i];
-      if (arg.startsWith(FOOT_RADIUS_ARG)) {
-        parseFootRadius(arg);
-      } else if (arg.startsWith(PRIORITY_ARG)) {
+      if (arg.startsWith(PRIORITY_ARG)) {
         parsePriority(arg);
       } 
-      // else if (arg.startsWith(FOOTW_ARG)) {
-      //   parseWeight(arg, RouteType.FOOT);
-      // } else if (arg.startsWith(TRAMW_ARG)) {
-      //   parseWeight(arg, RouteType.TRAM);
-      // } else if (arg.startsWith(BUSW_ARG)) {
-      //   parseWeight(arg, RouteType.BUS);
-      // } else if (arg.startsWith(METROW_ARG)) {
-      //   parseWeight(arg, RouteType.METRO);
-      // } else if (arg.startsWith(TRAINW_ARG)) {
-      //   parseWeight(arg, RouteType.TRAIN);
-      // } else {
-      //   throw new IllegalArgumentException("Unknown flag: " + arg);
-      // }
+      else if (arg.startsWith(FOOTW_ARG)) {
+        parseWeight(arg, RouteType.FOOT);
+      } else if (arg.startsWith(TRAMW_ARG)) {
+        parseWeight(arg, RouteType.TRAM);
+      } else if (arg.startsWith(BUSW_ARG)) {
+        parseWeight(arg, RouteType.BUS);
+      } else if (arg.startsWith(METROW_ARG)) {
+        parseWeight(arg, RouteType.METRO);
+      } else if (arg.startsWith(TRAINW_ARG)) {
+        parseWeight(arg, RouteType.TRAIN);
+      }
     }
   }
 
   // #### Constants ####
 
-  final private String FOOT_RADIUS_ARG = "--foot-radius=";
+  final private double MAX_WEIGHT = 10;
+
   final private String PRIORITY_ARG = "--priority=";
   final private String FOOTW_ARG = "--foot-weight=";
   final private String METROW_ARG = "--metro-weight=";
@@ -83,18 +80,17 @@ public class AlgoSettings {
   /**
    * The cost function (that the algorithm is minimizing)
    *
-   * @param v The current node
+   * @param v    The current node
    * @param edge The edge from v which we try to determine the cost
    * @return cost(v) + cost(e)
    */
   public long cost_function(Node v, Edge e) {
     long transfers = (v.best_edge() == null || v.best_edge().trip() != e.trip()
-                         || e.is_transfer())
-        ? 1
-        : 0;
+        || e.is_transfer())
+            ? 1
+            : 0;
 
-    int waiting_time =
-        e.is_transfer() ? 0 : e.departure_time() - v.best_time();
+    int waiting_time = e.is_transfer() ? 0 : e.departure_time() - v.best_time();
     while (waiting_time < 0) {
       waiting_time += 24 * 3600; // Handle trips over several days
     }
@@ -114,7 +110,6 @@ public class AlgoSettings {
    * Print on STDOUT the settings
    */
   public void print() {
-    System.out.println("Footpath search radius: " + footpath_radius);
     System.out.println("Priority: " + priority);
     System.out.println("Foot weight: " + weights.getOrDefault(RouteType.FOOT, 1.0));
     System.out.println("Metro weight: " + weights.getOrDefault(RouteType.METRO, 1.0));
@@ -126,22 +121,9 @@ public class AlgoSettings {
   // #### Helpers ####
 
   /**
-   * Update the footpath radius from exec args
-   */
-  void parseFootRadius(String arg) {
-    int i = FOOT_RADIUS_ARG.length();
-    double radius = 0;
-    try {
-      radius = Double.parseDouble(arg.substring(i));
-    } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("Invalid distance: " + arg.substring(i));
-    }
-    int rounded = (int)Math.round(radius);
-    footpath_radius = rounded;
-  }
-
-  /**
    * Update the priority from exec args
+   * 
+   * @param arg One exec argument
    */
   void parsePriority(String arg) {
     int i = PRIORITY_ARG.length();
@@ -156,5 +138,32 @@ public class AlgoSettings {
       default:
         throw new IllegalArgumentException("Unknown priority: " + raw);
     }
+  }
+
+  /**
+   * Reevaluate the weight of a route type from exec arg
+   * 
+   * @param arg  One exec argument
+   * @param type The target type
+   */
+  void parseWeight(String arg, RouteType type) {
+    int i = (type == RouteType.METRO ? METROW_ARG
+        : type == RouteType.TRAIN ? TRAINW_ARG
+            : type == RouteType.TRAM ? TRAMW_ARG
+                : type == RouteType.BUS ? BUSW_ARG
+                    : FOOTW_ARG)
+        .length();
+    double weight = 0;
+    try {
+      weight = Double.parseDouble(arg.substring(i));
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("Invalid weight: " + arg.substring(i));
+    }
+    if (weight < 0) {
+      throw new IllegalArgumentException("Weight can't be negative: " + weight);
+    } else if (weight > MAX_WEIGHT) {
+      throw new IllegalArgumentException("Weight can't exceed " + MAX_WEIGHT + ": " + weight);
+    }
+    weights.put(type, weight);
   }
 }

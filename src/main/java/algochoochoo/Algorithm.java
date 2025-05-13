@@ -36,31 +36,33 @@ public class Algorithm {
     try {
       h_input = RStopTime.read_time(args[2]);
     } catch (IllegalArgumentException e) {
-      System.err.println("Erreur: " + e.getMessage());
+      System.err.println("Error: " + e.getMessage());
       System.exit(1);
     }
 
-    System.out.println("### Analyse demandée\n");
+    System.out.println("### Path finding request\n");
     System.out.println("s = " + s_input);
     System.out.println("t = " + t_input);
     System.out.println("h = " + args[2] + "\n");
 
-    AlgoSettings settings = new AlgoSettings(args);
-    System.out.println("### Configurations\n");
-    settings.print();
+    AlgoSettings algoset = new AlgoSettings(args);
+    GraphSettings graphset = new GraphSettings(args);
+    System.out.println("### Settings\n");
+    graphset.print();
+    algoset.print();
     System.out.println();
 
-    System.out.println("### Construction du graphe...\n");
-    Graph graph = new Graph("src/main/resources/GTFS", settings);
-    Algorithm algo = new Algorithm(graph);
-    System.out.println("terminée\n");
-    System.out.println("### Résultat:\n");
+    System.out.println("### Graph building...\n");
+    Graph graph = new Graph(graphset);
+    Algorithm algo = new Algorithm(graph, algoset);
+    System.out.println("done\n");
+    System.out.println("### Results:\n");
 
     List<Edge> result = new ArrayList<>();
     try {
       result = algo.dijkstra(s_input, t_input, h_input);
     } catch (IllegalArgumentException e) {
-      System.err.println("Erreur: " + e.getMessage());
+      System.err.println("Error: " + e.getMessage());
       System.exit(1);
     }
     Out.print(result, h_input);
@@ -70,9 +72,10 @@ public class Algorithm {
 
   public static void runtime_test() {
     long start = System.nanoTime();
+    GraphSettings graphset = new GraphSettings("src/main/resources/GTFS");
     AlgoSettings settings = new AlgoSettings();
-    Graph graph = new Graph("src/main/resources/GTFS", settings);
-    Algorithm algo = new Algorithm(graph);
+    Graph graph = new Graph(graphset);
+    Algorithm algo = new Algorithm(graph, settings);
     long end = System.nanoTime();
     long duration = end - start;
     System.out.println("[Dijkstra] : Construction en " + duration / 1000000000f
@@ -111,8 +114,8 @@ public class Algorithm {
 
   public static void print_test() {
     AlgoSettings set = new AlgoSettings();
-    Graph graph = new Graph("src/main/resources/GTFS", set);
-    Algorithm algo = new Algorithm(graph);
+    Graph graph = new Graph(new GraphSettings("src/main/resources/GTFS"));
+    Algorithm algo = new Algorithm(graph, set);
     List<Edge> path1 = algo.dijkstra("AUMALE", "DELTA", 8 * 3600 + 0 * 60);
     List<Edge> path2 = algo.dijkstra("Antwerpen Centraal Station",
         "CHIMAY Petit Virelles", 14 * 3600 + 14 * 60 + 14);
@@ -134,9 +137,9 @@ public class Algorithm {
    * @param G   The graph of the algorithm
    * @param set The algorithm settings
    */
-  public Algorithm(Graph G) {
+  public Algorithm(Graph G, AlgoSettings set) {
     graph = G;
-    settings = G.settings();
+    settings = set;
   }
 
   // #### Private helpers ####

@@ -23,17 +23,37 @@ public class Graph {
    * @param path The path of the main GTFS directory
    * @param set The settings for graph construction
    */
-  public Graph(String path, AlgoSettings set) {
-    settings = set;
-    Map<String, Stop> stops = Parser.stops(path);
-    List<Trip> trips = Parser.trips(path, stops);
-    build_nodes(stops, trips);
+  public Graph(GraphSettings set) {
+    reload(set);
   }
 
   /** Convert a Graph object to string */
   @Override
   public String toString() {
     return "Graph(#V: " + V_card() + ", #E: " + E_card() + ")";
+  }
+
+  /**
+   * (Lazy) Reload the graph with new settings
+   * 
+   * @param new_settings Graph building settings
+   */
+  public void reload(GraphSettings new_settings) {
+    if (new_settings.foot_radius < 0) {
+      throw new IllegalArgumentException("The footpath distance has to be positive: " + new_settings.foot_radius);
+    }
+
+    GraphSettings old_settings = settings;
+    settings = new_settings;
+    edge_count = 0;
+
+    if (old_settings == null || !old_settings.GTFS_path.equals(settings.GTFS_path)) {
+      Map<String, Stop> stops = Parser.stops(settings.GTFS_path);
+      List<Trip> trips = Parser.trips(settings.GTFS_path, stops);
+      build_nodes(stops, trips);
+    } else if (old_settings.foot_radius != settings.foot_radius) {
+      populate_transfers(); // Reset and reevaluate all transfers
+    }
   }
 
   // #### Getters ####
@@ -60,7 +80,7 @@ public class Graph {
     return vertices;
   }
 
-  public AlgoSettings settings() {
+  public GraphSettings settings() {
     return settings;
   }
 
@@ -110,7 +130,7 @@ public class Graph {
   // TODO fix the file structure
 
   public void populate_transfers() {
-    double radius = settings.footpath_radius;
+    double radius = settings.foot_radius;
 
     GeometryFactory geometryFactory = new GeometryFactory();
     STRtree index = new STRtree();
@@ -149,6 +169,8 @@ public class Graph {
     }
   }
 
+  // TODO change inverse tan to sin - 1
+
   public static double haversine(
       double lat1, double lon1, double lat2, double lon2) {
     final int R = 6371000; // Rayon de la Terre en mètres
@@ -164,6 +186,6 @@ public class Graph {
   // #### Attributes ####
 
   private int edge_count = 0;
-  private AlgoSettings settings;
+  private GraphSettings settings;
   private List<Node> vertices;
 }

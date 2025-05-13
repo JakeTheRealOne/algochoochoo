@@ -210,9 +210,10 @@ public class View {
     SwingWorker<Void, Void> worker = new SwingWorker<>() {
       @Override
       protected Void doInBackground() throws Exception {
-        AlgoSettings set = new AlgoSettings();
-        graph = new Graph("src/main/resources/GTFS", set);
-        algo = new Algorithm(graph);
+        AlgoSettings algoset = new AlgoSettings();
+        GraphSettings graphset = new GraphSettings();
+        graph = new Graph(graphset);
+        algo = new Algorithm(graph, algoset);
         return null;
       }
 
