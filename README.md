@@ -7,11 +7,11 @@ Find the best path in public transport networks.
 
 - univocity-parser
 - algs4 (preinstalled)
-- javaFX
-- JXMapViewer2
+- JavaFX
 - swing
+- JXMapViewer2
 
-#### On MacOS (with Homebrew)
+### On MacOS (with Homebrew)
 
 ```shell
 brew install maven

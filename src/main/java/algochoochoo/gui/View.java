@@ -122,8 +122,6 @@ public class View {
     panel2.add(field2);
     panel2.add(button2);
 
-    // TODO bug: quand on cherche avec le même s et le même t
-
     panel3.add(hour_spinner);
     panel3.add(min_spinner);
     panel3.add(sec_spinner);
@@ -156,8 +154,6 @@ public class View {
     gbc.gridy = 4;
     gbc.anchor = GridBagConstraints.WEST;
     side_panel.add(panel4, gbc);
-
-    // TODO refaire l'ex de la TOC et le placer dans src/test/resources/GTFS
 
     JPanel filler = new JPanel();
     gbc.gridx = 0;

@@ -47,6 +47,7 @@ public class Graph {
     edge_count = 0;
 
     if (old_settings == null || !old_settings.GTFS_path.equals(settings.GTFS_path)) {
+      // New settings or new GTFS path (reevaluate everything)
       Map<String, Stop> stops = Parser.stops(settings.GTFS_path);
       List<Trip> trips = Parser.trips(settings.GTFS_path, stops);
       build_nodes(stops, trips);

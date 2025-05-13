@@ -23,7 +23,7 @@ public class Out {
   public static void print(List<Edge> path, int h) {
     int n = path.size();
     if (n == 0) {
-      System.out.println("Sorry, no path has been found");
+      System.out.println("Empty path");
       return;
     }
 
