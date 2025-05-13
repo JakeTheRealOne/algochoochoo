@@ -134,10 +134,13 @@ mvn exec:java -Dexec.args="\"Paris Nord (FR)\" \"Amsterdam Sud\" 11:11:11 --foot
 
 To run and show the graphical interface:
 ```shell
+export _JAVA_AWT_WM_NONREPARENTING=1
 mvn javafx:run
 ```
 
-Note: A decent internet connection is required for the GUI.
+Notes:
+- _JAVA_AWT_WM_NONREPARENTING on Wayland/XWayland systems has to be set to true because of a wayland bug with Java/AWT that render a blank window
+- A decent internet connection is required for the GUI.
 
 ## Documentation
 
