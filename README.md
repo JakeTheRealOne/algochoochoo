@@ -3,13 +3,51 @@ Find the best path in public transport networks.
 
 ## Dependencies
 
-[Maven](https://maven.apache.org/) need to be installed on your system, it manages all dependencies. We use the content of:
+[Maven](https://maven.apache.org/) needs to be installed on your system, it manages all dependencies. We use the content of:
 
 - univocity-parser
 - algs4 (preinstalled)
 - javaFX
 - JXMapViewer2
 - swing
+
+#### On MacOS (with Homebrew)
+
+```shell
+brew install maven
+```
+
+### On Ubuntu/Debian
+
+```shell
+sudo apt install maven
+```
+
+### On Arch Linux
+
+```shell
+sudo pacman -S maven
+```
+
+### On NixOS
+
+```shell
+nix-shell -p maven
+```
+
+### On Windows
+
+#### with Chocolatey
+
+```shell
+choco install maven
+```
+
+#### with Scoop
+
+```shell
+scoop install main/maven
+```
 
 ## Compilation
 
@@ -110,3 +148,9 @@ TODO trier les connections par heure de départ
 TODO passer à l'implementation par ajout incrémental
 TODO ajouter le fiboheap
 TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
+
+# Context and authors
+
+Bilal Vandenberge
+
+INFOF203 Project 2024-25 (Université libre de Bruxelles).
