@@ -147,7 +147,6 @@ Notes:
 - Report: doc/rapport.pdf
 - Javadoc: target/site/index.html
 
-TODO trier les connections par heure de départ dans chaque node
 TODO passer à l'implementation par ajout incrémental
 TODO ajouter le fiboheap
 TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
