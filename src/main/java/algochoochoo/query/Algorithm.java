@@ -20,12 +20,25 @@ import java.util.Map;
 public class Algorithm {
   // #### Public methods ####
 
+  public static void main(String[] args) {
+    AlgoSettings algoset = new AlgoSettings();
+    GraphSettings graphset = new GraphSettings();
+    graphset.foot_radius = 10;
+    Graph graph = new Graph(graphset);
+    Algorithm algo = new Algorithm(graph, algoset);
+    for (int radius = 10; radius < 50000; radius += 10) {
+      graphset.foot_radius = radius;
+      graph.reload(graphset);
+      System.err.println(radius + " : " + graph);
+    }
+  }
+
   /**
    * Run the CLI
    *
    * @param args Irrelevant here
    */
-  public static void main(String[] args) {
+  public static void maine(String[] args) {
     if (args.length < 3) {
       System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name "
           + "target_name HH:MM:SS\"");

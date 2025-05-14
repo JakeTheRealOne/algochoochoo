@@ -53,10 +53,10 @@ public class GraphSettings {
   // #### Attributes ####
 
   /** The path of the GTFS directory */
-  String GTFS_path = "src/main/resources/GTFS";
+  public String GTFS_path = "src/main/resources/GTFS";
 
   /** The proximity criteria for Transfers evaluation */
-  int foot_radius = 500;
+  public int foot_radius = 500;
 
   // #### Private helpers ####
 
