@@ -1,11 +1,80 @@
 import static org.junit.Assert.assertEquals;
-
-import algochoochoo.*;
 import org.junit.Test;
 
-public class AlgorithmTest {
+import algochoochoo.graph.*;
+import algochoochoo.query.*;
+import algochoochoo.cli.*;
+import org.junit.Test;
+import java.util.List;
+import java.util.ArrayList;
+
+public class AlgoTest {
   @Test
-  public static void print_test() {
+  /**
+   * Test the base case, with no errors
+   */
+  public void regular_test() {
+
+  }
+
+  @Test
+  /**
+   * Test with source == target
+   */
+  public void s_eq_t_test() {
+
+  }
+
+  @Test
+  /**
+   * Test with inexistant source
+   */
+  public void s_nexist_test() {
+
+  }
+
+  @Test
+  /**
+   * Test with inexistant target
+   */
+  public void t_nexist_test() {
+
+  }
+
+  @Test
+  /**
+   * Test with wrong exec args
+   */
+  public void invalid_args_test() {
+
+  }
+
+  @Test
+  /**
+   * Test with an h > 24:00:00
+   */
+  public void big_h_test() {
+
+  }
+
+  @Test
+  /**
+   * Test the footpath and footpath search radius
+   */
+  public void foot_test() {
+
+  }
+
+  @Test
+  /**
+   * Test the transport weights
+   */
+  public void weight_test() {
+
+  }
+  
+
+  public void print_test() {
     AlgoSettings set = new AlgoSettings();
     Graph graph = new Graph(new GraphSettings("src/main/resources/GTFS"));
     Algorithm algo = new Algorithm(graph, set);
@@ -15,15 +84,14 @@ public class AlgorithmTest {
     List<Edge> path3 = algo.dijkstra(
         "Alveringem Nieuwe Herberg", "Aubange", 10 * 3600 + 30 * 60);
     System.out.println();
-    Out.print(path1, 8 * 3600 + 0 * 60);
+    View.print(path1, 8 * 3600 + 0 * 60);
     System.out.println();
-    Out.print(path2, 14 * 3600 + 14 * 60 + 14);
+    View.print(path2, 14 * 3600 + 14 * 60 + 14);
     System.out.println();
-    Out.print(path3, 10 * 3600 + 30 * 60);
+    View.print(path3, 10 * 3600 + 30 * 60);
   }
 
-  @Test
-  public static void runtime_test() {
+  public void runtime_test() {
     long start = System.nanoTime();
     GraphSettings graphset = new GraphSettings("src/main/resources/GTFS");
     AlgoSettings settings = new AlgoSettings();
