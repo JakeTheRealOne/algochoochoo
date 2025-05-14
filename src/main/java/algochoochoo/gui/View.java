@@ -5,7 +5,6 @@ import algochoochoo.parsing.Stop;
 import algochoochoo.parsing.Trip;
 import algochoochoo.query.AlgoSettings;
 import algochoochoo.query.Algorithm;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ import org.jxmapviewer.viewer.WaypointPainter;
 public class View {
   /**
    * Set up and run the graphical interface
-   * 
+   *
    * @param args The exec arguments
    */
   public static void main(String[] args) {
@@ -45,9 +44,7 @@ public class View {
   /**
    * Construct a default View object
    */
-  public View() {
-
-  }
+  public View() {}
 
   /**
    * Set up the GUI
@@ -55,7 +52,7 @@ public class View {
   public void set_up() {
     init_var();
 
-    main_frame = new JFrame("Belgium trip planner");
+    main_frame = new JFrame("Trip planner");
     map_viewer = new JXMapViewer();
     TileFactoryInfo info =
         new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
@@ -74,9 +71,9 @@ public class View {
     Dimension size = new Dimension(Integer.MAX_VALUE, 30);
     JPanel panel1 = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
-    gbc.insets = new Insets(5,5,5,5);
-    gbc.gridy  = 0;
-    gbc.fill   = GridBagConstraints.HORIZONTAL;
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
     JLabel label1 = new JLabel("Source stop");
     label1.setMaximumSize(size);
     label1.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -87,24 +84,24 @@ public class View {
     button1.setMaximumSize(size);
     button1.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-    gbc.gridx   = 0;
+    gbc.gridx = 0;
     gbc.weightx = 0;
     panel1.add(label1, gbc);
 
-    gbc.gridx   = 1;
+    gbc.gridx = 1;
     gbc.weightx = 1.0;
     panel1.add(field1, gbc);
 
-    gbc.gridx   = 2;
+    gbc.gridx = 2;
     gbc.weightx = 0;
     panel1.add(button1, gbc);
 
     JPanel panel2 = new JPanel(new GridBagLayout());
     gbc = new GridBagConstraints();
-    gbc.insets = new Insets(5,5,5,5);
-    gbc.gridy  = 0;
-    gbc.fill   = GridBagConstraints.HORIZONTAL;
-    JLabel label2 = new JLabel("Source stop");
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    JLabel label2 = new JLabel("Target stop");
     label2.setMaximumSize(size);
     label2.setBorder(new EmptyBorder(5, 5, 5, 5));
     field2 = new JTextField("", 15);
@@ -113,24 +110,24 @@ public class View {
     JButton button2 = new JButton("Find");
     button2.setMaximumSize(size);
     button2.setBorder(new EmptyBorder(5, 5, 5, 5));
-    
-    gbc.gridx   = 0;
+
+    gbc.gridx = 0;
     gbc.weightx = 0;
     panel2.add(label2, gbc);
-    
-    gbc.gridx   = 1;
+
+    gbc.gridx = 1;
     gbc.weightx = 1.0;
     panel2.add(field2, gbc);
-    
-    gbc.gridx   = 2;
+
+    gbc.gridx = 2;
     gbc.weightx = 0;
     panel2.add(button2, gbc);
 
     JPanel panel3 = new JPanel(new GridBagLayout());
     gbc = new GridBagConstraints();
-    gbc.insets = new Insets(5,5,5,5);
-    gbc.gridy  = 0;
-    gbc.fill   = GridBagConstraints.HORIZONTAL;
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
     JLabel label3 = new JLabel("Departure time");
     label3.setMaximumSize(size);
     label3.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -147,32 +144,130 @@ public class View {
     sec_spinner.setMaximumSize(size);
     sec_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-    gbc.gridx   = 0;
+    gbc.gridx = 0;
     gbc.weightx = 1.0;
     panel3.add(label3, gbc);
 
-    gbc.gridx   = 1;
+    gbc.gridx = 1;
     gbc.weightx = 0;
     panel3.add(hour_spinner, gbc);
-    
-    gbc.gridx   = 2;
+
+    gbc.gridx = 2;
     gbc.weightx = 0;
     panel3.add(min_spinner, gbc);
-    
-    gbc.gridx   = 3;
+
+    gbc.gridx = 3;
     gbc.weightx = 0;
     panel3.add(sec_spinner, gbc);
 
+    JPanel gset_panel = new JPanel(new GridBagLayout());
+    gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    JToggleButton toggleButton = new JToggleButton("Show graph settings ▲");
+    JPanel gset2_panel = new JPanel(new GridBagLayout());
+
+    JPanel radius_panel = new JPanel(new GridBagLayout());
+    SpinnerNumberModel rad_model = new SpinnerNumberModel(500, 1, 100000, 1);
+    radius_spinner = new JSpinner(rad_model);
+    radius_spinner.setMaximumSize(size);
+    radius_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    radius_panel.add(new JLabel("Max footpath dist (meters)"), gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 0;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    radius_panel.add(radius_spinner, gbc);
+
+    gbc.gridx = 2;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    radius_panel.add(new JButton("Confirm"), gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    gset2_panel.add(radius_panel, gbc);
+
+    JPanel dir_panel = new JPanel(new GridBagLayout());
+    dir_field = new JTextField("src/main/resources/GTFS", 15);
+    dir_field.setMaximumSize(size);
+    dir_field.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    dir_panel.add(new JLabel("GTFS path"), gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    dir_panel.add(dir_field, gbc);
+
+    gbc.gridx = 2;
+    gbc.gridy = 0;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    dir_panel.add(new JButton("Confirm"), gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 1.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    gset2_panel.add(dir_panel, gbc);
+    gset2_panel.setVisible(false);
+    toggleButton.addActionListener(e -> {
+      boolean expanded = toggleButton.isSelected();
+      gset2_panel.setVisible(expanded);
+      toggleButton.setText(
+          expanded ? "Hide graph settings ▼" : "Show graph settings ▲");
+      gset_panel.getParent().revalidate();
+    });
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    gset_panel.add(toggleButton, gbc);
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 1.0;
+    gbc.weighty = 1.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    gset_panel.add(gset2_panel, gbc);
+
     panel4 = new JPanel();
+    JScrollPane scrollPanel4 =
+        new JScrollPane(panel4, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    scrollPanel4.setPreferredSize(new Dimension(400, 200));
     panel4.setLayout(new BoxLayout(panel4, BoxLayout.Y_AXIS));
     panel4.setBorder(new EmptyBorder(5, 5, 5, 5));
 
     JButton start_button = new JButton("Start search");
+    start_button.setBorder(new EmptyBorder(10, 10, 10, 10));
     JPanel side_panel = new JPanel(new GridBagLayout());
     gbc = new GridBagConstraints();
-    gbc.insets = new Insets(5,5,5,5);
-    gbc.gridy  = 0;
-    gbc.fill   = GridBagConstraints.HORIZONTAL;
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
 
     gbc.gridx = 0;
     gbc.gridy = 0;
@@ -201,16 +296,15 @@ public class View {
     gbc.gridx = 0;
     gbc.gridy = 4;
     gbc.weightx = 1.0;
-    gbc.anchor = GridBagConstraints.WEST;
-    side_panel.add(panel4, gbc);
+    gbc.anchor = GridBagConstraints.CENTER;
+    side_panel.add(gset_panel, gbc);
 
-    JPanel filler = new JPanel();
     gbc.gridx = 0;
     gbc.gridy = 5;
     gbc.weightx = 1.0;
-    gbc.weighty = 1;
-    gbc.fill = GridBagConstraints.VERTICAL;
-    side_panel.add(filler, gbc);
+    gbc.weighty = 1.0;
+    gbc.fill = GridBagConstraints.BOTH;
+    side_panel.add(scrollPanel4, gbc);
 
     waiting_panel = new JPanel();
     waiting_panel.setLayout(new BoxLayout(waiting_panel, BoxLayout.Y_AXIS));
@@ -251,7 +345,7 @@ public class View {
       }
     });
   }
-  
+
   /**
    * Run the GUI
    */
@@ -383,7 +477,7 @@ public class View {
 
   /**
    * Show the result details in the left bar
-   * 
+   *
    * @param result The TDSP algorithm path
    */
   private void show_details(List<Edge> result) {
@@ -403,6 +497,9 @@ public class View {
         panel4.add(route_title);
       }
     }
+
+    panel4.revalidate();
+    panel4.repaint();
   }
 
   /**
@@ -512,11 +609,13 @@ public class View {
   private JPanel waiting_panel;
   private JTextField field1;
   private JTextField field2;
+  private JTextField dir_field;
   private JXMapViewer map_viewer;
   private JSplitPane split_pane;
   private JSpinner hour_spinner;
   private JSpinner min_spinner;
   private JSpinner sec_spinner;
+  private JSpinner radius_spinner;
   private JTextArea result_area;
   private JPanel panel4;
 
@@ -526,4 +625,3 @@ public class View {
   private WaypointPainter<StopWaypoint> intersection_painter;
   private PathPainter route_painter;
 }
-
