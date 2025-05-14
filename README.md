@@ -152,6 +152,7 @@ TODO ajouter le fiboheap
 TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
 TODO ajouter mon STR tree
 TODO ajouter algs4 à maven
+TODO ajouter du testing
 
 # Context and authors
 

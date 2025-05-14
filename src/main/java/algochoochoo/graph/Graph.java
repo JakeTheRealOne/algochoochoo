@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.index.strtree.ItemBoundable;
 import org.locationtech.jts.index.strtree.STRtree;
 
 /**
@@ -49,7 +53,6 @@ public class Graph {
 
     GraphSettings old_settings = settings;
     settings = new_settings;
-    edge_count = 0;
 
     if (old_settings == null
         || !old_settings.GTFS_path.equals(settings.GTFS_path)) {
@@ -70,7 +73,7 @@ public class Graph {
    * @return The number of edges
    */
   public int E_card() {
-    return edge_count;
+    return transfer_count + connection_count;
   }
 
   /**
@@ -110,7 +113,7 @@ public class Graph {
    * @param tree  The balltree containing the stops
    */
   private void build_nodes(Map<String, Stop> stops, List<Trip> trips) {
-    edge_count = 0;
+    connection_count = 0;
 
     // 1. Create the nodes from the stops
     Map<String, Node> map = new LinkedHashMap<String, Node>(stops.size());
@@ -128,7 +131,7 @@ public class Graph {
       int n = list.size();
       if (n == 0)
         continue;
-      edge_count += n - 1;
+      connection_count += n - 1;
       TripElement current = list.get(0);
       for (int i = 1; i < n; ++i) {
         TripElement next = list.get(i);
@@ -146,42 +149,68 @@ public class Graph {
    * Evaluate all transfers between near stops
    */
   private void populate_transfers() {
+    transfer_count = 0;
+
     double radius = settings.foot_radius;
-
-    GeometryFactory geometryFactory = new GeometryFactory();
-    STRtree index = new STRtree();
+    STRtree tree = compute_tree();
+    GeometryFactory factory = new GeometryFactory();
     for (Node node : vertices) {
-      double lat = node.stop().latitude();
-      double lon = node.stop().longitude();
-      Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
-      index.insert(point.getEnvelopeInternal(), node);
-    }
+      Envelope zone = compute_search_zone(node.stop(), factory);
+      List<Object> candidates = tree.query(zone);
+      List<Edge> transfers = new ArrayList<>();
 
-    for (Node node : vertices) {
-      double lat = node.stop().latitude();
-      double lon = node.stop().longitude();
-      Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
-      Envelope searchEnv = point.getEnvelopeInternal();
-      double deltaLat = radius / 111320.0;
-      double deltaLon = radius / (111320.0 * Math.cos(Math.toRadians(lat)));
-      searchEnv.expandBy(deltaLat, deltaLon);
-
-      List<?> candidates = index.query(searchEnv);
-      List<Edge> neighbors = new ArrayList<>();
-
-      for (Object obj : candidates) {
-        Node candidate = (Node) obj;
-        if (!candidate.equals(node)) {
-          double distance =
-              haversine(node.stop().pos(), candidate.stop().pos());
-          if (distance <= radius) {
-            neighbors.add(new Edge(node, candidate, (int) distance));
-          }
+      for (Object candidate : candidates) {
+        Node neighbor = (Node) candidate;
+        if (neighbor == node)
+          continue;
+        double distance = haversine(node.stop().pos(), neighbor.stop().pos());
+        if (distance <= radius) {
+          Edge transfer = new Edge(node, neighbor, (int) distance);
+          transfers.add(transfer);
         }
       }
-      edge_count += neighbors.size();
-      node.set_transfers(neighbors);
+      transfer_count += transfers.size();
+      node.set_transfers(transfers);
     }
+  }
+
+  /**
+   * Construct a STR tree containing all vertices
+   *
+   * @return A STR tree
+   */
+  private STRtree compute_tree() {
+    final int leaf_count = 10;
+    ArrayList<ItemBoundable> stop_bounds = new ArrayList<>(V_card());
+    for (Node node : vertices) {
+      double latitude = node.stop().latitude();
+      double longitude = node.stop().longitude();
+      Envelope envelope =
+          new Envelope(longitude, longitude, latitude, latitude);
+      ItemBoundable bound = new ItemBoundable(envelope, node);
+      stop_bounds.add(bound);
+    }
+
+    return new STRtree(leaf_count, stop_bounds);
+  }
+
+  /**
+   * Compute the envelope of a stop used in near stops search
+   *
+   * @param stop The central stop
+   * @param factory The geometry factory
+   */
+  private Envelope compute_search_zone(Stop stop, GeometryFactory factory) {
+    final double one_lat = 111320.0; // 1° latitude
+    double radius = settings.foot_radius;
+    double latitude = stop.latitude();
+    double longitude = stop.longitude();
+    double lat_diff = radius / one_lat;
+    double lon_diff = radius / (one_lat * Math.cos(Math.toRadians(latitude)));
+    Point point = factory.createPoint(new Coordinate(longitude, latitude));
+    Envelope envelope = point.getEnvelopeInternal();
+    envelope.expandBy(lat_diff, lon_diff);
+    return envelope;
   }
 
   /**
@@ -207,7 +236,8 @@ public class Graph {
 
   // #### Attributes ####
 
-  private int edge_count = 0;
+  private int connection_count = 0;
+  private int transfer_count = 0;
   private GraphSettings settings;
   private List<Node> vertices;
 }
