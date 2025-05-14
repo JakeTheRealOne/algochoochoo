@@ -31,12 +31,13 @@ public class Graph {
    */
   public Graph(GraphSettings set) {
     reload(set);
+    System.out.println(this);
   }
 
   /** Convert a Graph object to string */
   @Override
   public String toString() {
-    return "Graph(#V: " + V_card() + ", #E: " + E_card() + ")";
+    return "Graph(#V: " + V_card() + ", #A: " + A_card() + ", #T: " + T_card() + ")";
   }
 
   /**
@@ -75,6 +76,25 @@ public class Graph {
   public int E_card() {
     return transfer_count + connection_count;
   }
+
+  /**
+   * Get the cardinality of the connection set
+   *
+   * @return The number of connections
+   */
+  public int A_card() {
+    return connection_count;
+  }
+
+  /**
+   * Get the cardinality of the transfer set
+   *
+   * @return The number of transfers
+   */
+  public int T_card() {
+    return transfer_count;
+  }
+
 
   /**
    * Get the cardinality of the node set
@@ -180,7 +200,7 @@ public class Graph {
    * @return A STR tree
    */
   private STRtree compute_tree() {
-    final int leaf_count = 10;
+    final int node_capacity = 10;
     ArrayList<ItemBoundable> stop_bounds = new ArrayList<>(V_card());
     for (Node node : vertices) {
       double latitude = node.stop().latitude();
@@ -191,7 +211,7 @@ public class Graph {
       stop_bounds.add(bound);
     }
 
-    return new STRtree(leaf_count, stop_bounds);
+    return new STRtree(node_capacity, stop_bounds);
   }
 
   /**
