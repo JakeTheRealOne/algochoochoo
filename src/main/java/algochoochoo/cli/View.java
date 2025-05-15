@@ -1,6 +1,7 @@
 package algochoochoo.cli;
 
 import algochoochoo.graph.*;
+import algochoochoo.query.AlgoResult;
 import algochoochoo.parsing.Trip;
 import java.util.List;
 
@@ -18,11 +19,13 @@ public class View {
   /**
    * Print a result, concatenate the edges into trips
    *
-   * @param path The path to print
+   * @param result The result from the algorithm
    * @param h The departure time
    */
-  public static void print(List<Edge> path, int h) {
-    int n = path.size();
+  public static void print(AlgoResult result, int h) {
+    System.out.println("### Results\n");
+    List<Edge> path = result.path;
+    int n = path == null ? 0 : path.size();
     if (n == 0) {
       System.out.println("Empty path");
       return;
@@ -52,6 +55,8 @@ public class View {
       System.out.println(
           " to " + path.get(i).to().stop().name() + beautiful_time(time));
     }
+    System.out.println();
+    show_debug_info(result);
   }
 
   // #### Private helpers ####
@@ -64,5 +69,16 @@ public class View {
   private static String beautiful_time(int time) {
     return String.format(
         " (%02d:%02d:%02d)", time / 3600, (time % 3600) / 60, time % 60);
+  }
+
+  /**
+   * Print the debug informations of the execution of an algorithm
+   *
+   * @param result The result from the algorithm
+   */
+  private static void show_debug_info(AlgoResult result) {
+    System.out.println("### Debug infos\n");
+    System.out.println("Query runtime: " + result.runtime + "s");
+    System.out.println("Explored stops: " + result.visited_vertices);
   }
 }

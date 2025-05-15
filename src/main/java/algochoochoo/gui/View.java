@@ -5,6 +5,7 @@ import algochoochoo.parsing.Stop;
 import algochoochoo.parsing.Trip;
 import algochoochoo.query.AlgoSettings;
 import algochoochoo.query.Algorithm;
+import algochoochoo.query.AlgoResult;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -407,21 +408,22 @@ public class View {
     int sec = (int) sec_spinner.getValue();
     h = 3600 * hour + 60 * min + sec;
 
-    List<Edge> result = algo.dijkstra(s, t, h);
+    AlgoResult result = algo.dijkstra(s, t, h);
 
     s = "";
     t = "";
     field1.setText(s);
     field2.setText(t);
 
-    List<GeoPosition> track = new ArrayList<>(result.size());
-    List<Color> colors = new ArrayList<>(result.size());
-    List<Boolean> walks = new ArrayList<>(result.size());
+    List<Edge> path = result.path;
+    List<GeoPosition> track = new ArrayList<>(path.size());
+    List<Color> colors = new ArrayList<>(path.size());
+    List<Boolean> walks = new ArrayList<>(path.size());
     List<StopWaypoint> waypoints = new ArrayList<>();
     List<StopWaypoint> inter = new ArrayList<>();
 
-    for (int i = 0; i < result.size(); ++i) {
-      Edge current = result.get(i);
+    for (int i = 0; i < path.size(); ++i) {
+      Edge current = path.get(i);
       if (i == 0) {
         Stop begin = current.from().stop();
         GeoPosition first_pos =
@@ -430,7 +432,7 @@ public class View {
         inter.add(new StopWaypoint(first_pos, current.color(), true));
       }
       Trip next_trip =
-          i == result.size() - 1 ? null : result.get(i + 1).trip();
+          i == path.size() - 1 ? null : path.get(i + 1).trip();
       boolean intersection = next_trip == null || current.trip() != next_trip;
       Color color = current.color();
       Stop stop = current.to().stop();
@@ -472,7 +474,7 @@ public class View {
         intersection_painter, source_painter, target_painter));
     map_viewer.setOverlayPainter(all_painters);
 
-    show_details(result);
+    show_details(path);
   }
 
   /**

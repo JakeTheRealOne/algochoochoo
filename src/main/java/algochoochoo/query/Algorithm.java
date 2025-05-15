@@ -20,25 +20,12 @@ import java.util.Map;
 public class Algorithm {
   // #### Public methods ####
 
-  public static void main(String[] args) {
-    AlgoSettings algoset = new AlgoSettings();
-    GraphSettings graphset = new GraphSettings();
-    graphset.foot_radius = 10;
-    Graph graph = new Graph(graphset);
-    Algorithm algo = new Algorithm(graph, algoset);
-    for (int radius = 10; radius < 50000; radius += 10) {
-      graphset.foot_radius = radius;
-      graph.reload(graphset);
-      System.err.println(radius + " : " + graph);
-    }
-  }
-
   /**
    * Run the CLI
    *
    * @param args Irrelevant here
    */
-  public static void maine(String[] args) {
+  public static void main(String[] args) {
     if (args.length < 3) {
       System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name "
           + "target_name HH:MM:SS\"");
@@ -56,7 +43,7 @@ public class Algorithm {
       System.exit(1);
     }
 
-    System.out.println("### Path finding request\n");
+    System.out.println("### Path query\n");
     System.out.println("s = " + s_input);
     System.out.println("t = " + t_input);
     System.out.println("h = " + args[2] + "\n");
@@ -72,9 +59,8 @@ public class Algorithm {
     Graph graph = new Graph(graphset);
     Algorithm algo = new Algorithm(graph, algoset);
     System.out.println("done\n");
-    System.out.println("### Results:\n");
 
-    List<Edge> result = new ArrayList<>();
+    AlgoResult result = new AlgoResult();
     try {
       result = algo.dijkstra(s_input, t_input, h_input);
     } catch (IllegalArgumentException e) {
@@ -108,8 +94,12 @@ public class Algorithm {
    * @param h The departure time (in seconds)
    * @return The best path from s to t at h
    */
-  public List<Edge> dijkstra(String s, String t, int h) {
+  public AlgoResult dijkstra(String s, String t, int h) {
     init(s, t, h);
+    AlgoResult result = new AlgoResult();
+    // Debug:
+    int visited_vertices = 0;
+    long start_time = System.nanoTime();
 
     IndexMinPQ<Long> heap = new IndexMinPQ<>(graph.V_card());
     for (Node node : graph.vertices()) {
@@ -119,16 +109,23 @@ public class Algorithm {
     while (heap.size() > 0) {
       int index = heap.delMin();
       Node node = graph.vertices().get(index);
+      ++visited_vertices;
 
       if (node.is_target()) {
-        return build_solution(node);
+        // Best path found
+        result.path = build_solution(node);
+        break;
       } else if (node.best_cost() == Long.MAX_VALUE) {
-        return new ArrayList<Edge>();
+        // No path found
+        break;
       }
       relaxe(node, heap);
     }
 
-    return new ArrayList<Edge>();
+    long end_time = System.nanoTime();
+    result.runtime = ((double) (end_time - start_time)) / 1_000_000_000f;
+    result.visited_vertices = visited_vertices;
+    return result;
   }
 
   private void relaxe(Node node, IndexMinPQ heap) {

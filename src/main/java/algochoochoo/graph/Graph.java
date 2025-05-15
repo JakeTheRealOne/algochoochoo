@@ -52,8 +52,8 @@ public class Graph {
           + new_settings.foot_radius);
     }
 
-    GraphSettings old_settings = settings;
-    settings = new_settings;
+    GraphSettings old_settings = settings == null ? null : settings.clone();
+    settings = new_settings.clone();
 
     if (old_settings == null
         || !old_settings.GTFS_path.equals(settings.GTFS_path)) {

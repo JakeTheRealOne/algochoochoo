@@ -150,6 +150,10 @@ Notes:
 TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
 TODO ajouter algs4 à maven
 TODO ajouter du testing
+TODO changer vers jar
+TODO ajouter un ex pour chaque flag
+TODO ajouter un ex de base
+TODO ajouter un ex pour les cas spécifiques
 
 # Context and authors
 

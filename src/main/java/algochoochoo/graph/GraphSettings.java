@@ -3,7 +3,7 @@ package algochoochoo.graph;
 /**
  * Store graph settings
  */
-public class GraphSettings {
+public class GraphSettings implements Cloneable {
   // #### Public methods ####
 
   /**
@@ -43,6 +43,16 @@ public class GraphSettings {
   public void print() {
     System.out.println("GTFS directory path: " + GTFS_path);
     System.out.println("Footpath search radius: " + foot_radius + " meters");
+  }
+
+  /**
+   * Copy the settings
+   */
+  public GraphSettings clone() {
+    GraphSettings copy = new GraphSettings();
+    copy.foot_radius = foot_radius;
+    copy.GTFS_path = new String(GTFS_path);
+    return copy;
   }
 
   // #### Constants ####

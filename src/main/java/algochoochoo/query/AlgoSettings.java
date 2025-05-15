@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author Bilal Vandenberge
  */
-public class AlgoSettings {
+public class AlgoSettings implements Cloneable {
   // #### Public methods ####
 
   /**
@@ -48,6 +48,17 @@ public class AlgoSettings {
         parseWeight(arg, RouteType.TRAIN);
       }
     }
+  }
+
+  /**
+   * Copy the settings
+   */
+  public AlgoSettings clone() {
+    AlgoSettings copy = new AlgoSettings();
+    copy.strict_search = strict_search;
+    copy.weights = new LinkedHashMap<>(weights);
+    copy.priority = priority;
+    return copy;
   }
 
   // #### Constants ####
