@@ -28,9 +28,7 @@ public class View {
     int n = path == null ? 0 : path.size();
     if (n == 0) {
       System.out.println("Empty path");
-      return;
     }
-
     int time = h;
     for (int i = 0; i < n; ++i) {
       Edge current = path.get(i);
@@ -78,6 +76,7 @@ public class View {
    */
   private static void show_debug_info(AlgoResult result) {
     System.out.println("### Debug infos\n");
+    System.out.println("Precomputing runtime: " + result.preruntime + "s");
     System.out.println("Query runtime: " + result.runtime + "s");
     System.out.println("Explored stops: " + result.visited_vertices);
   }

@@ -31,7 +31,6 @@ public class Graph {
    */
   public Graph(GraphSettings set) {
     reload(set);
-    System.out.println(this);
   }
 
   /** Convert a Graph object to string */
@@ -51,6 +50,8 @@ public class Graph {
           "The footpath distance has to be positive: "
           + new_settings.foot_radius);
     }
+    
+    long start_time = System.nanoTime();
 
     GraphSettings old_settings = settings == null ? null : settings.clone();
     settings = new_settings.clone();
@@ -64,6 +65,9 @@ public class Graph {
     } else if (old_settings.foot_radius != settings.foot_radius) {
       populate_transfers(); // Reset and reevaluate all transfers
     }
+
+    long end_time = System.nanoTime();
+    runtime = ((double) end_time - start_time) / 1_000_000_000f;
   }
 
   // #### Getters ####
@@ -121,6 +125,15 @@ public class Graph {
    */
   public GraphSettings settings() {
     return settings;
+  }
+
+  /**
+   * Get the runtime of the last Graph.reload operation
+   * 
+   * @return The reload runtime (in seconds)
+   */
+  public double reload_runtime() {
+    return runtime;
   }
 
   // #### Private helpers ####
@@ -260,4 +273,7 @@ public class Graph {
   private int transfer_count = 0;
   private GraphSettings settings;
   private List<Node> vertices;
+
+  // Debug:
+  private double runtime = 0;
 }

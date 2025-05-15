@@ -27,8 +27,7 @@ public class Algorithm {
    */
   public static void main(String[] args) {
     if (args.length < 3) {
-      System.err.println("Usage: mvn exec:java -Dexec.args=\"source_name "
-          + "target_name HH:MM:SS\"");
+      System.err.println("Usage: mvn exec:java -Dexec.args=\"s t HH:MM:SS [--priority] [--gtfs-path] [--foot-radius] [--foot-weight] [--metro-weight] [--train-weight] [--tram-weight] [--bus-weight]\"");
       System.exit(1);
     }
 
@@ -58,7 +57,7 @@ public class Algorithm {
     System.out.println("### Graph building...\n");
     Graph graph = new Graph(graphset);
     Algorithm algo = new Algorithm(graph, algoset);
-    System.out.println("done\n");
+    System.out.println(graph + "\n");
 
     AlgoResult result = new AlgoResult();
     try {
@@ -124,6 +123,7 @@ public class Algorithm {
 
     long end_time = System.nanoTime();
     result.runtime = ((double) (end_time - start_time)) / 1_000_000_000f;
+    result.preruntime = graph.reload_runtime();
     result.visited_vertices = visited_vertices;
     return result;
   }
@@ -213,7 +213,7 @@ public class Algorithm {
     }
     if (!target_found || !source_found) {
       throw new IllegalArgumentException(
-          "At least one source and one target is required");
+          "At least one existing source and one existing target is required");
     }
   }
 
