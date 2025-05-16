@@ -152,20 +152,6 @@ public class Algorithm {
   }
 
   /**
-   * Check if we are allowed to
-   *
-   * @return If we cannot take the edge because it is illegal
-   */
-  private boolean check_legality(Node node, Edge edge) {
-    int waiting_time = edge.departure_time() - node.best_time();
-    if (waiting_time < 0) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
    * From a target node, build the list of edge such as the first one is a
    * source and the last one is a target
    *
@@ -217,6 +203,9 @@ public class Algorithm {
     }
   }
 
+  /**
+   * Check if two strings are equals
+   */
   private boolean equal(String candidate, String sample) {
     if (settings.strict_search) {
       return candidate.equals(sample);
