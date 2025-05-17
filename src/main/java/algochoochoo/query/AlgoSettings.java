@@ -65,15 +65,15 @@ public class AlgoSettings implements Cloneable {
 
   final private double MAX_WEIGHT = 10;
 
-  final private String PRIORITY_ARG = "--priority=";
-  final private String FOOTW_ARG = "--foot-weight=";
-  final private String METROW_ARG = "--metro-weight=";
-  final private String TRAINW_ARG = "--train-weight=";
-  final private String TRAMW_ARG = "--tram-weight=";
-  final private String BUSW_ARG = "--bus-weight=";
-
-  final private String tot_duration_priority = "time";
-  final private String trip_changes_priority = "trips";
+  final static private String PRIORITY_ARG = "--priority=";
+  final static private String FOOTW_ARG = "--foot-weight=";
+  final static private String METROW_ARG = "--metro-weight=";
+  final static private String TRAINW_ARG = "--train-weight=";
+  final static private String TRAMW_ARG = "--tram-weight=";
+  final static private String BUSW_ARG = "--bus-weight=";
+ 
+  final static private String tot_duration_priority = "time";
+  final static private String trip_changes_priority = "trips";
 
   // #### Attributes ####
 
@@ -83,7 +83,7 @@ public class AlgoSettings implements Cloneable {
   /** The user preferences for transport mode */
   public Map<RouteType, Double> weights = new LinkedHashMap<>();
 
-  /** The priority of the algorithm (which criteria we will minimize first) */
+  /** The priority of the algorithm (which criterion we will minimize first) */
   public AlgoPriority priority = AlgoPriority.TOTAL_DURATION;
 
   /**

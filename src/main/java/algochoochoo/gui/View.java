@@ -53,7 +53,7 @@ public class View {
   public void set_up() {
     init_var();
 
-    main_frame = new JFrame("Trip planner");
+    main_frame = new JFrame("Trip finder");
     map_viewer = new JXMapViewer();
     TileFactoryInfo info =
         new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);

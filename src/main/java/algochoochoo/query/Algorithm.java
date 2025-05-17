@@ -27,7 +27,7 @@ public class Algorithm {
    */
   public static void main(String[] args) {
     if (args.length < 3) {
-      System.err.println("Usage: mvn exec:java -Dexec.args=\"s t HH:MM:SS [--priority] [--gtfs-path] [--foot-radius] [--foot-weight] [--metro-weight] [--train-weight] [--tram-weight] [--bus-weight]\"");
+      System.err.println("Usage: java -jar target/tui.jar s t HH:MM:SS [--priority] [--gtfs-path] [--foot-radius] [--foot-weight] [--metro-weight] [--train-weight] [--tram-weight] [--bus-weight]");
       System.exit(1);
     }
 

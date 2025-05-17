@@ -65,7 +65,7 @@ public class GraphSettings implements Cloneable {
   /** The path of the GTFS directory */
   public String GTFS_path = "src/main/resources/GTFS";
 
-  /** The proximity criteria for Transfers evaluation */
+  /** The proximity criterion for Transfers evaluation */
   public int foot_radius = 500;
 
   // #### Private helpers ####
