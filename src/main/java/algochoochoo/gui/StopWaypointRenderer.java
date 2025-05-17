@@ -29,8 +29,11 @@ public class StopWaypointRenderer implements WaypointRenderer<StopWaypoint> {
       Graphics2D g, JXMapViewer map, StopWaypoint waypoint) {
     Point2D point =
         map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom());
-    final int size = 20;
-    final float thickness = 6f;
+
+
+        
+    int size = Math.max(13, Math.min(waypoint.is_intersection() ? 1000000 : 20, (int)(150f / (map.getZoom() * Math.log(map.getZoom())))));
+    float thickness = Math.max(4f, Math.min(waypoint.is_intersection() ? 1000000 : 6f, (float)(40f / (map.getZoom() * Math.log(map.getZoom())))));
 
     g.setColor(waypoint.is_intersection() ? Color.WHITE : waypoint.color());
     g.fill(new Ellipse2D.Double(

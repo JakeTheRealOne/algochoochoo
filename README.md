@@ -52,13 +52,70 @@ scoop install main/maven
 
 ## Compilation
 
+### ENV
+
 ```shell
-mvn compile
+mvn clean package -P env
 ```
 
-TODO changer en jar
+### CLI
+
+```shell
+mvn clean package -P cli
+```
+
+### GUI
+
+```shell
+mvn clean package -P gui
+```
 
 ## Execution
+
+### ENV
+
+The environment constructs the graph only once. Like python3 or the shell, you can enter any commands to search, update, get settings, etc.
+
+```shell
+java -jar target/envchoo.jar
+```
+
+#### Commands
+
+To print the help page
+
+```shell
+help
+```
+
+---
+
+To search the shortest path from \<s\> to \<t\> at \<h\>
+
+```shell
+search <s> <t> <h>
+```
+
+---
+
+To get the value of a setting (see full explanation in the CLI section and in the report).
+
+```shell
+get <setting>
+```
+
+\<setting\>: priority, gtfs-path, foot-radius, foot-weight, metro-weight, tram-weight, bus-weight, train-weight, weights
+
+---
+
+To update the value of a setting. Accepted values are listed in the CLI section.
+
+```shell
+update <setting> = <value>
+```
+
+\<setting\>: priority, gtfs-path, foot-radius, foot-weight, metro-weight, tram-weight, bus-weight, train-weight
+
 
 ### CLI
 
@@ -74,6 +131,8 @@ To find the best path from stop s to stop t at h
 
 #### Flags
 
+The flags are assimiled to each setting from the environment (--priority for setting priority etc.).
+
 ##### --priority
 
 Set the priority criteria of the algorithm.
@@ -88,7 +147,7 @@ Set the priority criteria of the algorithm.
 
 Set the GTFS directory path.
 
-**Value**: `string`
+**Values**: `string`
 
 **Default:** `src/main/resources/GTFS`
 
@@ -132,9 +191,6 @@ TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
 TODO ajouter algs4 à maven
 TODO ajouter du testing
 TODO changer vers jar
-TODO ajouter un ex pour chaque flag
-TODO ajouter un ex de base
-TODO ajouter un ex pour les cas spécifiques
 
 ## Testing
 
@@ -142,8 +198,15 @@ TODO ajouter un ex pour les cas spécifiques
 
 with
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Alveringem Nieuwe Herberg\" Aubange 10:30:00"
+java -jar target/clichoo.jar "Alveringem Nieuwe Herberg" Aubange 10:30:00
+```
+`ENV`:
+```shell
+java -jar target/envchoo.jar
+
+> search "Alveringem Nieuwe Herberg" Aubange 10:30:00
 ```
 
 we get
@@ -176,15 +239,33 @@ Taking TRAIN P from Athus (16:21:00) to Aubange (16:27:00)
 
 with
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Paris Nord (FR)\" \"Amsterdam Cs (NL)\" 08:00:00 --foot-radius=500"
+java -jar target/clichoo.jar "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00 --foot-radius=500
 ```
+`ENV`:
+```shell
+java -jar target/envchoo.jar 
+
+> update foot-radius = 500
+> search "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00
+```
+
 
 and
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Paris Nord (FR)\" \"Amsterdam Cs (NL)\" 08:00:00 --foot-radius=5000"
+java -jar target/clichoo.jar "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00 --foot-radius=5000
 ```
+`ENV`:
+```shell
+java -jar target/envchoo.jar 
+
+> update foot-radius = 5000
+> search "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00
+```
+
 
 we get (respectively):
 
@@ -229,14 +310,32 @@ The path with `radius = 5000m` is 11 hours earlier then the path with `radius = 
 
 with
 
+TODO: there is still a bug in the env, where " are supported
+
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Knokke Casino\" \"NAMUR Square Arthur Masson\" 14:14:14 --priority=time"
+java -jar target/clichoo.jar "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14 --priority=time
+```
+`ENV`:
+```shell
+java -jar target/envchoo.jar 
+
+> update priority = time
+> search "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14
 ```
 
 and
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Knokke Casino\" \"NAMUR Square Arthur Masson\" 14:14:14 --priority=trips"
+java -jar target/clichoo.jar "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14 --priority=trips
+```
+`ENV`:
+```shell
+java -jar target/envchoo.jar 
+
+> update priority = trips
+> search "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14
 ```
 
 we get (respectively):
@@ -281,14 +380,32 @@ The second path is smaller but arrives later
 
 with
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="MERODE DELTA 12:20:00 --gtfs-path=src/main/resources/GTFS"
+java -jar target/clichoo.jar MERODE DELTA 12:20:00 --gtfs-path=src/main/resources/GTFS
+```
+`ENV`:
+```shell
+java -jar target/envchoo.jar 
+
+> update gtfs-path = src/main/resources/GTFS
+> search MERODE DELTA 12:20:00
 ```
 
 and
 
+TODO: placer toc dans main/resources
+
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="Québec Montréal 08:40:00 --gtfs-path=src/test/resources/GTFS"
+java -jar target/clichoo.jar Québec Montréal 08:45:00 --gtfs-path=src/test/resources/GTFS
+```
+`ENV`:
+```shell
+java -jar target/envchoo.jar 
+
+> update gtfs-path = src/test/resources/GTFS
+> search Québec Montréal 08:45:00
 ```
 
 we get (respectively):
@@ -307,8 +424,15 @@ Taking TRAIN B from Ottawa Nord (10:05:00) to Montréal (11:30:00)
 
 with
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Paris Nord (FR)\" Ostende 02:00:00"
+java -jar target/clichoo.jar "Paris Nord (FR)" Ostende 02:00:00
+```
+`ENV`:
+```shell
+java -jar target/envchoo.jar 
+
+> search "Paris Nord (FR)" Ostende 02:00:00
 ```
 
 and the same path but the user hates TRAINS and loves BUS

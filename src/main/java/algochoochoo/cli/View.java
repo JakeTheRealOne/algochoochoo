@@ -52,7 +52,11 @@ public class View {
       }
       if (EXIT_KEYWORDS.contains(line))
         break;
-      CommandLine command = CommandLine.parse(line);
+      CommandLine tmp_command = CommandLine.parse(line);
+      CommandLine command = new CommandLine(tmp_command.getExecutable());
+      for (String arg : tmp_command.getArguments()) {
+        command.addArgument(arg, true);
+      }
       if (command == null || command.getExecutable() == null)
         continue;
       if (command.getExecutable().equals("search")) {
@@ -116,6 +120,7 @@ public class View {
             graphset.GTFS_path = command.getArguments()[2];
             try {
               graph.reload(graphset);
+              System.err.println("Reloading graph...");
             } catch (Exception e) {
               System.err.println("Error: unable to reload graph - " + e.getMessage());
               graphset.GTFS_path = previous_path;
@@ -125,6 +130,7 @@ public class View {
             int previous_radius = graphset.foot_radius;
             try {
               graphset.foot_radius = (int) Math.round(Double.parseDouble(command.getArguments()[2]));
+              System.err.println("Reloading graph...");
               graph.reload(graphset);
             } catch (Exception e) {
               System.err.println("Error: unable to reload graph - " + e.getMessage());

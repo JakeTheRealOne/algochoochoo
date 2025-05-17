@@ -78,17 +78,16 @@ public class PathPainter implements Painter<JXMapViewer> {
    * @param map the map
    */
   private void drawLines(Graphics2D g, JXMapViewer map) {
-    final float thickness = 12f;
-    final float[] dash_pattern = {5, 5};
-    final BasicStroke connection_stroke = new BasicStroke(thickness);
-    final BasicStroke transfer_stroke = new BasicStroke(thickness,
+    float thickness = (float) (120f / (map.getZoom() * Math.log(map.getZoom())));
+    final float[] dash_pattern = { 5, 5 };
+    BasicStroke connection_stroke = new BasicStroke(thickness);
+    BasicStroke transfer_stroke = new BasicStroke(thickness,
         BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, dash_pattern, 0);
 
     if (path.isEmpty())
       return;
 
-    Point2D before =
-        map.getTileFactory().geoToPixel(path.get(0), map.getZoom());
+    Point2D before = map.getTileFactory().geoToPixel(path.get(0), map.getZoom());
     for (int i = 1; i < path.size(); ++i) {
       GeoPosition gp = path.get(i);
       Point2D current = map.getTileFactory().geoToPixel(gp, map.getZoom());
