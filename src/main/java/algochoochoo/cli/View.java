@@ -2,6 +2,9 @@ package algochoochoo.cli;
 
 import algochoochoo.graph.*;
 import algochoochoo.query.AlgoResult;
+import algochoochoo.query.AlgoSettings;
+import algochoochoo.query.Algorithm;
+import algochoochoo.parsing.StopTime;
 import algochoochoo.parsing.Trip;
 import java.util.List;
 
@@ -12,6 +15,50 @@ import java.util.List;
  */
 public class View {
   // #### Public methods ####
+
+  /**
+   * Run the REPL
+   *
+   * @param args Irrelevant here
+   */
+  public static void main(String[] args) {
+    String s_input = args[0];
+    String t_input = args[1];
+    int h_input = 0;
+    try {
+      h_input = StopTime.read_time(args[2]);
+      h_input = Math.floorMod(h_input, 24 * 3600);
+    } catch (IllegalArgumentException e) {
+      System.err.println("Error: " + e.getMessage());
+      System.exit(1);
+    }
+
+    System.out.println("### Path query\n");
+    System.out.println("s = " + s_input);
+    System.out.println("t = " + t_input);
+    System.out.println("h = " + args[2] + "\n");
+
+    AlgoSettings algoset = new AlgoSettings(args);
+    GraphSettings graphset = new GraphSettings(args);
+    System.out.println("### Settings\n");
+    graphset.print();
+    algoset.print();
+    System.out.println();
+
+    System.out.println("### Graph building...\n");
+    Graph graph = new Graph(graphset);
+    Algorithm algo = new Algorithm(graph, algoset);
+    System.out.println(graph + "\n");
+
+    AlgoResult result = new AlgoResult();
+    try {
+      result = algo.dijkstra(s_input, t_input, h_input);
+    } catch (IllegalArgumentException e) {
+      System.err.println("Error: " + e.getMessage());
+      System.exit(1);
+    }
+    View.print(result, h_input);
+  }
 
   /** Construct a default Out object */
   public View() {}

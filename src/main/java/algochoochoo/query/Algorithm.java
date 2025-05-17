@@ -23,7 +23,7 @@ public class Algorithm {
   /**
    * Run the CLI
    *
-   * @param args Irrelevant here
+   * @param args User preferences for algo and graph
    */
   public static void main(String[] args) {
     if (args.length < 3) {
