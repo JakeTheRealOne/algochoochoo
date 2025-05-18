@@ -8,15 +8,6 @@
   <artifactId>algochoochoo</artifactId>
   <version>0.7</version>
   <dependencies>
-    <!-- Algs4 dependency -->
-    <dependency>
-      <groupId>edu.princeton.cs</groupId>
-      <artifactId>algs4</artifactId>
-      <version>1.0.2</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/lib/algs4.jar</systemPath>
-    </dependency>
-
     <!-- Univocity dependency -->
     <dependency>
       <groupId>com.univocity</groupId>

@@ -53,7 +53,7 @@ public class View {
       CommandLine tmp_command = CommandLine.parse(line);
       CommandLine command = new CommandLine(tmp_command.getExecutable());
       for (String arg : tmp_command.getArguments()) {
-        command.addArgument(arg, true);
+        command.addArgument(no_quotes(arg), false);
       }
       if (command == null || command.getExecutable() == null)
         continue;
@@ -249,6 +249,20 @@ public class View {
       System.out.println();
     }
     scanner.close();
+  }
+
+  public static String no_quotes(String s) {
+    int i = 0;
+    int j = s.length()-1;
+    while (i < j && s.charAt(i) == '"' && s.charAt(j) == '"') {
+      ++i;
+      --j;
+    }
+    if (i >= (j+1)) {
+      return "";
+    } else {
+      return s.substring(i, j+1);
+    }
   }
 
   /** Construct a default Out object */
