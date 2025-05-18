@@ -27,7 +27,10 @@ public class Algorithm {
    */
   public static void main(String[] args) {
     if (args.length < 3) {
-      System.err.println("Usage: java -jar target/tui.jar s t HH:MM:SS [--priority] [--gtfs-path] [--foot-radius] [--foot-weight] [--metro-weight] [--train-weight] [--tram-weight] [--bus-weight]");
+      System.err.println(
+          "Usage: java -jar target/tui.jar s t HH:MM:SS [--priority] "
+          + "[--gtfs-path] [--foot-radius] [--foot-weight] [--metro-weight] "
+          + "[--train-weight] [--tram-weight] [--bus-weight]");
       System.exit(1);
     }
 
@@ -122,7 +125,7 @@ public class Algorithm {
     }
 
     long end_time = System.nanoTime();
-    result.runtime = ((double) (end_time - start_time)) / 1_000_000_000f;
+    result.runtime = ((double)(end_time - start_time)) / 1_000_000_000f;
     result.preruntime = graph.reload_runtime();
     result.visited_vertices = visited_vertices;
     return result;

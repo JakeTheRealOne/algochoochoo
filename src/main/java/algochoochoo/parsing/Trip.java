@@ -26,8 +26,8 @@ public class Trip {
     id = raw_trip.trip_id();
     route = routes.get(raw_trip.route_id());
     if (route == null) {
-      throw new IllegalArgumentException(
-          "Unknown route: '" + raw_trip.route_id() + "'");
+      throw new IllegalArgumentException("Unknown route: '" +
+                                         raw_trip.route_id() + "'");
     }
     content = new ArrayList<>(estimate_trip_size);
   }
@@ -43,9 +43,7 @@ public class Trip {
    *
    * @param element The element to add
    */
-  public void add(TripElement element) {
-    content.add(element);
-  }
+  public void add(TripElement element) { content.add(element); }
 
   /**
    * Sort and return the content of the trip (based on the index of each
@@ -65,27 +63,21 @@ public class Trip {
    *
    * @return The id
    */
-  public String id() {
-    return id;
-  }
+  public String id() { return id; }
 
   /**
    * Get the route followed by the trip
    *
    * @return The route
    */
-  public Route route() {
-    return route;
-  }
+  public Route route() { return route; }
 
   /**
    * Get the content of the trip
    *
    * @return The content
    */
-  public List<TripElement> content() {
-    return content;
-  }
+  public List<TripElement> content() { return content; }
 
   // #### Attributes ####
 

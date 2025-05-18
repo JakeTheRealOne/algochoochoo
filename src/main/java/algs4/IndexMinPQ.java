@@ -41,10 +41,10 @@ import java.util.NoSuchElementException;
  */
 public class IndexMinPQ<Key extends Comparable<Key>>
     implements Iterable<Integer> {
-  private int maxN; // maximum number of elements on PQ
-  private int n; // number of elements on PQ
-  private int[] pq; // binary heap using 1-based indexing
-  private int[] qp; // inverse of pq - qp[pq[i]] = pq[qp[i]] = i
+  private int maxN;   // maximum number of elements on PQ
+  private int n;      // number of elements on PQ
+  private int[] pq;   // binary heap using 1-based indexing
+  private int[] qp;   // inverse of pq - qp[pq[i]] = pq[qp[i]] = i
   private Key[] keys; // keys[i] = priority of i
 
   /**
@@ -62,7 +62,8 @@ public class IndexMinPQ<Key extends Comparable<Key>>
     keys = (Key[]) new Comparable[maxN + 1]; // make this of length maxN??
     pq = new int[maxN + 1];
     qp = new int[maxN + 1]; // make this of length maxN??
-    for (int i = 0; i <= maxN; i++) qp[i] = -1;
+    for (int i = 0; i <= maxN; i++)
+      qp[i] = -1;
   }
 
   /**
@@ -71,9 +72,7 @@ public class IndexMinPQ<Key extends Comparable<Key>>
    * @return {@code true} if this priority queue is empty;
    *         {@code false} otherwise
    */
-  public boolean isEmpty() {
-    return n == 0;
-  }
+  public boolean isEmpty() { return n == 0; }
 
   /**
    * Is {@code i} an index on this priority queue?
@@ -93,9 +92,7 @@ public class IndexMinPQ<Key extends Comparable<Key>>
    *
    * @return the number of keys on this priority queue
    */
-  public int size() {
-    return n;
-  }
+  public int size() { return n; }
 
   /**
    * Associates key with index {@code i}.
@@ -154,9 +151,9 @@ public class IndexMinPQ<Key extends Comparable<Key>>
     exch(1, n--);
     sink(1);
     assert min == pq[n + 1];
-    qp[min] = -1; // delete
+    qp[min] = -1;     // delete
     keys[min] = null; // to help with garbage collection
-    pq[n + 1] = -1; // not needed
+    pq[n + 1] = -1;   // not needed
     return min;
   }
 
@@ -331,9 +328,7 @@ public class IndexMinPQ<Key extends Comparable<Key>>
    *
    * @return an iterator that iterates over the keys in ascending order
    */
-  public Iterator<Integer> iterator() {
-    return new HeapIterator();
-  }
+  public Iterator<Integer> iterator() { return new HeapIterator(); }
 
   private class HeapIterator implements Iterator<Integer> {
     // create a new pq
@@ -343,15 +338,12 @@ public class IndexMinPQ<Key extends Comparable<Key>>
     // takes linear time since already in heap order so no keys move
     public HeapIterator() {
       copy = new IndexMinPQ<Key>(pq.length - 1);
-      for (int i = 1; i <= n; i++) copy.insert(pq[i], keys[pq[i]]);
+      for (int i = 1; i <= n; i++)
+        copy.insert(pq[i], keys[pq[i]]);
     }
 
-    public boolean hasNext() {
-      return !copy.isEmpty();
-    }
-    public void remove() {
-      throw new UnsupportedOperationException();
-    }
+    public boolean hasNext() { return !copy.isEmpty(); }
+    public void remove() { throw new UnsupportedOperationException(); }
 
     public Integer next() {
       if (!hasNext())
@@ -367,8 +359,8 @@ public class IndexMinPQ<Key extends Comparable<Key>>
    */
   public static void main(String[] args) {
     // insert a bunch of strings
-    String[] strings = {"it", "was", "the", "best", "of", "times", "it", "was",
-        "the", "worst"};
+    String[] strings = {"it",    "was", "the", "best", "of",
+                        "times", "it",  "was", "the",  "worst"};
 
     IndexMinPQ<String> pq = new IndexMinPQ<String>(strings.length);
     for (int i = 0; i < strings.length; i++) {

@@ -1,3 +1,1 @@
-public class GraphTest {
-  
-}
+public class GraphTest {}

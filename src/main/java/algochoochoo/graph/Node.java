@@ -25,8 +25,8 @@ public class Node {
   /** Convert a Node object to string */
   @Override
   public String toString() {
-    return "Node(" + stop + ", " + transfers.size() + " transfers & "
-        + connections.size() + " connections)";
+    return "Node(" + stop + ", " + transfers.size() + " transfers & " +
+        connections.size() + " connections)";
   }
 
   /** Initialize the node */
@@ -45,81 +45,63 @@ public class Node {
    *
    * @return The stop
    */
-  public Stop stop() {
-    return stop;
-  }
+  public Stop stop() { return stop; }
 
   /**
    * Get the edge leading to the invovled stop that is in the best path
    *
    * @return The best edge leading to the stop
    */
-  public Edge best_edge() {
-    return best_edge;
-  }
+  public Edge best_edge() { return best_edge; }
 
   /**
    * Get the minimal cost of the best path leading to the stop
    *
    * @return The best cost
    */
-  public long best_cost() {
-    return best_cost;
-  }
+  public long best_cost() { return best_cost; }
 
   /**
    * Get the earliest time arriving at the node in the Dijkstra algorithm
    *
    * @return The best time
    */
-  public int best_time() {
-    return best_time;
-  }
+  public int best_time() { return best_time; }
 
   /**
    * Get the transfers from the stop to a near stop
    *
    * @return The list of outgoing edges defined as transfers
    */
-  public List<Edge> transfers() {
-    return transfers;
-  }
+  public List<Edge> transfers() { return transfers; }
 
   /**
    * Get the connections from the stop to another stop
    *
    * @return The list of outgoing edges defined as connections
    */
-  public List<Edge> connections() {
-    return connections;
-  }
+  public List<Edge> connections() { return connections; }
 
   /**
    * Get the index of the node in the list (for IndexFibonacciMinPQ)
    *
    * @return The index
    */
-  public int index() {
-    return index;
-  }
+  public int index() { return index; }
 
   /**
    * Return if this node is the source of a path finding problem
    *
    * @return The source flag
    */
-  public boolean is_source() {
-    return source_flag;
-  }
+  public boolean is_source() { return source_flag; }
 
   /**
    * Return if this node is the target of a path finding problem
    *
    * @return The target flag
    */
-  public boolean is_target() {
-    return target_flag;
-  }
+  public boolean is_target() { return target_flag; }
 
   // #### Setters ####
 
@@ -141,41 +123,31 @@ public class Node {
    *
    * @param t The new transfers
    */
-  public void set_transfers(List<Edge> t) {
-    transfers = t;
-  }
+  public void set_transfers(List<Edge> t) { transfers = t; }
 
   /**
    * Add a connection to the current list of connections of the stop
    *
    * @param c The new connection
    */
-  public void add_connection(Edge c) {
-    connections.add(c);
-  }
+  public void add_connection(Edge c) { connections.add(c); }
 
   /**
    * Set the index of the node in the list (for IndexFibonacciMinPQ)
    *
    * @param i The index
    */
-  public void set_index(int i) {
-    index = i;
-  }
+  public void set_index(int i) { index = i; }
 
   /**
    * Declare this node as the source of a path finding problem
    */
-  public void declare_source() {
-    source_flag = true;
-  }
+  public void declare_source() { source_flag = true; }
 
   /**
    * Declare this node as the target of a path finding problem
    */
-  public void declare_target() {
-    target_flag = true;
-  }
+  public void declare_target() { target_flag = true; }
 
   // #### Attributes ####
 

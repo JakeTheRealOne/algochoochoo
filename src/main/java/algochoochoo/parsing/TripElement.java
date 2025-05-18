@@ -21,8 +21,8 @@ public class TripElement {
     index = stop_time.stop_index();
     stop = stops.get(stop_time.stop_id());
     if (stop == null) {
-      throw new IllegalArgumentException(
-          "Unknown stop: " + stop_time.stop_id());
+      throw new IllegalArgumentException("Unknown stop: " +
+                                         stop_time.stop_id());
     }
   }
 
@@ -39,27 +39,21 @@ public class TripElement {
    *
    * @return The stop
    */
-  public Stop stop() {
-    return stop;
-  }
+  public Stop stop() { return stop; }
 
   /**
    * Get the departure time of the trip element
    *
    * @return The departure time (in seconds from midnight)
    */
-  public int departure_time() {
-    return departure_time;
-  }
+  public int departure_time() { return departure_time; }
 
   /**
    * Get the index of the trip element
    *
    * @return The index in the sequence
    */
-  public int index() {
-    return index;
-  }
+  public int index() { return index; }
 
   // #### Attributes ####
 

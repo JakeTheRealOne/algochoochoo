@@ -32,15 +32,15 @@ public class Parser {
    * @param stops    The list of stops
    * @return The list of populated trips
    */
-  public static ArrayList<Trip> trips(
-      String main_dir, Map<String, Stop> stops) {
+  public static ArrayList<Trip> trips(String main_dir,
+                                      Map<String, Stop> stops) {
     ArrayList<Trip> output = new ArrayList<>();
     Map<String, Trip> map = new LinkedHashMap<>();
 
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
-      throw new IllegalArgumentException(
-          "'" + main_dir + "' is not a directory");
+      throw new IllegalArgumentException("'" + main_dir +
+                                         "' is not a directory");
     }
 
     Map<String, Route> routes = routes(main_dir);
@@ -54,8 +54,8 @@ public class Parser {
       for (TripData rtrip : iterate(csv_file, TripData::new)) {
         Trip trip = new Trip(rtrip, routes);
         if (map.get(trip.id()) != null) {
-          throw new IllegalArgumentException(
-              "Two trips have the same id: " + trip.id());
+          throw new IllegalArgumentException("Two trips have the same id: " +
+                                             trip.id());
         }
         output.add(trip);
         map.put(trip.id(), trip);
@@ -79,8 +79,8 @@ public class Parser {
 
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
-      throw new IllegalArgumentException(
-          "'" + main_dir + "' is not a directory");
+      throw new IllegalArgumentException("'" + main_dir +
+                                         "' is not a directory");
     }
 
     File[] files = dir.listFiles();
@@ -109,8 +109,8 @@ public class Parser {
 
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
-      throw new IllegalArgumentException(
-          "'" + main_dir + "' is not a directory");
+      throw new IllegalArgumentException("'" + main_dir +
+                                         "' is not a directory");
     }
 
     File[] files = dir.listFiles();
@@ -121,8 +121,8 @@ public class Parser {
       String csv_file = file + "/stops.csv";
       for (Stop stop : iterate(csv_file, Stop::new)) {
         if (output.get(stop.id()) != null) {
-          throw new IllegalArgumentException(
-              "Two stops have the same id: " + stop.id());
+          throw new IllegalArgumentException("Two stops have the same id: " +
+                                             stop.id());
         }
         output.put(stop.id(), stop);
       }
@@ -139,12 +139,12 @@ public class Parser {
    * @param trips    The list of trips
    * @param stops    The list of stops
    */
-  private static void populate_trips(
-      String main_dir, Map<String, Trip> trips, Map<String, Stop> stops) {
+  private static void populate_trips(String main_dir, Map<String, Trip> trips,
+                                     Map<String, Stop> stops) {
     File dir = new File(main_dir);
     if (!dir.isDirectory()) {
-      throw new IllegalArgumentException(
-          "'" + main_dir + "' is not a directory");
+      throw new IllegalArgumentException("'" + main_dir +
+                                         "' is not a directory");
     }
 
     File[] files = dir.listFiles();

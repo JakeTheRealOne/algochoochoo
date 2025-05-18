@@ -25,25 +25,27 @@ public class StopWaypointRenderer implements WaypointRenderer<StopWaypoint> {
    * @param map      The map widget
    * @param waypoint The waypoint to draw
    */
-  public void paintWaypoint(
-      Graphics2D g, JXMapViewer map, StopWaypoint waypoint) {
+  public void paintWaypoint(Graphics2D g, JXMapViewer map,
+                            StopWaypoint waypoint) {
     Point2D point =
         map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom());
 
-
-        
-    int size = Math.max(13, Math.min(waypoint.is_intersection() ? 1000000 : 20, (int)(150f / (map.getZoom() * Math.log(map.getZoom())))));
-    float thickness = Math.max(4f, Math.min(waypoint.is_intersection() ? 1000000 : 6f, (float)(40f / (map.getZoom() * Math.log(map.getZoom())))));
+    int size = Math.max(
+        13, Math.min(waypoint.is_intersection() ? 1000000 : 20,
+                     (int)(150f / (map.getZoom() * Math.log(map.getZoom())))));
+    float thickness = Math.max(
+        4f, Math.min(waypoint.is_intersection() ? 1000000 : 6f,
+                     (float)(40f / (map.getZoom() * Math.log(map.getZoom())))));
 
     g.setColor(waypoint.is_intersection() ? Color.WHITE : waypoint.color());
-    g.fill(new Ellipse2D.Double(
-        point.getX() - size / 2, point.getY() - size / 2, size, size));
+    g.fill(new Ellipse2D.Double(point.getX() - size / 2,
+                                point.getY() - size / 2, size, size));
 
     if (waypoint.is_intersection()) {
       g.setStroke(new BasicStroke(thickness));
       g.setColor(Color.BLACK);
-      g.draw(new Ellipse2D.Double(
-          point.getX() - size / 2, point.getY() - size / 2, size, size));
+      g.draw(new Ellipse2D.Double(point.getX() - size / 2,
+                                  point.getY() - size / 2, size, size));
     }
   }
 }

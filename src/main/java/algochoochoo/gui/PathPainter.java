@@ -52,12 +52,12 @@ public class PathPainter implements Painter<JXMapViewer> {
    * @param h   The height
    */
   public void paint(Graphics2D g, JXMapViewer map, int w, int h) {
-    g = (Graphics2D) g.create();
+    g = (Graphics2D)g.create();
     Rectangle rect = map.getViewportBounds();
     g.translate(-rect.x, -rect.y);
     if (anti_alias)
-      g.setRenderingHint(
-          RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
     drawLines(g, map);
     g.dispose();
   }
@@ -78,16 +78,18 @@ public class PathPainter implements Painter<JXMapViewer> {
    * @param map the map
    */
   private void drawLines(Graphics2D g, JXMapViewer map) {
-    float thickness = (float) (120f / (map.getZoom() * Math.log(map.getZoom())));
-    final float[] dash_pattern = { 5, 5 };
+    float thickness = (float)(120f / (map.getZoom() * Math.log(map.getZoom())));
+    final float[] dash_pattern = {5, 5};
     BasicStroke connection_stroke = new BasicStroke(thickness);
-    BasicStroke transfer_stroke = new BasicStroke(thickness,
-        BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, dash_pattern, 0);
+    BasicStroke transfer_stroke =
+        new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
+                        0, dash_pattern, 0);
 
     if (path.isEmpty())
       return;
 
-    Point2D before = map.getTileFactory().geoToPixel(path.get(0), map.getZoom());
+    Point2D before =
+        map.getTileFactory().geoToPixel(path.get(0), map.getZoom());
     for (int i = 1; i < path.size(); ++i) {
       GeoPosition gp = path.get(i);
       Point2D current = map.getTileFactory().geoToPixel(gp, map.getZoom());
@@ -95,8 +97,8 @@ public class PathPainter implements Painter<JXMapViewer> {
       Boolean walk = walks.get(i - 1);
       g.setStroke(walk ? transfer_stroke : connection_stroke);
       g.setColor(color);
-      g.drawLine((int) before.getX(), (int) before.getY(),
-          (int) current.getX(), (int) current.getY());
+      g.drawLine((int)before.getX(), (int)before.getY(), (int)current.getX(),
+                 (int)current.getY());
       before = current;
     }
   }

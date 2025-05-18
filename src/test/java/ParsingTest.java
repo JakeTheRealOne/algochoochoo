@@ -1,3 +1,1 @@
-public class ParsingTest {
-  
-}
+public class ParsingTest {}

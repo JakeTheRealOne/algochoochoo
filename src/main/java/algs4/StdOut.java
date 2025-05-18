@@ -87,81 +87,63 @@ public final class StdOut {
   /**
    * Terminates the current line by printing the line-separator string.
    */
-  public static void println() {
-    out.println();
-  }
+  public static void println() { out.println(); }
 
   /**
    * Prints an object to this output stream and then terminates the line.
    *
    * @param x the object to print
    */
-  public static void println(Object x) {
-    out.println(x);
-  }
+  public static void println(Object x) { out.println(x); }
 
   /**
    * Prints a boolean to standard output and then terminates the line.
    *
    * @param x the boolean to print
    */
-  public static void println(boolean x) {
-    out.println(x);
-  }
+  public static void println(boolean x) { out.println(x); }
 
   /**
    * Prints a character to standard output and then terminates the line.
    *
    * @param x the character to print
    */
-  public static void println(char x) {
-    out.println(x);
-  }
+  public static void println(char x) { out.println(x); }
 
   /**
    * Prints a double to standard output and then terminates the line.
    *
    * @param x the double to print
    */
-  public static void println(double x) {
-    out.println(x);
-  }
+  public static void println(double x) { out.println(x); }
 
   /**
    * Prints an integer to standard output and then terminates the line.
    *
    * @param x the integer to print
    */
-  public static void println(float x) {
-    out.println(x);
-  }
+  public static void println(float x) { out.println(x); }
 
   /**
    * Prints an integer to standard output and then terminates the line.
    *
    * @param x the integer to print
    */
-  public static void println(int x) {
-    out.println(x);
-  }
+  public static void println(int x) { out.println(x); }
 
   /**
    * Prints a long to standard output and then terminates the line.
    *
    * @param x the long to print
    */
-  public static void println(long x) {
-    out.println(x);
-  }
+  public static void println(long x) { out.println(x); }
 
   /**
    * Prints a short integer to standard output and then terminates the line.
    *
    * @param x the short to print
    */
-  public static void println(short x) {
-    out.println(x);
-  }
+  public static void println(short x) { out.println(x); }
 
   /**
    * Prints a byte to standard output and then terminates the line.
@@ -170,16 +152,12 @@ public final class StdOut {
    *
    * @param x the byte to print
    */
-  public static void println(byte x) {
-    out.println(x);
-  }
+  public static void println(byte x) { out.println(x); }
 
   /**
    * Flushes standard output.
    */
-  public static void print() {
-    out.flush();
-  }
+  public static void print() { out.flush(); }
 
   /**
    * Prints an object to standard output and flushes standard output.

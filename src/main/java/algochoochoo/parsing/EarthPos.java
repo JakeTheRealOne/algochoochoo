@@ -18,15 +18,14 @@ public class EarthPos {
     try {
       latitude = Double.parseDouble(lat_str);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(
-          "Invalid latitude: '" + lat_str + "'");
+      throw new IllegalArgumentException("Invalid latitude: '" + lat_str + "'");
     }
 
     try {
       longitude = Double.parseDouble(long_str);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(
-          "Invalid number format: '" + long_str + "'");
+      throw new IllegalArgumentException("Invalid number format: '" + long_str +
+                                         "'");
     }
   }
 
@@ -43,18 +42,14 @@ public class EarthPos {
    *
    * @return The distance north or south of the equator
    */
-  public double latitude() {
-    return latitude;
-  }
+  public double latitude() { return latitude; }
 
   /**
    * Get the longitude of the position
    *
    * @return The distance east or west of the Prime Meridian
    */
-  public double longitude() {
-    return longitude;
-  }
+  public double longitude() { return longitude; }
 
   // #### Attributes ####
 

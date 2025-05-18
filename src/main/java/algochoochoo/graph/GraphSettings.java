@@ -16,9 +16,7 @@ public class GraphSettings implements Cloneable {
    *
    * @param gtfs_path The GTFS directory path
    */
-  public GraphSettings(String gtfs_path) {
-    GTFS_path = gtfs_path;
-  }
+  public GraphSettings(String gtfs_path) { GTFS_path = gtfs_path; }
 
   /**
    * Construct a GraphSettings object from exec arguments
@@ -79,10 +77,10 @@ public class GraphSettings implements Cloneable {
     try {
       radius = Double.parseDouble(arg.substring(i));
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(
-          "Invalid distance: " + arg.substring(i));
+      throw new IllegalArgumentException("Invalid distance: " +
+                                         arg.substring(i));
     }
-    int rounded = (int) Math.round(radius);
+    int rounded = (int)Math.round(radius);
     foot_radius = rounded;
   }
 

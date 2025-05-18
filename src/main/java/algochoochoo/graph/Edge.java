@@ -22,8 +22,8 @@ public class Edge {
    * @param V The vertices of the graph
    * @param t The trip
    */
-  public Edge(
-      TripElement first, TripElement second, Map<String, Node> V, Trip t) {
+  public Edge(TripElement first, TripElement second, Map<String, Node> V,
+              Trip t) {
     from = V.get(first.stop().id());
     to = V.get(second.stop().id());
     if (from == null || to == null) {
@@ -41,8 +41,7 @@ public class Edge {
       throw new IllegalArgumentException(
           "Can't build an edge with an unknown target");
     } else if (dur < 0) {
-      throw new IllegalArgumentException(
-          "Can't build a negative edge: " + dur);
+      throw new IllegalArgumentException("Can't build a negative edge: " + dur);
     }
   }
 
@@ -59,23 +58,20 @@ public class Edge {
     dep = -1;
     dur = compute_walk_time(distance);
     if (dur < 0) {
-      throw new IllegalArgumentException(
-          "Can't build a negative edge: " + dur);
+      throw new IllegalArgumentException("Can't build a negative edge: " + dur);
     }
   }
 
   /**
    * Build a test edge (Do not use in graph)
    */
-  public Edge(int departure) {
-    dep = departure;
-  }
+  public Edge(int departure) { dep = departure; }
 
   /** Convert a Edge object to string */
   @Override
   public String toString() {
-    return "Edge(from " + from.stop().name() + " " + beautiful_time(dep)
-        + ", to " + to.stop().name() + " in " + dur / 60f + " minutes)";
+    return "Edge(from " + from.stop().name() + " " + beautiful_time(dep) +
+        ", to " + to.stop().name() + " in " + dur / 60f + " minutes)";
   }
 
   /**
@@ -96,27 +92,21 @@ public class Edge {
    *
    * @return The target node
    */
-  public Node to() {
-    return to;
-  }
+  public Node to() { return to; }
 
   /**
    * Get the source node of the edge
    *
    * @return The source node
    */
-  public Node from() {
-    return from;
-  }
+  public Node from() { return from; }
 
   /**
    * Get the trip of the edge or null if its a transfer
    *
    * @return Edge trip or null if is transfer
    */
-  public Trip trip() {
-    return trip;
-  }
+  public Trip trip() { return trip; }
 
   /**
    * Get the route type of the edge
@@ -132,36 +122,28 @@ public class Edge {
    *
    * @return The departure time
    */
-  public int departure_time() {
-    return dep;
-  }
+  public int departure_time() { return dep; }
 
   /**
    * Get the duration of the edge
    *
    * @return The duration of the edge
    */
-  public int duration() {
-    return dur;
-  }
+  public int duration() { return dur; }
 
   /**
    * Get if the edge is a transfer
    *
    * @return If the edge represents a footpath
    */
-  public boolean is_transfer() {
-    return dep < 0;
-  }
+  public boolean is_transfer() { return dep < 0; }
 
   /**
    * Get if the edge is a connection
    *
    * @return If the edge represents a transport connection (e.g BUS, TRAIN)
    */
-  public boolean is_connection() {
-    return !is_transfer();
-  }
+  public boolean is_connection() { return !is_transfer(); }
 
   /**
    * Compute a vivid color based on the trip of the edge
@@ -201,8 +183,8 @@ public class Edge {
    * @param time The time (in seconds)
    */
   private static String beautiful_time(int time) {
-    return String.format(
-        "(%02d:%02d:%02d)", time / 3600, (time % 3600) / 60, time % 60);
+    return String.format("(%02d:%02d:%02d)", time / 3600, (time % 3600) / 60,
+                         time % 60);
   }
 
   /**
@@ -213,9 +195,9 @@ public class Edge {
    */
   private static int compute_walk_time(int dist) {
     final double speed = 0.72; // 5 km/h is base walk speed
-    final int margin = 90; // 1min30 for transfer padding
+    final int margin = 90;     // 1min30 for transfer padding
 
-    int time = (int) (compute_walk_dist(dist) * speed);
+    int time = (int)(compute_walk_dist(dist) * speed);
     return time + margin;
   }
 
@@ -227,6 +209,6 @@ public class Edge {
    */
   private static int compute_walk_dist(int dist) {
     final double coef = Math.PI / 2.0;
-    return (int) Math.abs(dist * coef);
+    return (int)Math.abs(dist * coef);
   }
 }

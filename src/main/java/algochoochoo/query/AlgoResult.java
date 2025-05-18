@@ -1,12 +1,12 @@
 package algochoochoo.query;
 
-import java.util.List;
-import java.util.ArrayList;
 import algochoochoo.graph.Edge;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Store result from a TDSP algorithm
- * 
+ *
  * @author Bilal Vandenberge
  */
 public class AlgoResult {

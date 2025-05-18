@@ -42,18 +42,14 @@ public class StopWaypoint implements Waypoint {
    *
    * @return The waypoint color
    */
-  public Color color() {
-    return color;
-  }
+  public Color color() { return color; }
 
   /**
    * Get if the waypoint is an intersection
    *
    * @return The intersection flag
    */
-  public boolean is_intersection() {
-    return intersection;
-  }
+  public boolean is_intersection() { return intersection; }
 
   // #### Attributes ####
 

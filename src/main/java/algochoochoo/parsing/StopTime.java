@@ -16,8 +16,8 @@ public class StopTime {
    */
   public StopTime(String[] data) {
     if (data.length != 4) {
-      throw new IllegalArgumentException("Wrong stop time entry size (Input: "
-          + data.length + " != Expected: 4)");
+      throw new IllegalArgumentException("Wrong stop time entry size (Input: " +
+                                         data.length + " != Expected: 4)");
     }
     trip_id = data[0];
     departure_time = read_time(data[1]);
@@ -38,36 +38,28 @@ public class StopTime {
    *
    * @return The trip id
    */
-  public String trip_id() {
-    return trip_id;
-  }
+  public String trip_id() { return trip_id; }
 
   /**
    * Get the departure time of the transport to the next stop in the trip
    *
    * @return The departure time
    */
-  public int departure_time() {
-    return departure_time;
-  }
+  public int departure_time() { return departure_time; }
 
   /**
    * Get the id of the stop
    *
    * @return The stop id
    */
-  public String stop_id() {
-    return stop_id;
-  }
+  public String stop_id() { return stop_id; }
 
   /**
    * Get the index of the stop in the trip sequence
    *
    * @return The stop index
    */
-  public int stop_index() {
-    return stop_sequence;
-  }
+  public int stop_index() { return stop_sequence; }
 
   // #### Private helpers ####
 
@@ -82,8 +74,8 @@ public class StopTime {
     int h = 0;
     int m = 0;
     int s = 0;
-    if (dep_str.length() != 8 || dep_str.charAt(2) != ':'
-        || dep_str.charAt(5) != ':') {
+    if (dep_str.length() != 8 || dep_str.charAt(2) != ':' ||
+        dep_str.charAt(5) != ':') {
       String msg = "Invalid time format (HH:MM:SS) : [" + dep_str + "]";
       throw new IllegalArgumentException(msg);
     }

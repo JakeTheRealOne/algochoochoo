@@ -36,18 +36,14 @@ public class TripData {
    *
    * @return The unique string representing the trip id
    */
-  public String trip_id() {
-    return trip_id;
-  }
+  public String trip_id() { return trip_id; }
 
   /**
    * Get the id of the related route
    *
    * @return The unique string representing the route id
    */
-  public String route_id() {
-    return route_id;
-  }
+  public String route_id() { return route_id; }
 
   // #### Attributes ####
 

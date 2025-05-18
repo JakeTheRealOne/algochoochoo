@@ -39,45 +39,35 @@ public class Stop {
    *
    * @return The id
    */
-  public String id() {
-    return id;
-  }
+  public String id() { return id; }
 
   /**
    * Get the name of the stop
    *
    * @return The name
    */
-  public String name() {
-    return name;
-  }
+  public String name() { return name; }
 
   /**
    * Get the position of the stop
    *
    * @return An earth position
    */
-  public EarthPos pos() {
-    return pos;
-  }
+  public EarthPos pos() { return pos; }
 
   /**
    * Get the latitude of the stop
    *
    * @return The distance north or south of the equator
    */
-  public double latitude() {
-    return pos.latitude();
-  }
+  public double latitude() { return pos.latitude(); }
 
   /**
    * Get the longitude of the stop
    *
    * @return The distance east or west of the Prime Meridian
    */
-  public double longitude() {
-    return pos.longitude();
-  }
+  public double longitude() { return pos.longitude(); }
 
   // #### Attributes ####
 

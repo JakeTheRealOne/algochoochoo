@@ -1,6 +1,10 @@
 # Algochoochoo
 Find the best path in public transport networks.
 
+![capture d'écran](doc/gui.png)
+
+TODO check complet sur: README, rapport
+
 ## Dependencies
 
 [Maven](https://maven.apache.org/) needs to be installed on your system, it manages all dependencies. We use the content of:

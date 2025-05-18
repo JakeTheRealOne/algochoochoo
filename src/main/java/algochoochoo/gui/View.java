@@ -2,10 +2,11 @@ package algochoochoo.gui;
 
 import algochoochoo.graph.*;
 import algochoochoo.parsing.Stop;
+import algochoochoo.parsing.StopTime;
 import algochoochoo.parsing.Trip;
+import algochoochoo.query.AlgoResult;
 import algochoochoo.query.AlgoSettings;
 import algochoochoo.query.Algorithm;
-import algochoochoo.query.AlgoResult;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -166,7 +167,7 @@ public class View {
     gbc.insets = new Insets(5, 5, 5, 5);
     gbc.gridy = 0;
     gbc.fill = GridBagConstraints.HORIZONTAL;
-    JToggleButton toggleButton = new JToggleButton("Show graph settings ▲");
+    JToggleButton togg1_btn = new JToggleButton("Show graph settings ▲");
     JPanel gset2_panel = new JPanel(new GridBagLayout());
 
     JPanel radius_panel = new JPanel(new GridBagLayout());
@@ -235,18 +236,18 @@ public class View {
     gbc.anchor = GridBagConstraints.CENTER;
     gset2_panel.add(dir_panel, gbc);
     gset2_panel.setVisible(false);
-    toggleButton.addActionListener(e -> {
-      boolean expanded = toggleButton.isSelected();
+    togg1_btn.addActionListener(e -> {
+      boolean expanded = togg1_btn.isSelected();
       gset2_panel.setVisible(expanded);
-      toggleButton.setText(
-          expanded ? "Hide graph settings ▼" : "Show graph settings ▲");
+      togg1_btn.setText(expanded ? "Hide graph settings ▼"
+                                 : "Show graph settings ▲");
       gset_panel.getParent().revalidate();
     });
     gbc.gridx = 0;
     gbc.gridy = 0;
     gbc.weightx = 1.0;
     gbc.anchor = GridBagConstraints.CENTER;
-    gset_panel.add(toggleButton, gbc);
+    gset_panel.add(togg1_btn, gbc);
     gbc.gridx = 0;
     gbc.gridy = 1;
     gbc.weightx = 1.0;
@@ -254,10 +255,161 @@ public class View {
     gbc.anchor = GridBagConstraints.CENTER;
     gset_panel.add(gset2_panel, gbc);
 
+    JPanel aset_panel = new JPanel(new GridBagLayout());
+    gbc = new GridBagConstraints();
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    JToggleButton togg2_btn = new JToggleButton("Show algo settings ▲");
+    JPanel aset2_panel = new JPanel(new GridBagLayout());
+
+    JPanel priority_panel = new JPanel(new GridBagLayout());
+    String[] choices = {"Duration", "Trip changes"};
+    priority_combo = new JComboBox<>(choices);
+    priority_combo.setMaximumSize(size);
+    priority_combo.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+    SpinnerNumberModel weight_model =
+        new SpinnerNumberModel(1.0, 0.1, 10.0, 0.1);
+    foot_spinner = new JSpinner(weight_model);
+    foot_spinner.setMaximumSize(size);
+    foot_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+    train_spinner = new JSpinner(weight_model);
+    train_spinner.setMaximumSize(size);
+    train_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+    tram_spinner = new JSpinner(weight_model);
+    tram_spinner.setMaximumSize(size);
+    tram_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+    metro_spinner = new JSpinner(weight_model);
+    metro_spinner.setMaximumSize(size);
+    metro_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+    bus_spinner = new JSpinner(weight_model);
+    bus_spinner.setMaximumSize(size);
+    bus_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    priority_panel.add(new JLabel("Priority"), gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    priority_panel.add(priority_combo, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    aset2_panel.add(priority_panel, gbc);
+
+    JPanel weight_panel = new JPanel(new GridBagLayout());
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(new JLabel("Foot weight: "), gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(foot_spinner, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(new JLabel("Train weight: "), gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 1;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(train_spinner, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(new JLabel("Tram weight: "), gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 2;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(tram_spinner, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 3;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(new JLabel("Metro weight: "), gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 3;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(metro_spinner, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 4;
+    gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(new JLabel("Bus weight: "), gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 4;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    weight_panel.add(bus_spinner, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 1.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    aset2_panel.add(weight_panel, gbc);
+    aset2_panel.setVisible(false);
+    togg2_btn.addActionListener(e -> {
+      boolean expanded = togg2_btn.isSelected();
+      aset2_panel.setVisible(expanded);
+      togg2_btn.setText(expanded ? "Hide algo settings ▼"
+                                 : "Show algo settings ▲");
+      aset_panel.getParent().revalidate();
+    });
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    aset_panel.add(togg2_btn, gbc);
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 1.0;
+    gbc.weighty = 1.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    aset_panel.add(aset2_panel, gbc);
+
     panel4 = new JPanel();
     JScrollPane scrollPanel4 =
         new JScrollPane(panel4, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPanel4.setPreferredSize(new Dimension(400, 200));
     panel4.setLayout(new BoxLayout(panel4, BoxLayout.Y_AXIS));
     panel4.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -302,6 +454,12 @@ public class View {
 
     gbc.gridx = 0;
     gbc.gridy = 5;
+    gbc.weightx = 1.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    side_panel.add(aset_panel, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 6;
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
     gbc.fill = GridBagConstraints.BOTH;
@@ -403,9 +561,9 @@ public class View {
     if (s == null || t == null)
       return;
 
-    int hour = (int) hour_spinner.getValue();
-    int min = (int) min_spinner.getValue();
-    int sec = (int) sec_spinner.getValue();
+    int hour = (int)hour_spinner.getValue();
+    int min = (int)min_spinner.getValue();
+    int sec = (int)sec_spinner.getValue();
     h = 3600 * hour + 60 * min + sec;
 
     AlgoResult result = algo.dijkstra(s, t, h);
@@ -431,8 +589,7 @@ public class View {
         track.add(first_pos);
         inter.add(new StopWaypoint(first_pos, current.color(), true));
       }
-      Trip next_trip =
-          i == path.size() - 1 ? null : path.get(i + 1).trip();
+      Trip next_trip = i == path.size() - 1 ? null : path.get(i + 1).trip();
       boolean intersection = next_trip == null || current.trip() != next_trip;
       Color color = current.color();
       Stop stop = current.to().stop();
@@ -471,7 +628,8 @@ public class View {
     intersection_painter.setWaypoints(intersections);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
     all_painters.setPainters(List.of(route_painter, result_painter,
-        intersection_painter, source_painter, target_painter));
+                                     intersection_painter, source_painter,
+                                     target_painter));
     map_viewer.setOverlayPainter(all_painters);
 
     show_details(path);
@@ -488,16 +646,86 @@ public class View {
     panel4.repaint();
 
     Font title_font = new Font("Arial", Font.BOLD, 24);
+    Font reg_font = new Font("Arial", Font.PLAIN, 20);
+    Font smol_font = new Font("Arial", Font.ITALIC, 18);
 
     int time = h;
     for (int i = 0; i < result.size(); ++i) {
       Edge current = result.get(i);
       time = current.is_connection() ? current.departure_time() : time;
       if (i == 0 || current.trip() != result.get(i - 1).trip()) {
+        if (i > 0) {
+          JLabel stop_name = new JLabel(
+              " " + result.get(i - 1).to().stop().name(), JLabel.LEFT);
+          JLabel stop_time =
+              new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
+                                       (time % 3600) / 60, time % 60),
+                         JLabel.LEFT);
+          stop_name.setFont(reg_font);
+          stop_time.setFont(smol_font);
+          stop_name.setAlignmentX(Component.LEFT_ALIGNMENT);
+          stop_time.setAlignmentX(Component.LEFT_ALIGNMENT);
+          panel4.add(stop_name);
+          panel4.add(stop_time);
+        }
+
+        JPanel panel = new JPanel(new BorderLayout());
+        JPanel inner_panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 0, 0, 5);
+
+        JPanel circle = new JPanel() {
+          @Override
+          protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(current.color());
+            g.fillOval(0, 0, getWidth(), getHeight());
+          }
+        };
+        circle.setPreferredSize(new Dimension(15, 15));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inner_panel.add(circle, gbc);
+
         JLabel route_title = new JLabel(current.directive(), JLabel.LEFT);
         route_title.setFont(title_font);
-        panel4.add(route_title);
+
+        gbc.gridx = 1;
+        inner_panel.add(route_title, gbc);
+
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panel.add(inner_panel, BorderLayout.WEST);
+        panel4.add(panel);
       }
+      JLabel stop_name =
+          new JLabel(" " + current.from().stop().name(), JLabel.LEFT);
+      JLabel stop_time =
+          new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
+                                   (time % 3600) / 60, time % 60),
+                     JLabel.LEFT);
+      stop_name.setFont(reg_font);
+      stop_time.setFont(smol_font);
+      stop_name.setAlignmentX(Component.LEFT_ALIGNMENT);
+      stop_time.setAlignmentX(Component.LEFT_ALIGNMENT);
+      panel4.add(stop_name);
+      panel4.add(stop_time);
+      time += current.duration();
+    }
+    if (!result.isEmpty()) {
+      JLabel stop_name = new JLabel(
+          " " + result.get(result.size() - 1).to().stop().name(), JLabel.LEFT);
+      JLabel stop_time =
+          new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
+                                   (time % 3600) / 60, time % 60),
+                     JLabel.LEFT);
+      stop_name.setFont(reg_font);
+      stop_time.setFont(smol_font);
+      stop_name.setAlignmentX(Component.LEFT_ALIGNMENT);
+      stop_time.setAlignmentX(Component.LEFT_ALIGNMENT);
+      panel4.add(stop_name);
+      panel4.add(stop_time);
     }
 
     panel4.revalidate();
@@ -547,7 +775,8 @@ public class View {
     (source ? source_painter : target_painter).setWaypoints(tmp);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
     all_painters.setPainters(List.of(route_painter, result_painter,
-        intersection_painter, source_painter, target_painter));
+                                     intersection_painter, source_painter,
+                                     target_painter));
     map_viewer.setOverlayPainter(all_painters);
   }
 
@@ -618,8 +847,14 @@ public class View {
   private JSpinner min_spinner;
   private JSpinner sec_spinner;
   private JSpinner radius_spinner;
+  private JComboBox priority_combo;
   private JTextArea result_area;
   private JPanel panel4;
+  private JSpinner foot_spinner;
+  private JSpinner tram_spinner;
+  private JSpinner train_spinner;
+  private JSpinner metro_spinner;
+  private JSpinner bus_spinner;
 
   private WaypointPainter<StopWaypoint> source_painter;
   private WaypointPainter<StopWaypoint> target_painter;
