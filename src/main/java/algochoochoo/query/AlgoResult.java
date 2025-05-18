@@ -21,6 +21,6 @@ public class AlgoResult {
   /** The runtime of the algorithm */
   public double runtime = 0;
 
-  /** The runtime of the precomputing (graph construction & GTFS parsing) */
+  /** The runtime of the precomputing (graph construction and GTFS parsing) */
   public double preruntime = 0;
 }

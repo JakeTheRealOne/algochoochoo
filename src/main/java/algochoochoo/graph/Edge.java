@@ -62,11 +62,6 @@ public class Edge {
     }
   }
 
-  /**
-   * Build a test edge (Do not use in graph)
-   */
-  public Edge(int departure) { dep = departure; }
-
   /** Convert a Edge object to string */
   @Override
   public String toString() {

@@ -83,7 +83,7 @@ mvn clean package -P gui
 The environment constructs the graph only once. Like python3 or the shell, you can enter any commands to search, update, get settings, etc.
 
 ```shell
-java -jar target/envchoo.jar
+java -jar envchoo.jar
 ```
 
 #### Commands
@@ -181,7 +181,7 @@ To run and show the graphical interface:
 
 ```shell
 export _JAVA_AWT_WM_NONREPARENTING=1
-mvn javafx:run
+java -jar guichoo.jar
 ```
 
 Notes:
@@ -191,7 +191,7 @@ Notes:
 ## Documentation
 
 - Report: doc/rapport.pdf
-- Javadoc: target/site/index.html
+- Javadoc: doc/site/index.html
 
 TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
 TODO ajouter algs4 à maven
@@ -206,11 +206,11 @@ with
 
 `CLI`:
 ```shell
-java -jar target/clichoo.jar "Alveringem Nieuwe Herberg" Aubange 10:30:00
+java -jar clichoo.jar "Alveringem Nieuwe Herberg" Aubange 10:30:00
 ```
 `ENV`:
 ```shell
-java -jar target/envchoo.jar
+java -jar envchoo.jar
 
 > search "Alveringem Nieuwe Herberg" Aubange 10:30:00
 ```
@@ -247,11 +247,11 @@ with
 
 `CLI`:
 ```shell
-java -jar target/clichoo.jar "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00 --foot-radius=500
+java -jar clichoo.jar "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00 --foot-radius=500
 ```
 `ENV`:
 ```shell
-java -jar target/envchoo.jar 
+java -jar envchoo.jar 
 
 > update foot-radius = 500
 > search "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00
@@ -262,11 +262,11 @@ and
 
 `CLI`:
 ```shell
-java -jar target/clichoo.jar "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00 --foot-radius=5000
+java -jar clichoo.jar "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00 --foot-radius=5000
 ```
 `ENV`:
 ```shell
-java -jar target/envchoo.jar 
+java -jar envchoo.jar 
 
 > update foot-radius = 5000
 > search "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00
@@ -320,11 +320,11 @@ TODO: there is still a bug in the env, where " are supported
 
 `CLI`:
 ```shell
-java -jar target/clichoo.jar "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14 --priority=time
+java -jar clichoo.jar "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14 --priority=time
 ```
 `ENV`:
 ```shell
-java -jar target/envchoo.jar 
+java -jar envchoo.jar 
 
 > update priority = time
 > search "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14
@@ -334,11 +334,11 @@ and
 
 `CLI`:
 ```shell
-java -jar target/clichoo.jar "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14 --priority=trips
+java -jar clichoo.jar "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14 --priority=trips
 ```
 `ENV`:
 ```shell
-java -jar target/envchoo.jar 
+java -jar envchoo.jar 
 
 > update priority = trips
 > search "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14
@@ -388,11 +388,11 @@ with
 
 `CLI`:
 ```shell
-java -jar target/clichoo.jar MERODE DELTA 12:20:00 --gtfs-path=src/main/resources/GTFS
+java -jar clichoo.jar MERODE DELTA 12:20:00 --gtfs-path=src/main/resources/GTFS
 ```
 `ENV`:
 ```shell
-java -jar target/envchoo.jar 
+java -jar envchoo.jar 
 
 > update gtfs-path = src/main/resources/GTFS
 > search MERODE DELTA 12:20:00
@@ -404,11 +404,11 @@ TODO: placer toc dans main/resources
 
 `CLI`:
 ```shell
-java -jar target/clichoo.jar Québec Montréal 08:45:00 --gtfs-path=src/test/resources/GTFS
+java -jar clichoo.jar Québec Montréal 08:45:00 --gtfs-path=src/test/resources/GTFS
 ```
 `ENV`:
 ```shell
-java -jar target/envchoo.jar 
+java -jar envchoo.jar 
 
 > update gtfs-path = src/test/resources/GTFS
 > search Québec Montréal 08:45:00
@@ -432,11 +432,11 @@ with
 
 `CLI`:
 ```shell
-java -jar target/clichoo.jar "Paris Nord (FR)" Ostende 02:00:00
+java -jar clichoo.jar "Paris Nord (FR)" Ostende 02:00:00
 ```
 `ENV`:
 ```shell
-java -jar target/envchoo.jar 
+java -jar envchoo.jar 
 
 > search "Paris Nord (FR)" Ostende 02:00:00
 ```
@@ -446,6 +446,8 @@ and the same path but the user hates TRAINS and loves BUS
 ```shell
 mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Paris Nord (FR)\" Ostende 02:00:00 --train-weight=1.7 --bus-weight=0.2"
 ```
+
+TODO javadoc
 
 we get (respectively):
 
