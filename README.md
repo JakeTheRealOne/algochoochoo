@@ -5,6 +5,8 @@ Find the best path in public transport networks.
 
 ## Dependencies
 
+This project runs on Java 17.
+
 [Maven](https://maven.apache.org/) needs to be installed on your system, it manages all dependencies. We use the content of:
 
 - univocity-parser
