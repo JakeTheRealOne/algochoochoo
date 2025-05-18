@@ -85,6 +85,17 @@ public class Algorithm {
     settings = set;
   }
 
+  // #### Getters ####
+
+  /**
+   * Return the algorithm settings
+   * 
+   * @return The algorithm settings
+   */
+  public AlgoSettings settings() {
+    return settings;
+  }
+
   // #### Private helpers ####
 
   /**

@@ -4,10 +4,8 @@ Find the best path in public transport networks.
 ![capture d'écran](doc/gui.png)
 
 TODO check complet sur: rapport\
-TODO finir les tests dans le readme\
 TODO javadoc
 TODO gui linkage
-TODO there is still a bug in the env, where " are supported
 TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
 
 ## Dependencies
@@ -142,7 +140,7 @@ To find the best path from stop s to stop t at h
 
 The flags are associated with each setting from the environment (--priority for setting priority etc.).
 
-##### --priority
+##### Priority (--priority)
 
 Set the priority criteria of the algorithm.
 
@@ -152,7 +150,7 @@ Set the priority criteria of the algorithm.
 
 **Default:** `time`
 
-##### --gtfs-path
+##### GTFS Path (--gtfs-path)
 
 Set the GTFS directory path.
 
@@ -160,7 +158,7 @@ Set the GTFS directory path.
 
 **Default:** `src/main/resources/GTFS`
 
-##### --foot-radius
+##### Foot radius (--foot-radius)
 
 Set the radius for footpath search (in meters). A higher radius will result in more memory and more runtime but will be more accurate. The program won't consider footpaths with a distance higher than the radius
 
@@ -170,7 +168,7 @@ Set the radius for footpath search (in meters). A higher radius will result in m
 
 Executing this example for comparing two radius and inspect the influence on the results.
 
-##### --foot-weight, --metro-weight, etc.
+##### Weights (--foot-weight, --metro-weight, etc.)
 
 The rest of the flags are used to set the weights for each transport type (FOOT, METRO, TRAM, TRAIN and BUS). A higher weight will result in less trip of this type in the result
 
@@ -186,7 +184,7 @@ To run and display the graphical interface:
 java -jar guichoo.jar
 ```
 
-### Prerequies
+### Requirements
 
 - A stable internet connection is required for the GUI.
 
@@ -278,16 +276,15 @@ and
 
 `CLI`:
 ```shell
-java -jar clichoo.jar "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00 --foot-radius=5000
+java -jar clichoo.jar MONTGOMERY "Amsterdam Cs (NL)" 08:00:00 --foot-radius=5000
 ```
 `ENV`:
 ```shell
 java -jar envchoo.jar 
 
 > update foot-radius = 5000
-> search "Paris Nord (FR)" "Amsterdam Cs (NL)" 08:00:00
+> search MONTGOMERY "Amsterdam Cs (NL)" 08:00:00
 ```
-
 
 we obtain (respectively):
 
@@ -455,8 +452,17 @@ java -jar envchoo.jar
 
 and the same path but the user hates TRAINS and loves BUSES
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Paris Nord (FR)\" Ostende 02:00:00 --train-weight=1.7 --bus-weight=0.2"
+java -jar clichoo.jar "Paris Nord (FR)" Ostende 02:00:00 --train-weight=1.7 --bus-weight=0.2
+```
+`ENV`:
+```shell
+java -jar envchoo.jar 
+
+> update train-weight = 1.7
+> update bus-weight = 0.2
+> search "Paris Nord (FR)" Ostende 02:00:00
 ```
 
 we obtain (respectively):
@@ -530,8 +536,15 @@ This test checks if the algorithm handles invalid s or t names.
 
 with
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="does_not_exist oooooo 00:00:00"
+java -jar clichoo.jar does_not_exist oooooo 00:00:00
+```
+`ENV`:
+```shell
+java -jar envchoo.jar 
+
+> search does_not_exist oooooo 00:00:00
 ```
 
 we obtain:
@@ -546,8 +559,15 @@ This test checks that the algorithm handles s == t situation.
 
 with
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="BEEKKANT BEEKKANT 00:00:00"
+java -jar clichoo.jar BEEKKANT BEEKKANT 00:00:00
+```
+`ENV`:
+```shell
+java -jar envchoo.jar 
+
+> search BEEKKANT BEEKKANT 00:00:00
 ```
 
 we obtain:
@@ -562,14 +582,28 @@ This test checks that the algorithm handles invalid time formats.
 
 with
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="AUMALE DELTA 0e:00:00"
+java -jar clichoo.jar AUMALE DELTA 0e:00:00
+```
+`ENV`:
+```shell
+java -jar envchoo.jar 
+
+> search AUMALE DELTA 0e:00:00
 ```
 
 or 
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="AUMALE DELTA xxxxxx"
+java -jar clichoo.jar AUMALE DELTA xxxxxx
+```
+`ENV`:
+```shell
+java -jar envchoo.jar 
+
+> search AUMALE DELTA xxxxxx
 ```
 
 we obtain:
@@ -590,8 +624,15 @@ This test checks that the algorithm is multiday (find solutions on multiple days
 
 with 
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="Aubange Knokke 23:00:00"
+java -jar clichoo.jar Aubange Knokke 23:00:00
+```
+`ENV`:
+```shell
+java -jar envchoo.jar 
+
+> search Aubange Knokke 23:00:00
 ```
 
 we obtain:
@@ -634,8 +675,22 @@ This test checks all the arguments at once.
 
 with 
 
+`CLI`:
 ```shell
-mvn clean && mvn compile && mvn exec:java -Dexec.args="\"VAN BEETHOVEN\" \"GEROMPONT Avenue des Déportés 74\" 04:13:00 --foot-radius=200 --priority=trips --gtfs-file=src/main/resources/GTFS --foot-weight=3 --bus-weight=1.5 --train-weight=1.1 --tram-weight=1.2"
+java -jar clichoo.jar "VAN BEETHOVEN" "GEROMPONT Avenue des Déportés 74" 04:13:00 --foot-radius=200 --priority=trips --gtfs-path=src/main/resources/GTFS --foot-weight=3 --bus-weight=1.5 --train-weight=1.1 --tram-weight=1.2
+```
+`ENV`:
+```shell
+java -jar envchoo.jar 
+
+> update foot-radius = 200 
+> update priority = trips
+> update gtfs-path = src/main/resources/GTFS
+> update foot-weight = 3
+> update bus-weight = 1.5
+> update train-weight = 1.1
+> update tram-weight = 1.2
+> search "VAN BEETHOVEN" "GEROMPONT Avenue des Déportés 74" 04:13:00
 ```
 
 we obtain:
@@ -653,4 +708,4 @@ Taking BUS 148 from GRAND-ROSIERE-HOTTOMONT Centre (09:02:00) to GEROMPONT Avenu
 
 Bilal Vandenberge
 
-INFOF203 Project 2024-25 (Université libre de Bruxelles).
+INFOF203 Project 2024-25 (Université libre de Bruxelles)

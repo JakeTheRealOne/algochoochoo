@@ -119,8 +119,8 @@ public class View {
           String previous_path = graphset.GTFS_path;
           graphset.GTFS_path = command.getArguments()[2];
           try {
-            graph.reload(graphset);
             System.err.println("Reloading graph...");
+            graph.reload(graphset);
           } catch (Exception e) {
             System.err.println("Error: unable to reload graph - " +
                                e.getMessage());
@@ -197,7 +197,7 @@ public class View {
               ", bus: " + algoset.weights.getOrDefault(RouteType.BUS, 1.0) +
               ", tram: " + algoset.weights.getOrDefault(RouteType.TRAM, 1.0) +
               ", train: " +
-              algoset.weights.getOrDefault(RouteType.TRAIN, 1.0) + "]&");
+              algoset.weights.getOrDefault(RouteType.TRAIN, 1.0) + "]");
           break;
         case "foot-weight":
         case "metro-weight":
@@ -251,6 +251,12 @@ public class View {
     scanner.close();
   }
 
+  /**
+   * Remove quotes at the start and the end of string
+   * 
+   * @param s The string
+   * @return s without quotes
+   */
   public static String no_quotes(String s) {
     int i = 0;
     int j = s.length()-1;

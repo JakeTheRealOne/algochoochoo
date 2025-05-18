@@ -3,7 +3,9 @@ package algochoochoo.gui;
 import algochoochoo.graph.*;
 import algochoochoo.parsing.Stop;
 import algochoochoo.parsing.StopTime;
+import algochoochoo.parsing.RouteType;
 import algochoochoo.parsing.Trip;
+import algochoochoo.query.AlgoPriority;
 import algochoochoo.query.AlgoResult;
 import algochoochoo.query.AlgoSettings;
 import algochoochoo.query.Algorithm;
@@ -46,7 +48,8 @@ public class View {
   /**
    * Construct a default View object
    */
-  public View() {}
+  public View() {
+  }
 
   /**
    * Set up the GUI
@@ -56,8 +59,7 @@ public class View {
 
     main_frame = new JFrame("Trip finder");
     map_viewer = new JXMapViewer();
-    TileFactoryInfo info =
-        new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
+    TileFactoryInfo info = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
     DefaultTileFactory tileFactory = new DefaultTileFactory(info);
     map_viewer.setTileFactory(tileFactory);
     GeoPosition bruxelles = new GeoPosition(50.8503, 4.3517);
@@ -195,7 +197,8 @@ public class View {
     gbc.weightx = 1.0;
     gbc.weighty = 0.0;
     gbc.anchor = GridBagConstraints.CENTER;
-    radius_panel.add(new JButton("Confirm"), gbc);
+    JButton rad_confirm_button = new JButton("Confirm");
+    radius_panel.add(rad_confirm_button, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 0;
@@ -228,7 +231,8 @@ public class View {
     gbc.weightx = 0.0;
     gbc.weighty = 0.0;
     gbc.anchor = GridBagConstraints.CENTER;
-    dir_panel.add(new JButton("Confirm"), gbc);
+    JButton dir_confirm_button = new JButton("Confirm");
+    dir_panel.add(dir_confirm_button, gbc);
 
     gbc.gridx = 0;
     gbc.gridy = 1;
@@ -240,7 +244,7 @@ public class View {
       boolean expanded = togg1_btn.isSelected();
       gset2_panel.setVisible(expanded);
       togg1_btn.setText(expanded ? "Hide graph settings ▼"
-                                 : "Show graph settings ▲");
+          : "Show graph settings ▲");
       gset_panel.getParent().revalidate();
     });
     gbc.gridx = 0;
@@ -264,29 +268,31 @@ public class View {
     JPanel aset2_panel = new JPanel(new GridBagLayout());
 
     JPanel priority_panel = new JPanel(new GridBagLayout());
-    String[] choices = {"Duration", "Trip changes"};
+    String[] choices = { "Duration", "Trip changes" };
     priority_combo = new JComboBox<>(choices);
     priority_combo.setMaximumSize(size);
     priority_combo.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-    SpinnerNumberModel weight_model =
-        new SpinnerNumberModel(1.0, 0.1, 10.0, 0.1);
-    foot_spinner = new JSpinner(weight_model);
+    SpinnerNumberModel foot_weight_model = new SpinnerNumberModel(1.0, 0.1, 10.0, 0.1);
+    SpinnerNumberModel metro_weight_model = new SpinnerNumberModel(1.0, 0.1, 10.0, 0.1);
+    SpinnerNumberModel tram_weight_model = new SpinnerNumberModel(1.0, 0.1, 10.0, 0.1);
+    SpinnerNumberModel bus_weight_model = new SpinnerNumberModel(1.0, 0.1, 10.0, 0.1);
+    SpinnerNumberModel train_weight_model = new SpinnerNumberModel(1.0, 0.1, 10.0, 0.1);
+    foot_spinner = new JSpinner(foot_weight_model);
     foot_spinner.setMaximumSize(size);
     foot_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
-    train_spinner = new JSpinner(weight_model);
+    train_spinner = new JSpinner(train_weight_model);
     train_spinner.setMaximumSize(size);
     train_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
-    tram_spinner = new JSpinner(weight_model);
+    tram_spinner = new JSpinner(tram_weight_model);
     tram_spinner.setMaximumSize(size);
     tram_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
-    metro_spinner = new JSpinner(weight_model);
+    metro_spinner = new JSpinner(metro_weight_model);
     metro_spinner.setMaximumSize(size);
     metro_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
-    bus_spinner = new JSpinner(weight_model);
+    bus_spinner = new JSpinner(bus_weight_model);
     bus_spinner.setMaximumSize(size);
     bus_spinner.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 
     gbc.gridx = 0;
     gbc.gridy = 0;
@@ -391,7 +397,7 @@ public class View {
       boolean expanded = togg2_btn.isSelected();
       aset2_panel.setVisible(expanded);
       togg2_btn.setText(expanded ? "Hide algo settings ▼"
-                                 : "Show algo settings ▲");
+          : "Show algo settings ▲");
       aset_panel.getParent().revalidate();
     });
     gbc.gridx = 0;
@@ -407,9 +413,8 @@ public class View {
     aset_panel.add(aset2_panel, gbc);
 
     panel4 = new JPanel();
-    JScrollPane scrollPanel4 =
-        new JScrollPane(panel4, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    JScrollPane scrollPanel4 = new JScrollPane(panel4, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPanel4.setPreferredSize(new Dimension(400, 200));
     panel4.setLayout(new BoxLayout(panel4, BoxLayout.Y_AXIS));
     panel4.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -475,8 +480,7 @@ public class View {
     waiting_panel.add(progress_bar);
     waiting_panel.add(Box.createVerticalGlue());
 
-    split_pane =
-        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, side_panel, map_viewer);
+    split_pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, side_panel, map_viewer);
     split_pane.setDividerLocation(400);
 
     main_frame.getContentPane().add(waiting_panel);
@@ -502,6 +506,50 @@ public class View {
       public void actionPerformed(ActionEvent e) {
         execute_algorithm();
       }
+    });
+
+    rad_confirm_button.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        change_radius();
+      }
+    });
+
+    dir_confirm_button.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        change_path();
+      }
+    });
+
+    priority_combo.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        change_priority();
+      }
+    });
+
+    tram_spinner.addChangeListener(e -> {
+      change_weight(RouteType.TRAM, (double) tram_spinner.getValue());
+    });
+
+    metro_spinner.addChangeListener(e -> {
+      change_weight(RouteType.METRO, (double) metro_spinner.getValue());
+
+    });
+
+    train_spinner.addChangeListener(e -> {
+      change_weight(RouteType.TRAIN, (double) train_spinner.getValue());
+
+    });
+
+    bus_spinner.addChangeListener(e -> {
+      change_weight(RouteType.BUS, (double) bus_spinner.getValue());
+
+    });
+
+    foot_spinner.addChangeListener(e -> {
+      change_weight(RouteType.FOOT, (double) foot_spinner.getValue());
     });
   }
 
@@ -555,15 +603,131 @@ public class View {
   }
 
   /**
+   * Change the path for GTFS data
+   */
+  private void change_path() {
+    // main_frame.remove(waiting_panel);
+    // main_frame.add(split_pane);
+    main_frame.remove(split_pane);
+    main_frame.add(waiting_panel);
+    map_viewer.revalidate();
+    map_viewer.repaint();
+    main_frame.revalidate();
+    main_frame.repaint();
+
+    SwingWorker<Void, Void> worker = new SwingWorker<>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        GraphSettings old_set = graph.settings().clone();
+        String old_path = old_set.GTFS_path;
+        try {
+          String path = (String) dir_field.getText();
+          if (!path.isEmpty()) {
+            GraphSettings new_set = graph.settings().clone();
+            new_set.GTFS_path = path;
+            graph.reload(new_set);
+          }
+        } catch (Exception e) {
+          dir_field.setText((old_path));
+          graph.reload(old_set);
+        }
+
+        return null;
+      }
+
+      @Override
+      protected void done() {
+        main_frame.remove(waiting_panel);
+        main_frame.add(split_pane);
+        map_viewer.revalidate();
+        map_viewer.repaint();
+        main_frame.revalidate();
+        main_frame.repaint();
+      }
+    };
+
+    worker.execute();
+  }
+
+  /**
+   * Change the foot radius
+   */
+  private void change_radius() {
+    // main_frame.remove(waiting_panel);
+    // main_frame.add(split_pane);
+    main_frame.remove(split_pane);
+    main_frame.add(waiting_panel);
+    map_viewer.revalidate();
+    map_viewer.repaint();
+    main_frame.revalidate();
+    main_frame.repaint();
+
+    SwingWorker<Void, Void> worker = new SwingWorker<>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        GraphSettings old_set = graph.settings().clone();
+        int old_value = old_set.foot_radius;
+        try {
+          int value = (int) radius_spinner.getValue();
+          if (value > 0) {
+            GraphSettings new_set = graph.settings().clone();
+            new_set.foot_radius = value;
+            graph.reload(new_set);
+          }
+        } catch (Exception e) {
+          radius_spinner.setValue((old_value));
+          graph.reload(old_set);
+        }
+
+        return null;
+      }
+
+      @Override
+      protected void done() {
+        main_frame.remove(waiting_panel);
+        main_frame.add(split_pane);
+        map_viewer.revalidate();
+        map_viewer.repaint();
+        main_frame.revalidate();
+        main_frame.repaint();
+      }
+    };
+
+    worker.execute();
+  }
+
+  /**
+   * Change the priority of the algorithm
+   */
+  private void change_priority() {
+    String p = (String) priority_combo.getSelectedItem();
+    if (p == "trip") {
+      algo.settings().priority = AlgoPriority.TRIP_CHANGES;
+    } else {
+      algo.settings().priority = AlgoPriority.TOTAL_DURATION;
+    }
+  }
+
+  private void change_weight(RouteType type, double value) {
+    if (value > 0 && value <= 10) {
+      algo.settings().weights.put(type, value);
+    }
+  }
+
+  /**
    * Action of the button "Start search"
    */
   private void execute_algorithm() {
-    if (s == null || t == null)
-      return;
+    if (s == null) {
 
-    int hour = (int)hour_spinner.getValue();
-    int min = (int)min_spinner.getValue();
-    int sec = (int)sec_spinner.getValue();
+      return;
+    } else if (t == null) {
+      return;
+    }
+
+    int hour = (int) hour_spinner.getValue();
+    int min = (int) min_spinner.getValue();
+    int sec = (int) sec_spinner.getValue();
     h = 3600 * hour + 60 * min + sec;
 
     AlgoResult result = algo.dijkstra(s, t, h);
@@ -584,8 +748,7 @@ public class View {
       Edge current = path.get(i);
       if (i == 0) {
         Stop begin = current.from().stop();
-        GeoPosition first_pos =
-            new GeoPosition(begin.latitude(), begin.longitude());
+        GeoPosition first_pos = new GeoPosition(begin.latitude(), begin.longitude());
         track.add(first_pos);
         inter.add(new StopWaypoint(first_pos, current.color(), true));
       }
@@ -628,8 +791,8 @@ public class View {
     intersection_painter.setWaypoints(intersections);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
     all_painters.setPainters(List.of(route_painter, result_painter,
-                                     intersection_painter, source_painter,
-                                     target_painter));
+        intersection_painter, source_painter,
+        target_painter));
     map_viewer.setOverlayPainter(all_painters);
 
     show_details(path);
@@ -652,15 +815,13 @@ public class View {
     int time = h;
     for (int i = 0; i < result.size(); ++i) {
       Edge current = result.get(i);
-      time = current.is_connection() ? current.departure_time() : time;
       if (i == 0 || current.trip() != result.get(i - 1).trip()) {
         if (i > 0) {
           JLabel stop_name = new JLabel(
               " " + result.get(i - 1).to().stop().name(), JLabel.LEFT);
-          JLabel stop_time =
-              new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
-                                       (time % 3600) / 60, time % 60),
-                         JLabel.LEFT);
+          JLabel stop_time = new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
+              (time % 3600) / 60, time % 60),
+              JLabel.LEFT);
           stop_name.setFont(reg_font);
           stop_time.setFont(smol_font);
           stop_name.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -699,12 +860,11 @@ public class View {
         panel.add(inner_panel, BorderLayout.WEST);
         panel4.add(panel);
       }
-      JLabel stop_name =
-          new JLabel(" " + current.from().stop().name(), JLabel.LEFT);
-      JLabel stop_time =
-          new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
-                                   (time % 3600) / 60, time % 60),
-                     JLabel.LEFT);
+      time = current.is_connection() ? current.departure_time() : time;
+      JLabel stop_name = new JLabel(" " + current.from().stop().name(), JLabel.LEFT);
+      JLabel stop_time = new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
+          (time % 3600) / 60, time % 60),
+          JLabel.LEFT);
       stop_name.setFont(reg_font);
       stop_time.setFont(smol_font);
       stop_name.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -716,10 +876,9 @@ public class View {
     if (!result.isEmpty()) {
       JLabel stop_name = new JLabel(
           " " + result.get(result.size() - 1).to().stop().name(), JLabel.LEFT);
-      JLabel stop_time =
-          new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
-                                   (time % 3600) / 60, time % 60),
-                     JLabel.LEFT);
+      JLabel stop_time = new JLabel(String.format(" %02d:%02d:%02d", time / 3600,
+          (time % 3600) / 60, time % 60),
+          JLabel.LEFT);
       stop_name.setFont(reg_font);
       stop_time.setFont(smol_font);
       stop_name.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -775,8 +934,8 @@ public class View {
     (source ? source_painter : target_painter).setWaypoints(tmp);
     CompoundPainter<JXMapViewer> all_painters = new CompoundPainter<>();
     all_painters.setPainters(List.of(route_painter, result_painter,
-                                     intersection_painter, source_painter,
-                                     target_painter));
+        intersection_painter, source_painter,
+        target_painter));
     map_viewer.setOverlayPainter(all_painters);
   }
 
@@ -784,7 +943,7 @@ public class View {
    * Zoom on a set of geopositions
    *
    * @param map_viewer The map widget
-   * @param positions The set of positions
+   * @param positions  The set of positions
    */
   private void zoom_on(JXMapViewer mapViewer, Set<GeoPosition> positions) {
     if (positions == null || positions.isEmpty()) {
