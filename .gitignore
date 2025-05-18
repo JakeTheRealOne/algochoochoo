@@ -2,3 +2,6 @@ src/main/resources/**/*.csv
 .vscode/
 target
 .clang-format
+guichoo.jar
+envchoo.jar
+clichoo.jar

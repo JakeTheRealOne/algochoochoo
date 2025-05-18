@@ -190,8 +190,20 @@ Notes:
 
 ## Documentation
 
-- Report: doc/rapport.pdf
-- Javadoc: doc/site/index.html
+### Report
+
+A report (in french) is available at `doc/rapport.pdf`.
+
+### Javadoc
+
+Compile the javadoc:
+
+```shell
+mvn javadoc:javadoc
+```
+
+The main page of the javadoc is available at `doc/apidocs/index.html`.
+
 
 TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
 TODO ajouter algs4 à maven

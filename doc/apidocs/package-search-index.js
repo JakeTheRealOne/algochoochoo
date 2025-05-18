@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"algochoochoo.cli"},{"l":"algochoochoo.graph"},{"l":"algochoochoo.gui"},{"l":"algochoochoo.parsing"},{"l":"algochoochoo.query"},{"l":"algs4"},{"l":"All Packages","u":"allpackages-index.html"}];updateSearchResults();
