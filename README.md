@@ -122,7 +122,7 @@ update <setting> = <value>
 ### CLI
 
 ```shell
-mvn exec:java -Dexec.args="s t h [--priority] [--gtfs-path] [--foot-radius] [--foot-weight] [--metro-weight] [--train-weight] [--tram-weight] [--bus-weight]"
+java -jar clichoo.jar s t h [--priority] [--gtfs-path] [--foot-radius] [--foot-weight] [--metro-weight] [--train-weight] [--tram-weight] [--bus-weight]"
 ```
 
 To find the best path from stop s to stop t at h
