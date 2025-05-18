@@ -416,13 +416,13 @@ TODO: placer toc dans main/resources
 
 `CLI`:
 ```shell
-java -jar clichoo.jar Québec Montréal 08:45:00 --gtfs-path=src/test/resources/GTFS
+java -jar clichoo.jar Québec Montréal 08:45:00 --gtfs-path=src/main/resources/TOC_GTFS
 ```
 `ENV`:
 ```shell
 java -jar envchoo.jar 
 
-> update gtfs-path = src/test/resources/GTFS
+> update gtfs-path = src/main/resources/TOC_GTFS
 > search Québec Montréal 08:45:00
 ```
 
