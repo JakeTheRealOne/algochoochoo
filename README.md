@@ -3,7 +3,9 @@ Find the best path in public transport networks.
 
 ![capture d'écran](doc/gui.png)
 
-TODO check complet sur: README, rapport
+TODO check complet sur: README, rapport\
+TODO finir les tests dans le readme\
+TODO finir readme/gui/troubleshouting
 
 ## Dependencies
 
