@@ -84,9 +84,9 @@ public class View {
     field1 = new JTextField("", 15);
     field1.setMaximumSize(size);
     field1.setBorder(new EmptyBorder(5, 5, 5, 5));
-    JButton button1 = new JButton("Find");
+    button1 = new JButton("Find");
     button1.setMaximumSize(size);
-    button1.setBorder(new EmptyBorder(5, 5, 5, 5));
+    button1.setBorder(new EmptyBorder(1, 1, 1, 1));
 
     gbc.gridx = 0;
     gbc.weightx = 0;
@@ -111,9 +111,9 @@ public class View {
     field2 = new JTextField("", 15);
     field2.setMaximumSize(size);
     field2.setBorder(new EmptyBorder(5, 5, 5, 5));
-    JButton button2 = new JButton("Find");
+    button2 = new JButton("Find");
     button2.setMaximumSize(size);
-    button2.setBorder(new EmptyBorder(5, 5, 5, 5));
+    button2.setBorder(new EmptyBorder(1, 1, 1, 1));
 
     gbc.gridx = 0;
     gbc.weightx = 0;
@@ -719,23 +719,38 @@ public class View {
    */
   private void execute_algorithm() {
     if (s == null) {
-
+      button1.setBorder(new LineBorder(Color.RED, 2));
       return;
     } else if (t == null) {
+      button1.setBorder(new EmptyBorder(2, 2, 2, 2));
+      button2.setBorder(new LineBorder(Color.RED, 2));
       return;
     }
+
+    button1.setBorder(new EmptyBorder(2, 2, 2, 2));
+    button2.setBorder(new EmptyBorder(2, 2, 2, 2));
 
     int hour = (int) hour_spinner.getValue();
     int min = (int) min_spinner.getValue();
     int sec = (int) sec_spinner.getValue();
     h = 3600 * hour + 60 * min + sec;
 
-    AlgoResult result = algo.dijkstra(s, t, h);
+    AlgoResult result = null;
+    try {
+      result = algo.dijkstra(s, t, h);
+    } catch (IllegalArgumentException e) {
+      field1.setBorder(new LineBorder(Color.RED, 2));
+      field2.setBorder(new LineBorder(Color.RED, 2));
+    }
 
-    s = "";
-    t = "";
-    field1.setText(s);
-    field2.setText(t);
+    s = null;
+    t = null;
+
+    if (result == null)
+      return;
+
+    field1.setText("");
+    field2.setText("");
 
     List<Edge> path = result.path;
     List<GeoPosition> track = new ArrayList<>(path.size());
@@ -998,6 +1013,8 @@ public class View {
   private JFrame main_frame;
   private JPanel waiting_panel;
   private JTextField field1;
+  private JButton button1;
+  private JButton button2;
   private JTextField field2;
   private JTextField dir_field;
   private JXMapViewer map_viewer;
