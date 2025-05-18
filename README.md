@@ -3,16 +3,19 @@ Find the best path in public transport networks.
 
 ![capture d'écran](doc/gui.png)
 
-TODO check complet sur: README, rapport\
+TODO check complet sur: rapport\
 TODO finir les tests dans le readme\
-TODO finir readme/gui/troubleshouting
+TODO javadoc
+TODO gui linkage
+TODO there is still a bug in the env, where " are supported
+TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
 
 ## Dependencies
 
 [Maven](https://maven.apache.org/) needs to be installed on your system, it manages all dependencies. We use the content of:
 
 - univocity-parser
-- JTS java topology suite
+- JTS Java Topology Suite
 - algs4
 - JavaFX
 - swing
@@ -80,7 +83,7 @@ mvn clean package -P gui
 
 ### ENV
 
-The environment constructs the graph only once. Like python3 or the shell, you can enter any commands to search, update, get settings, etc.
+The environment builds the graph only once. You can enter any commands to search, update, get settings, etc.
 
 ```shell
 java -jar envchoo.jar
@@ -96,7 +99,7 @@ help
 
 ---
 
-To search the shortest path from \<s\> to \<t\> at \<h\>
+To find the shortest path from \<s\> to \<t\> at \<h\>
 
 ```shell
 search <s> <t> <h>
@@ -137,7 +140,7 @@ To find the best path from stop s to stop t at h
 
 #### Flags
 
-The flags are assimiled to each setting from the environment (--priority for setting priority etc.).
+The flags are associated with each setting from the environment (--priority for setting priority etc.).
 
 ##### --priority
 
@@ -165,7 +168,7 @@ Set the radius for footpath search (in meters). A higher radius will result in m
 
 **Default:** `500`
 
-Executing this example for comparing two radius and inspect its influence on the results.
+Executing this example for comparing two radius and inspect the influence on the results.
 
 ##### --foot-weight, --metro-weight, etc.
 
@@ -177,16 +180,23 @@ The rest of the flags are used to set the weights for each transport type (FOOT,
 
 ## GUI
 
-To run and show the graphical interface:
+To run and display the graphical interface:
 
 ```shell
-export _JAVA_AWT_WM_NONREPARENTING=1
 java -jar guichoo.jar
 ```
 
-Notes:
-- `_JAVA_AWT_WM_NONREPARENTING` must be set to 1 on Wayland/XWayland systems to avoid display bugs.
-- A decent internet connection is required for the GUI.
+### Prerequies
+
+- A stable internet connection is required for the GUI.
+
+### Troubleshouting
+
+- On somes XWayland window managers, there is a bug where you see a blank window instead of the GUI. To fix this:
+
+```shell
+export _JAVA_AWT_WM_NONREPARENTING=1;
+```
 
 ## Documentation
 
@@ -203,12 +213,6 @@ mvn javadoc:javadoc
 ```
 
 The main page of the javadoc is available at `doc/apidocs/index.html`.
-
-
-TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
-TODO ajouter algs4 à maven
-TODO ajouter du testing
-TODO changer vers jar
 
 ## Testing
 
@@ -227,7 +231,7 @@ java -jar envchoo.jar
 > search "Alveringem Nieuwe Herberg" Aubange 10:30:00
 ```
 
-we get
+we obtain
 
 ```txt
 Taking BUS 50 from Alveringem Nieuwe Herberg (10:39:00) to Veurne Station perron 1 (10:52:00)
@@ -285,7 +289,7 @@ java -jar envchoo.jar
 ```
 
 
-we get (respectively):
+we obtain (respectively):
 
 ```txt
 Taking TRAM 7 from MONTGOMERY (08:02:00) to LEOPOLD III (08:09:00)
@@ -328,8 +332,6 @@ The path with `radius = 5000m` is 11 hours earlier then the path with `radius = 
 
 with
 
-TODO: there is still a bug in the env, where " are supported
-
 `CLI`:
 ```shell
 java -jar clichoo.jar "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14 --priority=time
@@ -356,7 +358,7 @@ java -jar envchoo.jar
 > search "Knokke Casino" "NAMUR Square Arthur Masson" 14:14:14
 ```
 
-we get (respectively):
+we obtain (respectively):
 
 ```text
 Walking from Knokke Casino (14:14:14) to Knokke Meerlaan (14:20:38)
@@ -412,8 +414,6 @@ java -jar envchoo.jar
 
 and
 
-TODO: placer toc dans main/resources
-
 `CLI`:
 ```shell
 java -jar clichoo.jar Québec Montréal 08:45:00 --gtfs-path=src/main/resources/TOC_GTFS
@@ -426,7 +426,7 @@ java -jar envchoo.jar
 > search Québec Montréal 08:45:00
 ```
 
-we get (respectively):
+we obtain (respectively):
 
 ```text
 Taking METRO 5 from MERODE (12:24:19) to DELTA (12:29:27)
@@ -453,15 +453,13 @@ java -jar envchoo.jar
 > search "Paris Nord (FR)" Ostende 02:00:00
 ```
 
-and the same path but the user hates TRAINS and loves BUS
+and the same path but the user hates TRAINS and loves BUSES
 
 ```shell
 mvn clean && mvn compile && mvn exec:java -Dexec.args="\"Paris Nord (FR)\" Ostende 02:00:00 --train-weight=1.7 --bus-weight=0.2"
 ```
 
-TODO javadoc
-
-we get (respectively):
+we obtain (respectively):
 
 ```text
 Taking TRAIN OTC from Paris Nord (FR) (07:45:00) to AULNOYE AYMERIES (F) (10:04:00)
@@ -536,7 +534,7 @@ with
 mvn clean && mvn compile && mvn exec:java -Dexec.args="does_not_exist oooooo 00:00:00"
 ```
 
-we get:
+we obtain:
 
 ```text
 Error: At least one existing source and one existing target is required
@@ -552,7 +550,7 @@ with
 mvn clean && mvn compile && mvn exec:java -Dexec.args="BEEKKANT BEEKKANT 00:00:00"
 ```
 
-we get:
+we obtain:
 
 ```text
 Empty path
@@ -574,7 +572,7 @@ or
 mvn clean && mvn compile && mvn exec:java -Dexec.args="AUMALE DELTA xxxxxx"
 ```
 
-we get:
+we obtain:
 
 ```text
 Error: Invalid time format (HH:MM:SS) : [0e:00:00]
@@ -596,7 +594,7 @@ with
 mvn clean && mvn compile && mvn exec:java -Dexec.args="Aubange Knokke 23:00:00"
 ```
 
-we get:
+we obtain:
 
 ```text
 Taking TRAIN L from Aubange (05:51:00) to Libramont (06:51:00)
@@ -640,7 +638,7 @@ with
 mvn clean && mvn compile && mvn exec:java -Dexec.args="\"VAN BEETHOVEN\" \"GEROMPONT Avenue des Déportés 74\" 04:13:00 --foot-radius=200 --priority=trips --gtfs-file=src/main/resources/GTFS --foot-weight=3 --bus-weight=1.5 --train-weight=1.1 --tram-weight=1.2"
 ```
 
-we get:
+we obtain:
 
 ```text
 Taking TRAM 81 from VAN BEETHOVEN (05:30:59) to LA CHASSE (06:07:00)
