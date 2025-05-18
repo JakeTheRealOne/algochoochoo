@@ -1,12 +1,7 @@
 # Algochoochoo
 Find the best path in public transport networks.
 
-![capture d'écran](doc/gui.png)
-
-TODO check complet sur: rapport\
-TODO javadoc
-TODO gui linkage
-TODO ne pas oublier d'inclure le GTFS dans le rendu final (ou sur github)
+![capture d'écran](doc/images/gui.png)
 
 ## Dependencies
 
