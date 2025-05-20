@@ -1,4 +1,3 @@
-src/main/resources/**/*.csv
 .vscode/
 target
 .clang-format

@@ -1,3 +1,13 @@
+/*
+ * This file is part of Algochoochoo.
+ *
+ * Licensed under the GNU General Public License v3.
+ * See <https://www.gnu.org/licenses/gpl-3.0.html> for details.
+ * 
+ * 2025
+ * Bilal Vandenberge
+ */
+
 package algochoochoo.graph;
 
 /**
@@ -61,7 +71,7 @@ public class GraphSettings implements Cloneable {
   // #### Attributes ####
 
   /** The path of the GTFS directory */
-  public String GTFS_path = "src/main/resources/GTFS";
+  public String GTFS_path = "src/main/resources/EMPTY_GTFS";
 
   /** The proximity criterion for Transfers evaluation */
   public int foot_radius = 500;

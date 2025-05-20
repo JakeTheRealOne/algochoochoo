@@ -54,6 +54,10 @@ choco install maven
 scoop install main/maven
 ```
 
+## About GTFS datas
+
+This project uses an alleged variant of [GTFS](https://gtfs.org/) format to store public transport network data. The directory for GTFS files by default is `src/main/resources/EMPTY_GTFS` (which is, indeed, empty). The template for the GTFS files is available at `src/main/resources/GTFS_TEMPLATE.md`.
+
 ## Compilation
 
 ### ENV
@@ -210,6 +214,8 @@ mvn javadoc:javadoc
 The main page of the javadoc is available at `doc/apidocs/index.html`.
 
 ## Testing
+
+The tests below need the Belgium GTFS directory, which is **not** included with this project. A compressed copy (accessible on the ULB study plateform) of the directory is available at: https://uv.ulb.ac.be/pluginfile.php/4181372/mod_resource/content/1/GTFS.zip.
 
 ### Example from Projet_Algorithmique_2_2025.pdf
 
@@ -699,7 +705,6 @@ Taking BUS 543 from ETTERBEEK Avenue de la Chasse (Av. Auderghem) (06:40:00) to 
 Taking BUS 543 from AUDERGHEM Herrmann-Debroux (06:52:00) to GRAND-ROSIERE-HOTTOMONT Centre (08:07:00)
 Taking BUS 148 from GRAND-ROSIERE-HOTTOMONT Centre (09:02:00) to GEROMPONT Avenue des Déportés 74 (09:07:00)
 ```
-
 
 ## Context and authors
 
