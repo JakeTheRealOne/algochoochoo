@@ -6,7 +6,7 @@
 
   <groupId>algochoochoo</groupId>
   <artifactId>algochoochoo</artifactId>
-  <version>0.7</version>
+  <version>1</version>
   <dependencies>
     <!-- Univocity dependency -->
     <dependency>
