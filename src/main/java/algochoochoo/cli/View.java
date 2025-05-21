@@ -3,7 +3,7 @@
  *
  * Licensed under the GNU General Public License v3.
  * See <https://www.gnu.org/licenses/gpl-3.0.html> for details.
- * 
+ *
  * 2025
  * Bilal Vandenberge
  */
@@ -263,21 +263,21 @@ public class View {
 
   /**
    * Remove quotes at the start and the end of string
-   * 
+   *
    * @param s The string
    * @return s without quotes
    */
   public static String no_quotes(String s) {
     int i = 0;
-    int j = s.length()-1;
+    int j = s.length() - 1;
     while (i < j && s.charAt(i) == '"' && s.charAt(j) == '"') {
       ++i;
       --j;
     }
-    if (i >= (j+1)) {
+    if (i >= (j + 1)) {
       return "";
     } else {
-      return s.substring(i, j+1);
+      return s.substring(i, j + 1);
     }
   }
 

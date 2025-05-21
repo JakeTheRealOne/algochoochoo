@@ -3,7 +3,7 @@
  *
  * Licensed under the GNU General Public License v3.
  * See <https://www.gnu.org/licenses/gpl-3.0.html> for details.
- * 
+ *
  * 2025
  * Bilal Vandenberge
  */
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.File;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -68,6 +69,12 @@ public class Graph {
     if (old_settings == null ||
         !old_settings.GTFS_path.equals(settings.GTFS_path)) {
       // New settings or new GTFS path (reevaluate everything)
+      if (!check_exist(settings.GTFS_path)) {
+        connection_count = 0;
+        transfer_count = 0;
+        vertices = new ArrayList<>();
+        return;
+      }
       Map<String, Stop> stops = Parser.stops(settings.GTFS_path);
       List<Trip> trips = Parser.trips(settings.GTFS_path, stops);
       build_nodes(stops, trips);
@@ -131,6 +138,43 @@ public class Graph {
   public double reload_runtime() { return runtime; }
 
   // #### Private helpers ####
+
+  /**
+   * Check if a gtfs path is valid (contains all necessary files)
+   *
+   * @see src/main/resources/GTFS_TEMPLATE.md
+   *
+   * @param main_dir The main GTFS directory path
+   * @return True if the path is the path of a GTFS directory
+   */
+  private boolean check_exist(String main_dir) {
+    File dir = new File(main_dir);
+    if (!dir.exists() || !dir.isDirectory()) {
+      return false;
+    }
+
+    File[] files = dir.listFiles();
+    for (File file : files) {
+      if (!file.isDirectory()) {
+        continue;
+      }
+      File trips_file = new File(file + "/trips.csv");
+      File stops_file = new File(file + "/stops.csv");
+      File stop_times_file = new File(file + "/stop_times.csv");
+      File routes_file = new File(file + "/routes.csv");
+
+      if (!trips_file.exists() || !stops_file.exists() ||
+          !stop_times_file.exists() || !routes_file.exists()) {
+        return false;
+      }
+
+      if (!trips_file.isFile() || !stops_file.isFile() ||
+          !stop_times_file.isFile() || !routes_file.isFile()) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   /**
    * From generic datas, construct the nodes of the graph
