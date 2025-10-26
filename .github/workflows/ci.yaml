@@ -32,5 +32,5 @@ jobs:
       run: |
         curl -H "Content-Type: application/json" \
             -d '{"username": "GitHub Bot", "content": "### New commit on main branch\nRepository: '${{ github.repository }}'\nCommit: '${{ github.sha }}'\nActor: '${{github.actor}}'"}' \
-            ${{ https://discord.com/api/webhooks/1431847084423643259/MShZSYYVr0NEWEMxtebAzrstOMoxQXCceRciBmEExgRj3cg95RBi61V_LFYdJkQgcQkD }}
+            https://discord.com/api/webhooks/1431847084423643259/MShZSYYVr0NEWEMxtebAzrstOMoxQXCceRciBmEExgRj3cg95RBi61V_LFYdJkQgcQkD
             
