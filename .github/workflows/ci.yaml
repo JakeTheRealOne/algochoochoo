@@ -27,3 +27,9 @@ jobs:
 
     - name: Run tests
       run: mvn test
+
+    - name: Count commits
+      run: |
+        git fetch --prune --unshallow || true
+        touch .github/stats/commits.md
+        git rev-list --count HEAD > .github/stats/commits.md
