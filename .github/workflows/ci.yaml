@@ -28,8 +28,9 @@ jobs:
     - name: Run tests
       run: mvn test
 
-    - name: Count commits
+    - name: Send a notifiction on the Discord server
       run: |
-        git fetch --prune --unshallow || true
-        touch .github/stats/commits.md
-        git rev-list --count HEAD > .github/stats/commits.md
+        curl -H "Content-Type: application/json" \
+            -d '{"username": "GitHub Bot", "content": "### New commit on main branch\nRepository: '${{ github.repository }}'\nCommit: '${{ github.sha }}'\nActor: '${{github.actor}}'"}' \
+            ${{ https://discord.com/api/webhooks/1431847084423643259/MShZSYYVr0NEWEMxtebAzrstOMoxQXCceRciBmEExgRj3cg95RBi61V_LFYdJkQgcQkD }}
+            
