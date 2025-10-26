@@ -10,10 +10,12 @@
 
 package algochoochoo.query;
 
-import algochoochoo.graph.*;
-import algochoochoo.parsing.RouteType;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import algochoochoo.graph.Edge;
+import algochoochoo.graph.Node;
+import algochoochoo.parsing.*;
 
 /**
  * Store settings for algorithm

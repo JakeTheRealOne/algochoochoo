@@ -11,9 +11,11 @@
 package algochoochoo.query;
 
 import algochoochoo.cli.View;
-import algochoochoo.graph.*;
-import algochoochoo.parsing.Stop;
-import algochoochoo.parsing.StopTime;
+import algochoochoo.graph.Edge;
+import algochoochoo.graph.Graph;
+import algochoochoo.graph.GraphSettings;
+import algochoochoo.graph.Node;
+import algochoochoo.parsing.*;
 import edu.princeton.cs.algs4.IndexMinPQ;
 import java.util.ArrayList;
 import java.util.Collections;

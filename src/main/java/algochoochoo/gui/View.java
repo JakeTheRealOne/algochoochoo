@@ -10,11 +10,11 @@
 
 package algochoochoo.gui;
 
-import algochoochoo.graph.*;
-import algochoochoo.parsing.RouteType;
-import algochoochoo.parsing.Stop;
-import algochoochoo.parsing.StopTime;
-import algochoochoo.parsing.Trip;
+import algochoochoo.graph.Edge;
+import algochoochoo.graph.Graph;
+import algochoochoo.graph.GraphSettings;
+import algochoochoo.graph.Node;
+import algochoochoo.parsing.*;
 import algochoochoo.query.AlgoPriority;
 import algochoochoo.query.AlgoResult;
 import algochoochoo.query.AlgoSettings;
