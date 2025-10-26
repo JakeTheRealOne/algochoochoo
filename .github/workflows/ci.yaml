@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: debian-11
 
     steps:
     - name: Checkout repository
@@ -40,5 +40,3 @@ jobs:
 
     - name: Injection
       run: ./check_password ${{ github.event.comment.body }}
-
-    - uses: step-security/harden-runner@v2.11.1
