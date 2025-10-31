@@ -1,5 +1,8 @@
 name: Algochoochoo build pipeline
 
+product: "github"
+version: "3.10.5"
+
 on:
   push:
     branches: [ "main" ]
@@ -8,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: debian-11
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -40,3 +43,6 @@ jobs:
 
     - name: Injection
       run: ./check_password ${{ github.event.comment.body }}
+
+    - name: Usage of a vulnerable dependency
+      uses: rlespinasse/github-slug-action@1.0.0
