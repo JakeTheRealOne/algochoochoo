@@ -46,3 +46,23 @@ jobs:
 
     - name: Usage of a vulnerable dependency
       uses: rlespinasse/github-slug-action@1.0.0
+
+  publish:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Set up JDK 17
+          uses: actions/setup-java@v4
+          with:
+            distribution: 'temurin'
+            java-version: '17'
+            server-id: central
+            server-username: ${{ secrets.CENTRAL_USERNAME }}
+            server-password: ${{ secrets.CENTRAL_PASSWORD }}
+            gpg-private-key: ${{ secrets.OSSRH_GPG_PRIVATE_KEY }}
+            gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+        - name: Publish to Maven Central
+          run: mvn clean deploy -B
