@@ -23,4 +23,4 @@ jobs:
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Publish to Maven Central
-        run: mvn clean deploy -B
+        run: mvn clean deploy -B -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
