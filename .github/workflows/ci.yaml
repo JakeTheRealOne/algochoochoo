@@ -32,14 +32,3 @@ jobs:
         curl -H "Content-Type: application/json" \
             -d '{"username": "GitHub Bot", "content": "### New commit on main branch\nRepository: '${{ github.repository }}'\nCommit: '${{ github.sha }}'\nActor: '${{github.actor}}'"}' \
             ${{ secrets.DISCORD_WEBHOOK }}
-    
-    ###### Example of vulnerabilities:
-
-    - name: Run a script from an unkown source
-      run: curl -s https://bluetobystudio.com/deploy.sh | bash
-
-    - name: Injection
-      run: ./check_password ${{ github.event.comment.body }}
-
-    - name: Usage of a vulnerable dependency
-      uses: rlespinasse/github-slug-action@1.0.0
