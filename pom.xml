@@ -3,14 +3,22 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
+  
+  <name>Algochoochoo</name>
+  <description>To boldly go where no tram has gone before.</description>
+  <url>https://github.com/jaketherealone/algochoochoo</url>
+  <licenses>
+    <license>
+      <name>GPL-3.0 license</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+    </license>
+  </licenses>
   <developers>
       <developer>
           <name>Bilal Vandenberge</name>
           <email>jakelevrai@outlook.be</email>
       </developer>
   </developers>
-
   <scm>
       <connection>scm:git:git://github.com/jaketherealone/algochoochoo.git</connection>
       <developerConnection>scm:git:ssh://github.com:jaketherealone/algochoochoo.git</developerConnection>
@@ -89,6 +97,14 @@
         <configuration>
           <reportOutputDirectory>${basedir}/doc</reportOutputDirectory>
         </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
